@@ -1,7 +1,7 @@
 ##  NameMC-API
 Java wrapper for the popular Minecraft related site: https://namemc.com
 
-### Purpose of this project
+### Purposes of this project
 Basically, this API doesn't support much (but everything it actually can due to lack of API from NameMC creators).
 
 What are the purposes of this API? Well, you can reward players on your Minecraft server that have liked your server on the NameMC. Besides that, you can easily handle friends of your players and add some interactaction between them, like every 5 new friends on the NameMC, player will receive 5 diamonds and so on.
@@ -60,7 +60,7 @@ to create profile service with custom time and unit.
 
 The same thing goes for the server service, just replace "Profile" with "Server".
 
-When you created NameMC class instance, you can now use profile and server service to lookup either a profile or a server:
+When you created NameMC class instance, you can now use profile service to lookup a profile:
 ```java
 nameMC.profileService().lookup(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback);
 ```
@@ -98,7 +98,8 @@ hasFriend(String name, boolean caseSensitive);
 // Returns time the profile was cached at.
 getCacheTime();
 ```
-or:
+
+You can also use server service to lookup a server:
 ```java
 nameMC.profileService().lookup(String ip, boolean recache, BiConsumer<Server, Exception> callback);
 ```
