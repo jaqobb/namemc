@@ -138,5 +138,15 @@ or:
 nameMC.serverService().all();
 ```
 
+Since version 1.1.1 you can also clear both caches at once by using:
+```java
+nameMC.clearCaches();
+```
+or one by one using:
+```java
+nameMC.profileService().clearCache();
+nameMC.serverService().clearCache();
+```
+
 ### End
 That's all! Thank you for using NameMC-API!

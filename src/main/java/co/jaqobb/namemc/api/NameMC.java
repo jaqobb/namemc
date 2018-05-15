@@ -24,6 +24,8 @@
 
 package co.jaqobb.namemc.api;
 
+import java.util.Objects;
+
 import co.jaqobb.namemc.api.profile.ProfileService;
 import co.jaqobb.namemc.api.server.ServerService;
 
@@ -51,8 +53,13 @@ public class NameMC {
 	 * @return new {@code NameMC} instance with the
 	 * possibly custom {@code ProfileService} and
 	 * {@code ServerService}.
+	 *
+	 * @throws NullPointerException if the {@code profileServer}
+	 *                              or the {@code serverService} is null.
 	 */
 	public static NameMC newCustom(ProfileService profileService, ServerService serverService) {
+		Objects.requireNonNull(profileService);
+		Objects.requireNonNull(serverService);
 		return new NameMC(profileService, serverService);
 	}
 
@@ -107,5 +114,14 @@ public class NameMC {
 	 */
 	public ServerService serverService() {
 		return this.serverService;
+	}
+
+	/**
+	 * Clears the {@code profileService} and
+	 * the {@code serverService} cache.
+	 */
+	public void clearCaches() {
+		this.profileService.clearCache();
+		this.serverService.clearCache();
 	}
 }

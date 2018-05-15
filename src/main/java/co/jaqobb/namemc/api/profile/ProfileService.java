@@ -125,7 +125,7 @@ public class ProfileService {
 	/**
 	 * Returns unit of the tracked {@code time}.
 	 *
-	 * @return unit of the tracked {@code} time.
+	 * @return unit of the tracked {@code time}.
 	 */
 	public TimeUnit getUnit() {
 		return this.unit;
@@ -191,5 +191,14 @@ public class ProfileService {
 				callback.accept(null, exception);
 			}
 		});
+	}
+
+	/**
+	 * Clears {@code Profile}s cache.
+	 */
+	public void clearCache() {
+		synchronized (this.cache) {
+			this.cache.clear();
+		}
 	}
 }

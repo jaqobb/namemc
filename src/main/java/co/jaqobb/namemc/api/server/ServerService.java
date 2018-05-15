@@ -190,4 +190,13 @@ public class ServerService {
 			}
 		});
 	}
+
+	/**
+	 * Clears {@code Server}s cache.
+	 */
+	public void clearCache() {
+		synchronized (this.cache) {
+			this.cache.clear();
+		}
+	}
 }
