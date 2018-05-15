@@ -90,7 +90,7 @@ public class ProfileService {
 	/**
 	 * Collection of currently cached {@code Profile}s.
 	 */
-	private final Map<UUID, Profile> cache = Collections.synchronizedMap(new WeakHashMap<>(100));
+	private final Map<UUID, Profile> profiles = Collections.synchronizedMap(new WeakHashMap<>(100));
 
 	/**
 	 * Creates new {@code ProfileService} instance
@@ -149,7 +149,7 @@ public class ProfileService {
 	 * @return an immutable collection of currently cached {@code Profile}s.
 	 */
 	public Collection<Profile> getProfiles() {
-		return Collections.unmodifiableCollection(this.cache.values());
+		return Collections.unmodifiableCollection(this.profiles.values());
 	}
 
 	/**
@@ -172,9 +172,9 @@ public class ProfileService {
 	public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback) {
 		Objects.requireNonNull(uniqueId, "ip");
 		Objects.requireNonNull(callback, "callback");
-		synchronized (this.cache) {
-			Profile profile = this.cache.get(uniqueId);
-			if (profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.unit.toMillis(this.time) && !recache) {
+		synchronized (this.profiles) {
+			Profile profile = this.profiles.get(uniqueId);
+			if (this.isProfileValid(profile) && !recache) {
 				callback.accept(profile, null);
 				return;
 			}
@@ -185,7 +185,7 @@ public class ProfileService {
 				String content = IOUtils.getWebsiteContent(url);
 				JSONArray array = new JSONArray(content);
 				Profile profile = new Profile(uniqueId, array);
-				this.cache.put(uniqueId, profile);
+				this.profiles.put(uniqueId, profile);
 				callback.accept(profile, null);
 			} catch (IOException exception) {
 				callback.accept(null, exception);
@@ -194,11 +194,26 @@ public class ProfileService {
 	}
 
 	/**
+	 * Returns {@code true} if the given {@code profile} is
+	 * not {@code null} and does not need to be recached,
+	 * {@code false} otherwise.
+	 *
+	 * @param profile a {@code Profile} to check.
+	 *
+	 * @return {@code true} if the given {@code profile} is
+	 * not {@code null} and does not need to be recached,
+	 * {@code false} otherwise.
+	 */
+	public boolean isProfileValid(Profile profile) {
+		return profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.getTimeInMillis();
+	}
+
+	/**
 	 * Clears {@code Profile}s cache.
 	 */
 	public void clearProfiles() {
-		synchronized (this.cache) {
-			this.cache.clear();
+		synchronized (this.profiles) {
+			this.profiles.clear();
 		}
 	}
 }

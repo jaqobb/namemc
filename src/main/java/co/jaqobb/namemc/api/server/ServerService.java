@@ -89,7 +89,7 @@ public class ServerService {
 	/**
 	 * Collection of currently cached {@code Server}s.
 	 */
-	private final Map<String, Server> cache = Collections.synchronizedMap(new WeakHashMap<>(100));
+	private final Map<String, Server> servers = Collections.synchronizedMap(new WeakHashMap<>(100));
 
 	/**
 	 * Creates new {@code ServerService} instance
@@ -148,7 +148,7 @@ public class ServerService {
 	 * @return an immutable collection of currently cached {@code Server}s.
 	 */
 	public Collection<Server> getServers() {
-		return Collections.unmodifiableCollection(this.cache.values());
+		return Collections.unmodifiableCollection(this.servers.values());
 	}
 
 	/**
@@ -171,9 +171,9 @@ public class ServerService {
 	public void getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback) {
 		Objects.requireNonNull(ip, "ip");
 		Objects.requireNonNull(callback, "callback");
-		synchronized (this.cache) {
-			Server server = this.cache.get(ip.toLowerCase());
-			if (server != null && System.currentTimeMillis() - server.getCacheTime() < this.unit.toMillis(this.time) && !recache) {
+		synchronized (this.servers) {
+			Server server = this.servers.get(ip.toLowerCase());
+			if (this.isServerValid(server) && !recache) {
 				callback.accept(server, null);
 			}
 		}
@@ -183,7 +183,7 @@ public class ServerService {
 				String content = IOUtils.getWebsiteContent(url);
 				JSONArray array = new JSONArray(content);
 				Server server = new Server(ip, array);
-				this.cache.put(ip.toLowerCase(), server);
+				this.servers.put(ip.toLowerCase(), server);
 				callback.accept(server, null);
 			} catch (IOException exception) {
 				callback.accept(null, exception);
@@ -192,11 +192,26 @@ public class ServerService {
 	}
 
 	/**
+	 * Returns {@code true} if the given {@code server} is
+	 * not {@code null} and does not need to be recached,
+	 * {@code false} otherwise.
+	 *
+	 * @param server a {@code Server} to check.
+	 *
+	 * @return {@code true} if the given {@code server} is
+	 * not {@code null} and does not need to be recached,
+	 * {@code false} otherwise.
+	 */
+	public boolean isServerValid(Server server) {
+		return server != null && System.currentTimeMillis() - server.getCacheTime() < this.getTimeInMillis();
+	}
+
+	/**
 	 * Clears {@code Server}s cache.
 	 */
 	public void clearServers() {
-		synchronized (this.cache) {
-			this.cache.clear();
+		synchronized (this.servers) {
+			this.servers.clear();
 		}
 	}
 }

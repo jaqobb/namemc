@@ -25,7 +25,7 @@ And then add dependency:
 	<dependency>
 		<groupId>co.jaqobb</groupId>
 		<artifactId>namemc-api</artifactId>
-		<version>1.1.2-SNAPSHOT</version>
+		<version>1.1.3-SNAPSHOT</version>
 		<scope>compile</scope>
 	</dependency>
 </dependencies>
@@ -129,16 +129,13 @@ hasLiked(UUID uniqueId);
 getCacheTime();
 ```
 
-You can also get all cached profiles or servers by using either:
+You can also get all cached profiles and servers by using:
 ```java
 nameMC.getProfileService().getProfiles();
-```
-or:
-```java
 nameMC.getServerService().getServers();
 ```
 
-Since version 1.1.1 you can also clear both caches at once by using:
+Since version 1.1.1-SNAPSHOT you can also clear both caches at once by using:
 ```java
 nameMC.clearCaches();
 ```
@@ -146,6 +143,12 @@ or one by one using:
 ```java
 nameMC.getProfileService().clearProfiles();
 nameMC.getServerService().clearServers();
+```
+
+Since version 1.1.3-SNAPSHOT you are able to check if profile or server is valid. Being valid means so profile or server is not null, and doesn't need to be recached:
+```java
+nameMC.getProfileService().isProfileValid(Profile profile);
+nameMC.getServerService().isServerValid(Server server);
 ```
 
 ### End
