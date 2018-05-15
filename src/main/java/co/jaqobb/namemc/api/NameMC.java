@@ -55,7 +55,8 @@ public class NameMC {
 	 * {@code ServerService}.
 	 *
 	 * @throws NullPointerException if the {@code profileServer}
-	 *                              or the {@code serverService} is null.
+	 *                              or the {@code serverService}
+	 *                              is null.
 	 */
 	public static NameMC newCustom(ProfileService profileService, ServerService serverService) {
 		Objects.requireNonNull(profileService);
