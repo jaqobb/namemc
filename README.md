@@ -25,7 +25,7 @@ And then add dependency:
 	<dependency>
 		<groupId>co.jaqobb</groupId>
 		<artifactId>namemc-api</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.1.2-SNAPSHOT</version>
 		<scope>compile</scope>
 	</dependency>
 </dependencies>
