@@ -148,7 +148,7 @@ public class ProfileService {
 	 *
 	 * @return an immutable collection of currently cached {@code Profile}s.
 	 */
-	public Collection<Profile> all() {
+	public Collection<Profile> getProfiles() {
 		return Collections.unmodifiableCollection(this.cache.values());
 	}
 
@@ -169,7 +169,7 @@ public class ProfileService {
 	 *
 	 * @throws NullPointerException if the {@code uniqueId} or the {@code callback} is null.
 	 */
-	public void lookup(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback) {
+	public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback) {
 		Objects.requireNonNull(uniqueId, "ip");
 		Objects.requireNonNull(callback, "callback");
 		synchronized (this.cache) {
@@ -196,7 +196,7 @@ public class ProfileService {
 	/**
 	 * Clears {@code Profile}s cache.
 	 */
-	public void clearCache() {
+	public void clearProfiles() {
 		synchronized (this.cache) {
 			this.cache.clear();
 		}

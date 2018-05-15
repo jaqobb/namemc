@@ -104,7 +104,7 @@ public class NameMC {
 	 *
 	 * @return currently used {@code ProfileService}.
 	 */
-	public ProfileService profileService() {
+	public ProfileService getProfileService() {
 		return this.profileService;
 	}
 
@@ -113,7 +113,7 @@ public class NameMC {
 	 *
 	 * @return currently used {@code ServerService}.
 	 */
-	public ServerService serverService() {
+	public ServerService getServerService() {
 		return this.serverService;
 	}
 
@@ -122,7 +122,7 @@ public class NameMC {
 	 * the {@code serverService} cache.
 	 */
 	public void clearCaches() {
-		this.profileService.clearCache();
-		this.serverService.clearCache();
+		this.profileService.clearProfiles();
+		this.serverService.clearServers();
 	}
 }

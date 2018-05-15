@@ -147,7 +147,7 @@ public class ServerService {
 	 *
 	 * @return an immutable collection of currently cached {@code Server}s.
 	 */
-	public Collection<Server> all() {
+	public Collection<Server> getServers() {
 		return Collections.unmodifiableCollection(this.cache.values());
 	}
 
@@ -168,7 +168,7 @@ public class ServerService {
 	 *
 	 * @throws NullPointerException if the {@code ip} or the {@code callback} is null.
 	 */
-	public void lookup(String ip, boolean recache, BiConsumer<Server, Exception> callback) {
+	public void getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback) {
 		Objects.requireNonNull(ip, "ip");
 		Objects.requireNonNull(callback, "callback");
 		synchronized (this.cache) {
@@ -194,7 +194,7 @@ public class ServerService {
 	/**
 	 * Clears {@code Server}s cache.
 	 */
-	public void clearCache() {
+	public void clearServers() {
 		synchronized (this.cache) {
 			this.cache.clear();
 		}

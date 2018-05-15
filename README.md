@@ -66,7 +66,7 @@ The same thing goes for the server service, just replace "Profile" with "Server"
 
 When you created NameMC class instance, you can now use profile service to lookup a profile:
 ```java
-nameMC.profileService().lookup(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback);
+nameMC.getProfileService().getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback);
 ```
 Unique id is the unique id of the profile you want to lookup.
 Recache defines if the profile should be forced to be recached even if there is already a cached profile with the given unique id and if the cache time was smaller than store time.
@@ -108,7 +108,7 @@ hasLiked(Server server);
 
 You can also use server service to lookup a server:
 ```java
-nameMC.profileService().lookup(String ip, boolean recache, BiConsumer<Server, Exception> callback);
+nameMC.getServerService().getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback);
 ```
 Ip is the ip of the server you want to lookup (case insensitive).
 Recache defines if the server should be forced to be recached even if there is already a cached server with the given ip and if the cache time was smaller than store time.
@@ -131,11 +131,11 @@ getCacheTime();
 
 You can also get all cached profiles or servers by using either:
 ```java
-nameMC.playerService().all();
+nameMC.getProfileService().getProfiles();
 ```
 or:
 ```java
-nameMC.serverService().all();
+nameMC.getServerService().getServers();
 ```
 
 Since version 1.1.1 you can also clear both caches at once by using:
@@ -144,8 +144,8 @@ nameMC.clearCaches();
 ```
 or one by one using:
 ```java
-nameMC.profileService().clearCache();
-nameMC.serverService().clearCache();
+nameMC.getProfileService().clearProfiles();
+nameMC.getServerService().clearServers();
 ```
 
 ### End

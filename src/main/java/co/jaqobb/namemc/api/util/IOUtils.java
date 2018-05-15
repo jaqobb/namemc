@@ -30,7 +30,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Collection of useful methods
@@ -54,7 +54,7 @@ public final class IOUtils {
 	 * @throws IOException if an I/O error occurs.
 	 */
 	public static String getWebsiteContent(String url) throws IOException {
-		try (InputStream inputStream = new URL(url).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")))) {
+		try (InputStream inputStream = new URL(url).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 			return IOUtils.getContent(reader);
 		}
 	}
