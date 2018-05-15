@@ -45,11 +45,11 @@ public final class IOUtils {
 	}
 
 	/**
-	 * Returns a content of the given url.
+	 * Returns a content of the given {@code url}.
 	 *
 	 * @param url a url;
 	 *
-	 * @return a content of the given url.
+	 * @return a content of the given {@code url}.
 	 *
 	 * @throws IOException if an I/O error occurs.
 	 */
@@ -60,11 +60,11 @@ public final class IOUtils {
 	}
 
 	/**
-	 * Returns a content of the reader.
+	 * Returns a content of the given {@code reader}.
 	 *
 	 * @param reader a reader.
 	 *
-	 * @return a content of the reader.
+	 * @return a content of the given {@code reader}.
 	 *
 	 * @throws IOException if an I/O error occurs.
 	 */

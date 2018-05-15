@@ -7,10 +7,10 @@ Basically, this API doesn't support much (but everything it actually can due to 
 What are the purposes of this API? Well, you can reward players on your Minecraft server that have liked your server on the NameMC. Besides that, you can easily handle friends of your players and add some interactaction between them, like every 5 new friends on the NameMC, player will receive 5 diamonds and so on.
 
 ### Requirements
-All you need to properly use this API is Java 8 and Maven.
+All you need to properly use this API is Java 8 and optionally Maven.
 
-### How to use
-First of all, you need to add repository to your project's pom.xml:
+### How to use (Maven)
+You need to add repository to your project's pom.xml:
 ```xml
 <repositories>
 	<repository>
@@ -31,6 +31,10 @@ And then add dependency:
 </dependencies>
 ```
 Yeah, you actually need to compile this library due to it's not shaded anywhere by default.
+
+### How to use (Non Maven)
+You need to download the sources and add them to your code. This project is depedency free so you wouldn't have to install more libraries.
+
 ### API
 Everythings begins with the class NameMC. You can either use preset settings created by me, or experiment with settings numbers on your own:
 ```java
@@ -38,7 +42,7 @@ NameMC.newDefault();
 ```
 to create a new instance of NameMC class with default settings, or:
 ```java
-NameMC.newCustom(PprofileService profileService, SserverService serverService);
+NameMC.newCustom(ProfileService profileService, ServerService serverService);
 ```
 to create a new instance of NameMC class with custom settings.
 
@@ -74,7 +78,7 @@ When you have your profile ready, you can access some nice methods:
 getUniqueId();
 
 // Returns an immutable collection of friends.
-// In a Friend class, you can use getUniqueId to get friend's unique id or getName() to get friend's name.
+// In a Friend class, you can use getUniqueId() to get friend's unique id, getName() to get friend's name, isFriendOf(Profile profile) or isFriendOf(Profile profile, boolean caseSensitive) to check the friend is on the given profile's friend list, or hasLiked(Server server) to check if the friend has liked the given server.
 getFriends();
 
 // Returns friend with the given unique id, or null if the profile doesn't have a friend with the given unique id.
@@ -97,6 +101,9 @@ hasFriend(String name, boolean caseSensitive);
 
 // Returns time the profile was cached at.
 getCacheTime();
+
+// Returns true, if the profile has liked the given server, false otherwise.
+hasLiked(Server server);
 ```
 
 You can also use server service to lookup a server:

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -78,7 +79,7 @@ public class ServerService {
 	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	/**
-	 * Time that indicates whenever server should be recached.
+	 * Time that indicates whenever {@code Server} should be recached.
 	 */
 	private final long time;
 	/**
@@ -86,7 +87,7 @@ public class ServerService {
 	 */
 	private final TimeUnit unit;
 	/**
-	 * Collection of currently cached servers.
+	 * Collection of currently cached {@code Server}s.
 	 */
 	private final Map<String, Server> cache = Collections.synchronizedMap(new WeakHashMap<>(100));
 
@@ -112,10 +113,39 @@ public class ServerService {
 	}
 
 	/**
-	 * Returns a collection of
-	 * currently cached servers.
+	 * Returns time that indicates whenever {@code Server} should be recached.
 	 *
-	 * @return a collection of currently cached servers.
+	 * @return time that indicates whenever {@code Server} should be recached.
+	 */
+	public long getTime() {
+		return this.time;
+	}
+
+	/**
+	 * Returns unit of the tracked {@code time}.
+	 *
+	 * @return unit of the tracked {@code} time.
+	 */
+	public TimeUnit getUnit() {
+		return this.unit;
+	}
+
+	/**
+	 * Returns time in milliseconds that indicates
+	 * whenever {@code Server} should be recached
+	 *
+	 * @return time in milliseconds that indicated
+	 * whenever {@code Server} should be recached
+	 */
+	public long getTimeInMillis() {
+		return this.unit.toMillis(this.time);
+	}
+
+	/**
+	 * Returns an immutable collection
+	 * of currently cached {@code Server}s.
+	 *
+	 * @return an immutable collection of currently cached {@code Server}s.
 	 */
 	public Collection<Server> all() {
 		return Collections.unmodifiableCollection(this.cache.values());
@@ -135,10 +165,14 @@ public class ServerService {
 	 *                 {@code Server} and exception
 	 *                 (null if everything went good)
 	 *                 will be delegated to.
+	 *
+	 * @throws NullPointerException if the {@code ip} or the {@code callback} is null.
 	 */
 	public void lookup(String ip, boolean recache, BiConsumer<Server, Exception> callback) {
+		Objects.requireNonNull(ip, "ip");
+		Objects.requireNonNull(callback, "callback");
 		synchronized (this.cache) {
-			Server server = this.getIgnoreCase(ip);
+			Server server = this.cache.get(ip.toLowerCase());
 			if (server != null && System.currentTimeMillis() - server.getCacheTime() < this.unit.toMillis(this.time) && !recache) {
 				callback.accept(server, null);
 			}
@@ -149,25 +183,11 @@ public class ServerService {
 				String content = IOUtils.getWebsiteContent(url);
 				JSONArray array = new JSONArray(content);
 				Server server = new Server(ip, array);
-				this.cache.put(ip, server);
+				this.cache.put(ip.toLowerCase(), server);
 				callback.accept(server, null);
 			} catch (IOException exception) {
 				callback.accept(null, exception);
 			}
 		});
-	}
-
-	/**
-	 * Returns a cached {@code Server}
-	 * with the given ip if present,
-	 * {@code null} otherwise.
-	 *
-	 * @param ip an ip to check (case insensitive).
-	 *
-	 * @return a cached {@code Server}
-	 * if present, {@code null} otherwise.
-	 */
-	private Server getIgnoreCase(String ip) {
-		return this.cache.values().stream().filter(server -> server.getIp().equalsIgnoreCase(ip)).findFirst().orElse(null);
 	}
 }

@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import co.jaqobb.namemc.api.json.JSONArray;
 import co.jaqobb.namemc.api.json.JSONObject;
+import co.jaqobb.namemc.api.server.Server;
 
 /**
  * Class that holds all possible
@@ -39,23 +40,23 @@ import co.jaqobb.namemc.api.json.JSONObject;
  */
 public class Profile {
 	/**
-	 * Unique id of the profile.
+	 * Unique id of the {@code Profile}.
 	 */
 	private final UUID uniqueId;
 	/**
-	 * Collection of friends.
+	 * Collection of {@code Friend}s.
 	 */
 	private final Collection<Friend> friends;
 	/**
-	 * Time the profile was cached at.
+	 * Time the {@code Profile} was cached at.
 	 */
 	private final long cacheTime;
 
 	/**
 	 * Constructs new {@code Profile} instance
-	 * with the given unique id and array.
+	 * with the given {@code uniqueId} and {@code array}.
 	 *
-	 * @param uniqueId a unique id of the profile.
+	 * @param uniqueId a unique id of the {@code Profile}.
 	 * @param array    an array that contains
 	 *                 information about the friends.
 	 */
@@ -73,130 +74,163 @@ public class Profile {
 	}
 
 	/**
-	 * Returns a unique id of this profile.
+	 * Returns a unique id of this {@code Profile}.
 	 *
-	 * @return a unique id of this profile.
+	 * @return a unique id of this {@code Profile}.
 	 */
 	public UUID getUniqueId() {
 		return this.uniqueId;
 	}
 
 	/**
-	 * Returns a collection of friends
-	 * of this profile.
+	 * Returns an immutable collection of
+	 * {@code Friend}s of this {@code Profile}.
 	 *
-	 * @return a collection of friends of this profile.
+	 * @return an immutable  collection of
+	 * {@code Friend}s of this {@code Profile}.
 	 */
 	public Collection<Friend> getFriends() {
 		return Collections.unmodifiableCollection(this.friends);
 	}
 
 	/**
-	 * Returns a friend instance if
-	 * this profile has a friend with
-	 * the given unique id, null otherwise.
+	 * Returns a {@code Friend} instance if
+	 * this {@code Profile} has a friend with
+	 * the given {@code uniqueId}, {@code null} otherwise.
 	 *
-	 * @param uniqueId a unique id of the friend to be checked.
+	 * @param uniqueId a unique id of the {@code Friend} to be checked.
 	 *
-	 * @return a {@code Friend} instance if this
-	 * profile has a friend with the given unique id,
+	 * @return a {@code Friend} instance if this {@code Profile}
+	 * has a {@code Friend} with the given {@code uniqueId},
 	 * {@code null} otherwise.
+	 *
+	 * @throws NullPointerException if the {@code uniqueId}
 	 */
 	public Friend getFriend(UUID uniqueId) {
+		Objects.requireNonNull(uniqueId);
 		return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
 	}
 
 	/**
-	 * Returns a friend instance if
-	 * this profile has a friend with
-	 * the given name, null otherwise.
+	 * Returns a {@code Friend} instance if
+	 * this {@code Profile} has a {@code Friend} with
+	 * the given {@code name}, {@code null} otherwise.
 	 *
 	 * @param name a name of the friend to
 	 *             be checked (case sensitive).
 	 *
-	 * @return a {@code Friend} instance if this
-	 * profile has a friend with the given name,
+	 * @return a {@code Friend} instance if this {@code Profile}
+	 * has a {@code Friend} with the given {@code name},
 	 * {@code null} otherwise.
+	 *
+	 * @throws NullPointerException if the {@code name} is null.
 	 */
 	public Friend getFriend(String name) {
 		return this.getFriend(name, true);
 	}
 
 	/**
-	 * Returns a friend instance if
-	 * this profile has a friend with
-	 * the given name, null otherwise.
+	 * Returns a {@code Friend} instance if
+	 * this {@code Profile} has a {@code Friend} with
+	 * the given {@code name}, {@code null} otherwise.
 	 *
 	 * @param name          a name of the friend to
 	 *                      be checked.
 	 * @param caseSensitive a state which defines if
 	 *                      case sensitivity in the
-	 *                      name should be checked.
+	 *                      {@code name} should be
+	 *                      checked.
 	 *
-	 * @return a {@code Friend} instance if this
-	 * profile has a friend with the given name,
+	 * @return a {@code Friend} instance if this {@code Profile}
+	 * has a {@code Friend} with the given {@code name},
 	 * {@code null} otherwise.
+	 *
+	 * @throws NullPointerException if the {@code name} is null.
 	 */
 	public Friend getFriend(String name, boolean caseSensitive) {
+		Objects.requireNonNull(name, "name");
 		return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
 	/**
-	 * Checks if this profile has
-	 * a friend with the unique id.
+	 * Checks if this {@code Profile} has a
+	 * {@code Friend} with the given {@code uniqueId}
 	 *
-	 * @param uniqueId a unique id of the friend to be checked.
+	 * @param uniqueId a unique id of the {@code Friend} to be checked.
 	 *
-	 * @return {@code true} if this profile has a
-	 * friend with the given unique id, {@code false}
-	 * otherwise.
+	 * @return {@code true} if this {@code Profile} has a
+	 * {@code Friend} with the given {@code uniqueId},
+	 * {@code false} otherwise.
+	 *
+	 * @throws NullPointerException if the {@code uniqueId} is null.
 	 */
 	public boolean hasFriend(UUID uniqueId) {
+		Objects.requireNonNull(uniqueId);
 		return this.friends.stream().anyMatch(friend -> friend.getUniqueId().equals(uniqueId));
 	}
 
 	/**
-	 * Checks if this profile has
-	 * a friend with the given name.
+	 * Checks if this {@code Profile} has
+	 * a {@code Friend} with the given {@code name}.
 	 *
-	 * @param name a name of the friend to
+	 * @param name a name of the {@code Friend} to
 	 *             be checked (case sensitive).
 	 *
-	 * @return {@code true} if this profile has a
-	 * friend with the given name, {@code false}
-	 * otherwise.
+	 * @return {@code true} if this {@code Profile} has a
+	 * {@code Friend} with the given {@code name},
+	 * {@code false} otherwise.
+	 *
+	 * @throws NullPointerException if the {@code name} is null.
 	 */
 	public boolean hasFriend(String name) {
 		return this.hasFriend(name, true);
 	}
 
 	/**
-	 * Checks if this profile has
-	 * a friend with the given name.
+	 * Checks if this {@code Profile} has
+	 * a {@code Friend} with the given {@code name}.
 	 *
-	 * @param name          a name of the friend to
-	 *                      be checked.
+	 * @param name          a name of the {@code Friend}
+	 *                      to be checked.
 	 * @param caseSensitive a state which defines if
 	 *                      case sensitivity in the
-	 *                      name should be checked.
+	 *                      {@code name} should be
+	 *                      checked.
 	 *
-	 * @return {@code true} if this profile has a
-	 * friend with the given name, {@code false}
-	 * otherwise.
+	 * @return {@code true} if this {@code Profile} has a
+	 * {@code Friend} with the given {@code name},
+	 * {@code false} otherwise.
+	 *
+	 * @throws NullPointerException if the {@code name} is null.
 	 */
 	public boolean hasFriend(String name, boolean caseSensitive) {
+		Objects.requireNonNull(name, "name");
 		return this.friends.stream().anyMatch(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name));
 	}
 
 	/**
-	 * Returns time this profile
-	 * was cached at.
+	 * Returns time this {@code Profile} was cached at.
 	 *
-	 * @return time this profile
-	 * was cached at.
+	 * @return time this {@code Profile} was cached at.
 	 */
 	public long getCacheTime() {
 		return this.cacheTime;
+	}
+
+	/**
+	 * Returns true if this {@code Profile} has
+	 * liked the given server, false otherwise.
+	 *
+	 * @param server {@code Server} to be checked.
+	 *
+	 * @return {@code true} if this {@code Profile} has liked
+	 * given {@code server}, {@code false} otherwise.
+	 *
+	 * @throws NullPointerException if the {@code server} is null.
+	 */
+	public boolean hasLiked(Server server) {
+		Objects.requireNonNull(server, "server");
+		return server.hasLiked(this.uniqueId);
 	}
 
 	/**
@@ -221,8 +255,7 @@ public class Profile {
 	}
 
 	/**
-	 * Returns a hash code
-	 * of this class.
+	 * Returns a hash code of this class.
 	 *
 	 * @return a hash code of this class.
 	 */
@@ -232,11 +265,9 @@ public class Profile {
 	}
 
 	/**
-	 * Returns a nice looking representation
-	 * of this class.
+	 * Returns a nice looking representation of this class.
 	 *
-	 * @return a nice looking representation
-	 * of this class.
+	 * @return a nice looking representation of this class.
 	 */
 	@Override
 	public String toString() {
@@ -249,11 +280,11 @@ public class Profile {
 	 */
 	public static class Friend {
 		/**
-		 * Unique id of the friend.
+		 * Unique id of the {@code Friend}.
 		 */
 		private final UUID uniqueId;
 		/**
-		 * Name of the friend.
+		 * Name of the {@code Friend}.
 		 */
 		private final String name;
 
@@ -270,21 +301,77 @@ public class Profile {
 		}
 
 		/**
-		 * Returns a unique id of this friend.
+		 * Returns a unique id of this {@code Friend}
 		 *
-		 * @return a unique id of this friend.
+		 * @return a unique id of this {@code Friend}.
 		 */
 		public UUID getUniqueId() {
 			return this.uniqueId;
 		}
 
 		/**
-		 * Returns a name of this friend.
+		 * Returns a name of this {@code Friend}.
 		 *
-		 * @return a name of this friend.
+		 * @return a name of this {@code Friend}.
 		 */
 		public String getName() {
 			return this.name;
+		}
+
+		/**
+		 * Returns {@code true} if this {@code Friend} is
+		 * the given {@code profile}'s friend. {@code profile}'s
+		 * name is case sensitive by default.
+		 *
+		 * @param profile a profile to be checked.
+		 *
+		 * @return {@code true} if this {@code Friend} is
+		 * the given {@code profile}'s friend.
+		 *
+		 * @throws NullPointerException if the {@code profile} is null.
+		 */
+		public boolean isFriendOf(Profile profile) {
+			return this.isFriendOf(profile, true);
+		}
+
+		/**
+		 * Returns {@code true} if this {@code Friend} is
+		 * the given {@code profile}'s friend.
+		 *
+		 * @param profile       a {@code Profile} to be checked.
+		 * @param caseSensitive a state which defines if
+		 *                      case sensitivity in the
+		 *                      {@code profile}'s name should be
+		 *                      checked.
+		 *
+		 * @return {@code true} if this {@code Friend} is
+		 * the given {@code profile}'s friend.
+		 *
+		 * @throws NullPointerException if the {@code profile} is null.
+		 */
+		public boolean isFriendOf(Profile profile, boolean caseSensitive) {
+			Objects.requireNonNull(profile, "profile");
+			boolean is = profile.hasFriend(this.uniqueId);
+			if (is) {
+				return true;
+			}
+			return profile.hasFriend(this.name, caseSensitive);
+		}
+
+		/**
+		 * Return {@code true} if this {@code Friend}
+		 * has liked the given {@code server}.
+		 *
+		 * @param server a {@code Server} to be checked.
+		 *
+		 * @return {@code true} if this {@code Friend}
+		 * has liked the given {@code server}.
+		 *
+		 * @throws NullPointerException if the {@code server} is null.
+		 */
+		public boolean hasLiked(Server server) {
+			Objects.requireNonNull(server, "server");
+			return server.hasLiked(this.uniqueId);
 		}
 
 		/**
@@ -309,8 +396,7 @@ public class Profile {
 		}
 
 		/**
-		 * Returns a hash code
-		 * of this class.
+		 * Returns a hash code of this class.
 		 *
 		 * @return a hash code of this class.
 		 */

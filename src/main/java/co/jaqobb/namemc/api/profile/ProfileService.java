@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
@@ -87,7 +88,7 @@ public class ProfileService {
 	 */
 	private final TimeUnit unit;
 	/**
-	 * Collection of currently cached profiles.
+	 * Collection of currently cached {@code Profile}s.
 	 */
 	private final Map<UUID, Profile> cache = Collections.synchronizedMap(new WeakHashMap<>(100));
 
@@ -113,10 +114,39 @@ public class ProfileService {
 	}
 
 	/**
-	 * Returns a collection of
-	 * currently cached profiles.
+	 * Returns time that indicates whenever {@code Profile} should be recached.
 	 *
-	 * @return a collection of currently cached profiles.
+	 * @return time that indicates whenever {@code Profile} should be recached.
+	 */
+	public long getTime() {
+		return this.time;
+	}
+
+	/**
+	 * Returns unit of the tracked {@code time}.
+	 *
+	 * @return unit of the tracked {@code} time.
+	 */
+	public TimeUnit getUnit() {
+		return this.unit;
+	}
+
+	/**
+	 * Returns time in milliseconds that indicates
+	 * whenever {@code Profile} should be recached
+	 *
+	 * @return time in milliseconds that indicated
+	 * whenever {@code Profile} should be recached
+	 */
+	public long getTimeInMillis() {
+		return this.unit.toMillis(this.time);
+	}
+
+	/**
+	 * Returns an immutable collection
+	 * of currently cached {@code Profile}s.
+	 *
+	 * @return an immutable collection of currently cached {@code Profile}s.
 	 */
 	public Collection<Profile> all() {
 		return Collections.unmodifiableCollection(this.cache.values());
@@ -136,8 +166,12 @@ public class ProfileService {
 	 *                 {@code Profile} and exception
 	 *                 (null if everything went good)
 	 *                 will be delegated to.
+	 *
+	 * @throws NullPointerException if the {@code uniqueId} or the {@code callback} is null.
 	 */
 	public void lookup(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback) {
+		Objects.requireNonNull(uniqueId, "ip");
+		Objects.requireNonNull(callback, "callback");
 		synchronized (this.cache) {
 			Profile profile = this.cache.get(uniqueId);
 			if (profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.unit.toMillis(this.time) && !recache) {

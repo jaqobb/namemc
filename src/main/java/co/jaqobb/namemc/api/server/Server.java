@@ -38,27 +38,27 @@ import co.jaqobb.namemc.api.json.JSONArray;
  */
 public class Server {
 	/**
-	 * Ip of the server.
+	 * Ip of the {@code Server}.
 	 */
 	private final String ip;
 	/**
-	 * Collection of unique ids that liked the server.
+	 * Collection of unique ids that liked the {@code Server}.
 	 */
 	private final Collection<UUID> likes;
 	/**
-	 * Time the server was cached at.
+	 * Time the {@code Server} was cached at.
 	 */
 	private final long cacheTime;
 
 	/**
 	 * Constructs new {@code Server} instance
-	 * with the given ip and array.
+	 * with the given {@code ip} and {@code array{}.
 	 *
 	 * @param ip    an ip of the server.
 	 * @param array an array that contains
 	 *              information about the
 	 *              unique ids that liked
-	 *              the server.
+	 *              the {@code Server}.
 	 */
 	protected Server(String ip, JSONArray array) {
 		this.ip = ip;
@@ -71,42 +71,45 @@ public class Server {
 	}
 
 	/**
-	 * Returns this server ip.
+	 * Returns this {@code Server} ip.
 	 *
-	 * @return this server ip.
+	 * @return this {@code Server} ip.
 	 */
 	public String getIp() {
 		return this.ip;
 	}
 
 	/**
-	 * Returns a collection of unique ids
-	 * that liked this server.
+	 * Returns an immutable collection of the unique ids
+	 * that have liked this {@code Server}.
 	 *
-	 * @return a collection of unique ids
-	 * that voted on this server.
+	 * @return an immutable collection of the unique ids
+	 * that have liked this {@code Server}.
 	 */
 	public Collection<UUID> getLikes() {
 		return Collections.unmodifiableCollection(this.likes);
 	}
 
 	/**
-	 * Checks if the given unique
-	 * has liked this server.
+	 * Checks if the given {@code uniqueId}
+	 * has liked this {@code Server}.
 	 *
 	 * @param uniqueId a unique id to be checked.
 	 *
-	 * @return {@code true} if the given unique id has
-	 * voted liked this server, {@code false} otherwise.
+	 * @return {@code true} if the given {@code uniqueId} has
+	 * liked this {@code Server}, {@code false} otherwise.
+	 *
+	 * @throws NullPointerException if the {@code uniqueId} is null.
 	 */
 	public boolean hasLiked(UUID uniqueId) {
+		Objects.requireNonNull(uniqueId, "uniqueId");
 		return this.likes.contains(uniqueId);
 	}
 
 	/**
-	 * Returns time this server was cached at.
+	 * Returns time this {@code Server} was cached at.
 	 *
-	 * @return time this server was cached at.
+	 * @return time this {@code Server} was cached at.
 	 */
 	public long getCacheTime() {
 		return this.cacheTime;
@@ -134,8 +137,7 @@ public class Server {
 	}
 
 	/**
-	 * Returns a hash code
-	 * of this class.
+	 * Returns a hash code of this class.
 	 *
 	 * @return a hash code of this class.
 	 */
@@ -145,11 +147,9 @@ public class Server {
 	}
 
 	/**
-	 * Returns a nice looking representation
-	 * of this class.
+	 * Returns a nice looking representation of this class.
 	 *
-	 * @return a nice looking representation
-	 * of this class.
+	 * @return a nice looking representation of this class.
 	 */
 	@Override
 	public String toString() {
