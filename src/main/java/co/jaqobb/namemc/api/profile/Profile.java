@@ -50,7 +50,7 @@ public class Profile {
 	/**
 	 * Time the {@code Profile} was cached at.
 	 */
-	private final long cacheTime;
+	private final long cacheTime = System.currentTimeMillis();
 
 	/**
 	 * Constructs new {@code Profile} instance
@@ -70,7 +70,6 @@ public class Profile {
 			friends.add(new Friend(friendUniqueId, friendName));
 		}
 		this.friends = friends;
-		this.cacheTime = System.currentTimeMillis();
 	}
 
 	/**

@@ -48,7 +48,7 @@ public class Server {
 	/**
 	 * Time the {@code Server} was cached at.
 	 */
-	private final long cacheTime;
+	private final long cacheTime = System.currentTimeMillis();
 
 	/**
 	 * Constructs new {@code Server} instance
@@ -67,7 +67,6 @@ public class Server {
 			likes.add(UUID.fromString(array.getString(index)));
 		}
 		this.likes = likes;
-		this.cacheTime = System.currentTimeMillis();
 	}
 
 	/**

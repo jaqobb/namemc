@@ -139,7 +139,7 @@ public class ProfileService {
 	 * whenever {@code Profile} should be recached
 	 */
 	public long getTimeInMillis() {
-		return this.unit.toMillis(this.time);
+		return TimeUnit.MILLISECONDS.convert(this.time, this.unit);
 	}
 
 	/**

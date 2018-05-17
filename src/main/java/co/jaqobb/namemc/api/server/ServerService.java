@@ -138,7 +138,7 @@ public class ServerService {
 	 * whenever {@code Server} should be recached
 	 */
 	public long getTimeInMillis() {
-		return this.unit.toMillis(this.time);
+		return TimeUnit.MILLISECONDS.convert(this.time, this.unit);
 	}
 
 	/**
