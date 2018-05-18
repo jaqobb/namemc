@@ -1,4 +1,4 @@
-##  NameMC-API
+## NameMC-API
 Java wrapper for the popular Minecraft related site: https://namemc.com
 
 ### Purposes of this project
