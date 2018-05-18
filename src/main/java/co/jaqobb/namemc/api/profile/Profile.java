@@ -112,7 +112,10 @@ public class Profile
 	 */
 	public Friend getFriend(UUID uniqueId)
 	{
-		Objects.requireNonNull(uniqueId);
+		if (uniqueId == null)
+		{
+			throw new NullPointerException("Unique id cannot be null");
+		}
 		return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
 	}
 
@@ -155,7 +158,10 @@ public class Profile
 	 */
 	public Friend getFriend(String name, boolean caseSensitive)
 	{
-		Objects.requireNonNull(name, "name");
+		if (name == null)
+		{
+			throw new NullPointerException("Name cannot be null");
+		}
 		return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
 
@@ -173,7 +179,10 @@ public class Profile
 	 */
 	public boolean hasFriend(UUID uniqueId)
 	{
-		Objects.requireNonNull(uniqueId);
+		if (uniqueId == null)
+		{
+			throw new NullPointerException("Unique id cannot be null");
+		}
 		return this.friends.stream().anyMatch(friend -> friend.getUniqueId().equals(uniqueId));
 	}
 
@@ -214,7 +223,10 @@ public class Profile
 	 */
 	public boolean hasFriend(String name, boolean caseSensitive)
 	{
-		Objects.requireNonNull(name, "name");
+		if (name == null)
+		{
+			throw new NullPointerException("Name cannot be null");
+		}
 		return this.friends.stream().anyMatch(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name));
 	}
 
@@ -241,7 +253,10 @@ public class Profile
 	 */
 	public boolean hasLiked(Server server)
 	{
-		Objects.requireNonNull(server, "server");
+		if (server == null)
+		{
+			throw new NullPointerException("Server cannot be null");
+		}
 		return server.hasLiked(this.uniqueId);
 	}
 
@@ -373,7 +388,10 @@ public class Profile
 		 */
 		public boolean isFriendOf(Profile profile, boolean caseSensitive)
 		{
-			Objects.requireNonNull(profile, "profile");
+			if (profile == null)
+			{
+				throw new NullPointerException("Profile cannot be null");
+			}
 			boolean is = profile.hasFriend(this.uniqueId);
 			if (is)
 			{
@@ -395,7 +413,10 @@ public class Profile
 		 */
 		public boolean hasLiked(Server server)
 		{
-			Objects.requireNonNull(server, "server");
+			if (server == null)
+			{
+				throw new NullPointerException("Server cannot be null");
+			}
 			return server.hasLiked(this.uniqueId);
 		}
 

@@ -107,7 +107,10 @@ public class Server
 	 */
 	public boolean hasLiked(UUID uniqueId)
 	{
-		Objects.requireNonNull(uniqueId, "uniqueId");
+		if (uniqueId == null)
+		{
+			throw new NullPointerException("Unique id cannot be null");
+		}
 		return this.likes.contains(uniqueId);
 	}
 

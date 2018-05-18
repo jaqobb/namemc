@@ -24,8 +24,6 @@
 
 package co.jaqobb.namemc.api;
 
-import java.util.Objects;
-
 import co.jaqobb.namemc.api.profile.ProfileService;
 import co.jaqobb.namemc.api.server.ServerService;
 
@@ -62,8 +60,14 @@ public class NameMC
 	 */
 	public static NameMC newCustom(ProfileService profileService, ServerService serverService)
 	{
-		Objects.requireNonNull(profileService);
-		Objects.requireNonNull(serverService);
+		if (profileService == null)
+		{
+			throw new NullPointerException("Profile service cannot be null");
+		}
+		if (serverService == null)
+		{
+			throw new NullPointerException("Server service cannot be null");
+		}
 		return new NameMC(profileService, serverService);
 	}
 

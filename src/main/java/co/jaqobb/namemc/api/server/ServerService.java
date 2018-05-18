@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -179,8 +178,14 @@ public class ServerService
 	 */
 	public void getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback)
 	{
-		Objects.requireNonNull(ip, "ip");
-		Objects.requireNonNull(callback, "callback");
+		if (ip == null)
+		{
+			throw new NullPointerException("Ip cannot be null");
+		}
+		if (callback == null)
+		{
+			throw new NullPointerException("Callback cannot be null");
+		}
 		synchronized (this.servers)
 		{
 			Server server = this.servers.get(ip.toLowerCase());

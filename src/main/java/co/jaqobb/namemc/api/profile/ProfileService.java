@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
@@ -180,8 +179,14 @@ public class ProfileService
 	 */
 	public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback)
 	{
-		Objects.requireNonNull(uniqueId, "ip");
-		Objects.requireNonNull(callback, "callback");
+		if (uniqueId == null)
+		{
+			throw new NullPointerException("Unique id cannot be null");
+		}
+		if (callback == null)
+		{
+			throw new NullPointerException("Callback cannot be null");
+		}
 		synchronized (this.profiles)
 		{
 			Profile profile = this.profiles.get(uniqueId);
