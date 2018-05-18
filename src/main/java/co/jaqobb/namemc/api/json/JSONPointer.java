@@ -173,7 +173,7 @@ public class JSONPointer
 			throw new IllegalArgumentException("a JSON pointer should start with '/' or '#/'");
 		}
 		this.tokens = new ArrayList<>(10);
-		int slashIndex = -1;
+		int slashIndex = - 1;
 		int previousSlashIndex;
 		do
 		{

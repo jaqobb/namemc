@@ -76,7 +76,7 @@ public final class IOUtils
 	{
 		StringBuilder content = new StringBuilder();
 		int character;
-		while ((character = reader.read()) != -1)
+		while ((character = reader.read()) != - 1)
 		{
 			content.append((char) character);
 		}

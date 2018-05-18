@@ -185,7 +185,7 @@ public class ProfileService
 		synchronized (this.profiles)
 		{
 			Profile profile = this.profiles.get(uniqueId);
-			if (this.isProfileValid(profile) && !recache)
+			if (this.isProfileValid(profile) && ! recache)
 			{
 				callback.accept(profile, null);
 				return;

@@ -184,7 +184,7 @@ public class ServerService
 		synchronized (this.servers)
 		{
 			Server server = this.servers.get(ip.toLowerCase());
-			if (this.isServerValid(server) && !recache)
+			if (this.isServerValid(server) && ! recache)
 			{
 				callback.accept(server, null);
 			}

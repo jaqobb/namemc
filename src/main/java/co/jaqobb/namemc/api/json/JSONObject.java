@@ -1604,10 +1604,10 @@ public class JSONObject
 		for (Method method : methods)
 		{
 			int modifiers = method.getModifiers();
-			if (Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers) && method.getParameterTypes().length == 0 && !method.isBridge() && method.getReturnType() != Void.TYPE && this.isValidMethodName(method.getName()))
+			if (Modifier.isPublic(modifiers) && ! Modifier.isStatic(modifiers) && method.getParameterTypes().length == 0 && ! method.isBridge() && method.getReturnType() != Void.TYPE && this.isValidMethodName(method.getName()))
 			{
 				String key = this.getKeyNameFromMethod(method);
-				if (key != null && !key.isEmpty())
+				if (key != null && ! key.isEmpty())
 				{
 					try
 					{
@@ -1640,7 +1640,7 @@ public class JSONObject
 
 	private boolean isValidMethodName(String name)
 	{
-		return !"getClass".equals(name) && !"getDeclaringClass".equals(name);
+		return ! "getClass".equals(name) && ! "getDeclaringClass".equals(name);
 	}
 
 	private String getKeyNameFromMethod(Method method)
@@ -1657,7 +1657,7 @@ public class JSONObject
 			}
 		}
 		JSONPropertyName annotation = getAnnotation(method, JSONPropertyName.class);
-		if (annotation != null && !annotation.value().isEmpty())
+		if (annotation != null && ! annotation.value().isEmpty())
 		{
 			return annotation.value();
 		}
@@ -1686,7 +1686,7 @@ public class JSONObject
 		{
 			key = key.toLowerCase(Locale.ROOT);
 		}
-		else if (!Character.isUpperCase(key.charAt(1)))
+		else if (! Character.isUpperCase(key.charAt(1)))
 		{
 			key = key.substring(0, 1).toLowerCase(Locale.ROOT) + key.substring(1);
 		}
@@ -1759,7 +1759,7 @@ public class JSONObject
 		// if we have invalid data the result is -1
 		if (method == null || annotationClass == null)
 		{
-			return -1;
+			return - 1;
 		}
 		if (method.isAnnotationPresent(annotationClass))
 		{
@@ -1769,7 +1769,7 @@ public class JSONObject
 		Class<?> claazz = method.getDeclaringClass();
 		if (claazz.getSuperclass() == null)
 		{
-			return -1;
+			return - 1;
 		}
 		// check directly implemented interfaces for the method being checked
 		for (Class<?> interfaceClazz : claazz.getInterfaces())
@@ -1781,7 +1781,7 @@ public class JSONObject
 				if (annotationDepth > 0)
 				{
 					// since the annotation was on the interface, add 1
-					return ++annotationDepth;
+					return ++ annotationDepth;
 				}
 			}
 			catch (final SecurityException | NoSuchMethodException ignored)
@@ -1794,13 +1794,13 @@ public class JSONObject
 			if (annotationDepth > 0)
 			{
 				// since the annotation was on the superclass, add 1
-				return ++annotationDepth;
+				return ++ annotationDepth;
 			}
-			return -1;
+			return - 1;
 		}
 		catch (SecurityException | NoSuchMethodException exception)
 		{
-			return -1;
+			return - 1;
 		}
 	}
 
@@ -2202,11 +2202,11 @@ public class JSONObject
 	{
 		try
 		{
-			if (!(other instanceof JSONObject))
+			if (! (other instanceof JSONObject))
 			{
 				return false;
 			}
-			if (!this.keySet().equals(((JSONObject) other).keySet()))
+			if (! this.keySet().equals(((JSONObject) other).keySet()))
 			{
 				return false;
 			}
@@ -2221,19 +2221,19 @@ public class JSONObject
 				}
 				if (valueThis instanceof JSONObject)
 				{
-					if (!((JSONObject) valueThis).similar(valueOther))
+					if (! ((JSONObject) valueThis).similar(valueOther))
 					{
 						return false;
 					}
 				}
 				else if (valueThis instanceof JSONArray)
 				{
-					if (!((JSONArray) valueThis).similar(valueOther))
+					if (! ((JSONArray) valueThis).similar(valueOther))
 					{
 						return false;
 					}
 				}
-				else if (!valueThis.equals(valueOther))
+				else if (! valueThis.equals(valueOther))
 				{
 					return false;
 				}
@@ -2255,7 +2255,7 @@ public class JSONObject
 	 */
 	protected static boolean isDecimalNotation(String value)
 	{
-		return value.indexOf('.') > -1 || value.indexOf('e') > -1 || value.indexOf('E') > -1 || "-0".equals(value);
+		return value.indexOf('.') > - 1 || value.indexOf('e') > - 1 || value.indexOf('E') > - 1 || "-0".equals(value);
 	}
 
 	/**
@@ -2373,7 +2373,7 @@ public class JSONObject
 				if (isDecimalNotation(string))
 				{
 					Double value = Double.valueOf(string);
-					if (!value.isInfinite() && !value.isNaN())
+					if (! value.isInfinite() && ! value.isNaN())
 					{
 						return value;
 					}

@@ -169,7 +169,7 @@ public class JSONTokener
 		{
 			return character - ('a' - 10);
 		}
-		return -1;
+		return - 1;
 	}
 
 	/**
@@ -179,7 +179,7 @@ public class JSONTokener
 	 */
 	public boolean end()
 	{
-		return this.eof && !this.usePrevious;
+		return this.eof && ! this.usePrevious;
 	}
 
 	/**

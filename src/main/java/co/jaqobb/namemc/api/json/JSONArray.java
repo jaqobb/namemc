@@ -1436,7 +1436,7 @@ public class JSONArray implements Iterable<Object>
 	 */
 	public boolean similar(Object other)
 	{
-		if (!(other instanceof JSONArray))
+		if (! (other instanceof JSONArray))
 		{
 			return false;
 		}
@@ -1455,19 +1455,19 @@ public class JSONArray implements Iterable<Object>
 			}
 			if (valueThis instanceof JSONObject)
 			{
-				if (!((JSONObject) valueThis).similar(valueOther))
+				if (! ((JSONObject) valueThis).similar(valueOther))
 				{
 					return false;
 				}
 			}
 			else if (valueThis instanceof JSONArray)
 			{
-				if (!((JSONArray) valueThis).similar(valueOther))
+				if (! ((JSONArray) valueThis).similar(valueOther))
 				{
 					return false;
 				}
 			}
-			else if (!valueThis.equals(valueOther))
+			else if (! valueThis.equals(valueOther))
 			{
 				return false;
 			}
