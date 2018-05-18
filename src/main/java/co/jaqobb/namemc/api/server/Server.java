@@ -107,10 +107,7 @@ public class Server
 	 */
 	public boolean hasLiked(UUID uniqueId)
 	{
-		if (uniqueId == null)
-		{
-			throw new NullPointerException("Unique id cannot be null");
-		}
+		Objects.requireNonNull(uniqueId, "uniqueId");
 		return this.likes.contains(uniqueId);
 	}
 
@@ -145,7 +142,7 @@ public class Server
 			return false;
 		}
 		Server that = (Server) object;
-		return this.cacheTime == that.cacheTime && Objects.equals(this.ip, that.ip) && Objects.equals(this.likes, that.likes);
+		return Objects.equals(this.ip, that.ip) && Objects.equals(this.likes, that.likes);
 	}
 
 	/**
@@ -156,7 +153,7 @@ public class Server
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(this.ip, this.likes, this.cacheTime);
+		return Objects.hash(this.ip, this.likes);
 	}
 
 	/**
@@ -167,6 +164,6 @@ public class Server
 	@Override
 	public String toString()
 	{
-		return "Server{" + "ip=" + this.ip + ", likes=" + this.likes + ", cacheTime=" + this.cacheTime + "}";
+		return "Server{" + "ip=" + this.ip + ", likes=" + this.likes + "}";
 	}
 }

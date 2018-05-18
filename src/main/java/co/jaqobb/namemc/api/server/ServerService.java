@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -46,24 +47,31 @@ public class ServerService
 {
 	/**
 	 * Creates new {@code ServerService} instance
-	 * with the default values being 10 as a time
-	 * and minutes, as a time unit.
+	 * with the default values being 10 as a duration
+	 * and minutes as a duration unit.
 	 */
-	public static ServerService newDefault()
+	public static ServerService ofDefault()
 	{
 		return new ServerService();
 	}
 
 	/**
 	 * Creates new {@code ServerService} instance
-	 * with the given time and time unit.
+	 * with the given duration and duration unit.
 	 *
-	 * @param time a time.
-	 * @param unit a time unit.
+	 * @param duration a duration.
+	 * @param unit     a duration unit.
+	 *
+	 * @throws IllegalArgumentException if the {@code duration} is either 0 or negative.
+	 * @throws NullPointerException     if the {@code unit} is null.
 	 */
-	public static ServerService newCustom(long time, TimeUnit unit)
+	public static ServerService ofCustom(long duration, TimeUnit unit)
 	{
-		return new ServerService(time, unit);
+		if (duration < 1)
+		{
+			throw new IllegalArgumentException("duration < 1");
+		}
+		return new ServerService(duration, Objects.requireNonNull(unit));
 	}
 
 	/**
@@ -81,11 +89,11 @@ public class ServerService
 	private static final Executor      EXECUTOR                = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	/**
-	 * Time that indicates whenever {@code Server} should be recached.
+	 * Duration that indicates how long {@code Server} will be marked as cached.
 	 */
-	private final long                time;
+	private final long                duration;
 	/**
-	 * Time unit used to describe a unit of {@code time}.
+	 * Time unit used to describe a unit of {@code duration}.
 	 */
 	private final TimeUnit            unit;
 	/**
@@ -95,8 +103,8 @@ public class ServerService
 
 	/**
 	 * Creates new {@code ServerService} instance
-	 * with the default values being 10 as a time
-	 * and minutes, as a time unit.
+	 * with the default values being 10 as a duration
+	 * and minutes, as a duration unit.
 	 */
 	private ServerService()
 	{
@@ -105,31 +113,33 @@ public class ServerService
 
 	/**
 	 * Creates new {@code ServerService} instance
-	 * with the given time and time unit.
+	 * with the given duration and duration unit.
 	 *
-	 * @param time a time.
-	 * @param unit a time unit.
+	 * @param duration a duration.
+	 * @param unit     a duration unit.
 	 */
-	private ServerService(long time, TimeUnit unit)
+	private ServerService(long duration, TimeUnit unit)
 	{
-		this.time = time;
+		this.duration = duration;
 		this.unit = unit;
 	}
 
 	/**
-	 * Returns time that indicates whenever {@code Server} should be recached.
+	 * Returns duration that indicates how long
+	 * {@code Server} will be marked as cached.
 	 *
-	 * @return time that indicates whenever {@code Server} should be recached.
+	 * @return duration that indicates how long
+	 * {@code Server} will be marked as cached.
 	 */
-	public long getTime()
+	public long getDuration()
 	{
-		return this.time;
+		return this.duration;
 	}
 
 	/**
-	 * Returns unit of the tracked {@code time}.
+	 * Returns unit of the tracked {@code duration}.
 	 *
-	 * @return unit of the tracked {@code} time.
+	 * @return unit of the tracked {@code duration}.
 	 */
 	public TimeUnit getUnit()
 	{
@@ -137,15 +147,15 @@ public class ServerService
 	}
 
 	/**
-	 * Returns time in milliseconds that indicates
-	 * whenever {@code Server} should be recached
+	 * Returns duration in milliseconds that indicates
+	 * how long {@code Server} will be marked as cached.
 	 *
-	 * @return time in milliseconds that indicated
-	 * whenever {@code Server} should be recached
+	 * @return duration in milliseconds that indicates
+	 * how long {@code Server} will be marked as cached.
 	 */
-	public long getTimeInMillis()
+	public long getDurationInMillis()
 	{
-		return TimeUnit.MILLISECONDS.convert(this.time, this.unit);
+		return this.unit.toMillis(this.duration);
 	}
 
 	/**
@@ -178,14 +188,8 @@ public class ServerService
 	 */
 	public void getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback)
 	{
-		if (ip == null)
-		{
-			throw new NullPointerException("Ip cannot be null");
-		}
-		if (callback == null)
-		{
-			throw new NullPointerException("Callback cannot be null");
-		}
+		Objects.requireNonNull(ip, "ip");
+		Objects.requireNonNull(callback, "callback");
 		synchronized (this.servers)
 		{
 			Server server = this.servers.get(ip.toLowerCase());
@@ -225,7 +229,7 @@ public class ServerService
 	 */
 	public boolean isServerValid(Server server)
 	{
-		return server != null && System.currentTimeMillis() - server.getCacheTime() < this.getTimeInMillis();
+		return server != null && System.currentTimeMillis() - server.getCacheTime() < this.getDurationInMillis();
 	}
 
 	/**

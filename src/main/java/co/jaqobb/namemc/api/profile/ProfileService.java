@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
@@ -47,24 +48,31 @@ public class ProfileService
 {
 	/**
 	 * Creates new {@code ProfileService} instance
-	 * with the default values being 5 as a time
-	 * and minutes, as a time unit.
+	 * with the default values being 5 as a duration
+	 * and minutes as a time unit.
 	 */
-	public static ProfileService newDefault()
+	public static ProfileService ofDefault()
 	{
 		return new ProfileService();
 	}
 
 	/**
 	 * Creates new {@code ProfileService} instance
-	 * with the given time and time unit.
+	 * with the given duration and time unit.
 	 *
-	 * @param time a time.
-	 * @param unit a time unit.
+	 * @param duration a duration.
+	 * @param unit     a time unit.
+	 *
+	 * @throws IllegalArgumentException if the {@code duration} is either 0 or negative.
+	 * @throws NullPointerException     if the {@code unit} is null.
 	 */
-	public static ProfileService newCustom(long time, TimeUnit unit)
+	public static ProfileService ofCustom(long duration, TimeUnit unit)
 	{
-		return new ProfileService(time, unit);
+		if (duration < 1)
+		{
+			throw new IllegalArgumentException("duration < 1");
+		}
+		return new ProfileService(duration, Objects.requireNonNull(unit));
 	}
 
 	/**
@@ -82,11 +90,11 @@ public class ProfileService
 	private static final Executor      EXECUTOR                = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	/**
-	 * Time that indicates whenever profile should be recached.
+	 * Duration that indicates how long {@code Profile} will be marked as cached.
 	 */
-	private final long               time;
+	private final long               duration;
 	/**
-	 * Time unit used to describe a unit of {@code time}.
+	 * Time unit used to describe a unit of {@code duration}.
 	 */
 	private final TimeUnit           unit;
 	/**
@@ -96,8 +104,8 @@ public class ProfileService
 
 	/**
 	 * Creates new {@code ProfileService} instance
-	 * with the default values being 5 as a time
-	 * and minutes, as a time unit.
+	 * with the default values being 5 as a duration
+	 * and minutes as a time unit.
 	 */
 	private ProfileService()
 	{
@@ -108,29 +116,31 @@ public class ProfileService
 	 * Creates new {@code ProfileService} instance
 	 * with the given time and time unit.
 	 *
-	 * @param time a time.
-	 * @param unit a time unit.
+	 * @param duration a duration.
+	 * @param unit     a time unit.
 	 */
-	private ProfileService(long time, TimeUnit unit)
+	private ProfileService(long duration, TimeUnit unit)
 	{
-		this.time = time;
+		this.duration = duration;
 		this.unit = unit;
 	}
 
 	/**
-	 * Returns time that indicates whenever {@code Profile} should be recached.
+	 * Returns duration that indicates how long
+	 * {@code Profile} will be marked as cached.
 	 *
-	 * @return time that indicates whenever {@code Profile} should be recached.
+	 * @return duration that indicates how long
+	 * {@code Profile} will be marked as cached.
 	 */
-	public long getTime()
+	public long getDuration()
 	{
-		return this.time;
+		return this.duration;
 	}
 
 	/**
-	 * Returns unit of the tracked {@code time}.
+	 * Returns unit of the tracked {@code duration}.
 	 *
-	 * @return unit of the tracked {@code time}.
+	 * @return unit of the tracked {@code duration}.
 	 */
 	public TimeUnit getUnit()
 	{
@@ -138,15 +148,15 @@ public class ProfileService
 	}
 
 	/**
-	 * Returns time in milliseconds that indicates
-	 * whenever {@code Profile} should be recached
+	 * Returns duration in milliseconds that indicates
+	 * how long {@code Profile} will be marked as cached.
 	 *
-	 * @return time in milliseconds that indicated
-	 * whenever {@code Profile} should be recached
+	 * @return duration in milliseconds that indicates
+	 * how long {@code Profile} will be marked as cached.
 	 */
-	public long getTimeInMillis()
+	public long getDurationInMillis()
 	{
-		return TimeUnit.MILLISECONDS.convert(this.time, this.unit);
+		return this.unit.toMillis(this.duration);
 	}
 
 	/**
@@ -179,14 +189,8 @@ public class ProfileService
 	 */
 	public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback)
 	{
-		if (uniqueId == null)
-		{
-			throw new NullPointerException("Unique id cannot be null");
-		}
-		if (callback == null)
-		{
-			throw new NullPointerException("Callback cannot be null");
-		}
+		Objects.requireNonNull(uniqueId, "uniqueId");
+		Objects.requireNonNull(callback, "callback");
 		synchronized (this.profiles)
 		{
 			Profile profile = this.profiles.get(uniqueId);
@@ -227,7 +231,7 @@ public class ProfileService
 	 */
 	public boolean isProfileValid(Profile profile)
 	{
-		return profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.getTimeInMillis();
+		return profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.getDurationInMillis();
 	}
 
 	/**

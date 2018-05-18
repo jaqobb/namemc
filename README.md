@@ -25,7 +25,7 @@ and add dependency:
 	<dependency>
 		<groupId>co.jaqobb</groupId>
 		<artifactId>namemc-api</artifactId>
-		<version>1.1.7-SNAPSHOT</version>
+		<version>1.1.8-SNAPSHOT</version>
 		<scope>compile</scope>
 	</dependency>
 </dependencies>
@@ -38,11 +38,11 @@ You need to download the sources and add them to your code. This project is depe
 ### API
 Everythings begins with the class NameMC. You can either use preset settings created by me, or experiment with settings numbers on your own:
 ```java
-NameMC.newDefault();
+NameMC.ofDefault();
 ```
 to create a new instance of NameMC class with default settings, or:
 ```java
-NameMC.newCustom(ProfileService profileService, ServerService serverService);
+NameMC.ofCustom(ProfileService profileService, ServerService serverService);
 ```
 to create a new instance of NameMC class with custom settings.
 
@@ -54,11 +54,11 @@ You use both the profile and the server service in the same way.
 
 You create profile service with either:
 ```java
-ProfileService.newDefault();
+ProfileService.ofDefault();
 ```
 to create profile service with default values being 5 as a time and minutes as a unit, or:
 ```java
-ProfileService.newCustom(long time, TimeUnit unit);
+ProfileService.ofCustom(long time, TimeUnit unit);
 ```
 to create profile service with custom time and unit.
 
@@ -78,7 +78,7 @@ When you have your profile ready, you can access some nice methods:
 getUniqueId();
 
 // Returns an immutable collection of friends.
-// In a Friend class, you can use getUniqueId() to get friend's unique id, getName() to get friend's name, isFriendOf(Profile profile) or isFriendOf(Profile profile, boolean caseSensitive) to check the friend is on the given profile's friend list, or hasLiked(Server server) to check if the friend has liked the given server.
+// In a Friend class, you can use getUniqueId() to get friend's unique id, getName() to get friend's name, getCacheTime() to get time this friend instance was cached at, isFriendOf(Profile profile) or isFriendOf(Profile profile, boolean caseSensitive) to check the friend is on the given profile's friend list, or hasLiked(Server server) to check if the friend has liked the given server.
 getFriends();
 
 // Returns friend with the given unique id, or null if the profile doesn't have a friend with the given unique id.

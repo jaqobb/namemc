@@ -24,6 +24,8 @@
 
 package co.jaqobb.namemc.api;
 
+import java.util.Objects;
+
 import co.jaqobb.namemc.api.profile.ProfileService;
 import co.jaqobb.namemc.api.server.ServerService;
 
@@ -40,7 +42,7 @@ public class NameMC
 	 * @return new {@code NameMC} instance
 	 * with the default settings.
 	 */
-	public static NameMC newDefault()
+	public static NameMC ofDefault()
 	{
 		return new NameMC();
 	}
@@ -58,17 +60,9 @@ public class NameMC
 	 *                              or the {@code serverService}
 	 *                              is null.
 	 */
-	public static NameMC newCustom(ProfileService profileService, ServerService serverService)
+	public static NameMC ofCustom(ProfileService profileService, ServerService serverService)
 	{
-		if (profileService == null)
-		{
-			throw new NullPointerException("Profile service cannot be null");
-		}
-		if (serverService == null)
-		{
-			throw new NullPointerException("Server service cannot be null");
-		}
-		return new NameMC(profileService, serverService);
+		return new NameMC(Objects.requireNonNull(profileService, "profileService"), Objects.requireNonNull(serverService, "serverService"));
 	}
 
 	/**
@@ -89,8 +83,8 @@ public class NameMC
 	 */
 	private NameMC()
 	{
-		this.profileService = ProfileService.newDefault();
-		this.serverService = ServerService.newDefault();
+		this.profileService = ProfileService.ofDefault();
+		this.serverService = ServerService.ofDefault();
 	}
 
 	/**
