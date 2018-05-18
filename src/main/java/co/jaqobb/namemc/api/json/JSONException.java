@@ -30,7 +30,8 @@ package co.jaqobb.namemc.api.json;
  * @author JSON.org
  * @version 2015-12-09
  */
-public class JSONException extends RuntimeException {
+public class JSONException extends RuntimeException
+{
 	/**
 	 * Serialization ID
 	 */
@@ -41,7 +42,8 @@ public class JSONException extends RuntimeException {
 	 *
 	 * @param message detail about the reason for the exception.
 	 */
-	public JSONException(String message) {
+	public JSONException(String message)
+	{
 		super(message);
 	}
 
@@ -51,7 +53,8 @@ public class JSONException extends RuntimeException {
 	 * @param message detail about the reason for the exception.
 	 * @param cause   the cause.
 	 */
-	public JSONException(String message, Throwable cause) {
+	public JSONException(String message, Throwable cause)
+	{
 		super(message, cause);
 	}
 
@@ -60,7 +63,8 @@ public class JSONException extends RuntimeException {
 	 *
 	 * @param cause the cause.
 	 */
-	public JSONException(Throwable cause) {
+	public JSONException(Throwable cause)
+	{
 		super(cause.getMessage(), cause);
 	}
 }

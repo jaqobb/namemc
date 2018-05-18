@@ -38,11 +38,12 @@ import co.jaqobb.namemc.api.server.Server;
  * Class that holds all possible
  * information about the profile.
  */
-public class Profile {
+public class Profile
+{
 	/**
 	 * Unique id of the {@code Profile}.
 	 */
-	private final UUID uniqueId;
+	private final UUID               uniqueId;
 	/**
 	 * Collection of {@code Friend}s.
 	 */
@@ -50,7 +51,7 @@ public class Profile {
 	/**
 	 * Time the {@code Profile} was cached at.
 	 */
-	private final long cacheTime = System.currentTimeMillis();
+	private final long               cacheTime = System.currentTimeMillis();
 
 	/**
 	 * Constructs new {@code Profile} instance
@@ -60,10 +61,12 @@ public class Profile {
 	 * @param array    an array that contains
 	 *                 information about the friends.
 	 */
-	protected Profile(UUID uniqueId, JSONArray array) {
+	protected Profile(UUID uniqueId, JSONArray array)
+	{
 		this.uniqueId = uniqueId;
 		Collection<Friend> friends = new ArrayList<>(array.length());
-		for (int index = 0; index < array.length(); index++) {
+		for (int index = 0; index < array.length(); index++)
+		{
 			JSONObject object = array.getJSONObject(index);
 			UUID friendUniqueId = UUID.fromString(object.getString("uuid"));
 			String friendName = object.getString("name");
@@ -77,7 +80,8 @@ public class Profile {
 	 *
 	 * @return a unique id of this {@code Profile}.
 	 */
-	public UUID getUniqueId() {
+	public UUID getUniqueId()
+	{
 		return this.uniqueId;
 	}
 
@@ -88,7 +92,8 @@ public class Profile {
 	 * @return an immutable  collection of
 	 * {@code Friend}s of this {@code Profile}.
 	 */
-	public Collection<Friend> getFriends() {
+	public Collection<Friend> getFriends()
+	{
 		return Collections.unmodifiableCollection(this.friends);
 	}
 
@@ -105,7 +110,8 @@ public class Profile {
 	 *
 	 * @throws NullPointerException if the {@code uniqueId}
 	 */
-	public Friend getFriend(UUID uniqueId) {
+	public Friend getFriend(UUID uniqueId)
+	{
 		Objects.requireNonNull(uniqueId);
 		return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
 	}
@@ -124,7 +130,8 @@ public class Profile {
 	 *
 	 * @throws NullPointerException if the {@code name} is null.
 	 */
-	public Friend getFriend(String name) {
+	public Friend getFriend(String name)
+	{
 		return this.getFriend(name, true);
 	}
 
@@ -146,7 +153,8 @@ public class Profile {
 	 *
 	 * @throws NullPointerException if the {@code name} is null.
 	 */
-	public Friend getFriend(String name, boolean caseSensitive) {
+	public Friend getFriend(String name, boolean caseSensitive)
+	{
 		Objects.requireNonNull(name, "name");
 		return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
@@ -163,7 +171,8 @@ public class Profile {
 	 *
 	 * @throws NullPointerException if the {@code uniqueId} is null.
 	 */
-	public boolean hasFriend(UUID uniqueId) {
+	public boolean hasFriend(UUID uniqueId)
+	{
 		Objects.requireNonNull(uniqueId);
 		return this.friends.stream().anyMatch(friend -> friend.getUniqueId().equals(uniqueId));
 	}
@@ -181,7 +190,8 @@ public class Profile {
 	 *
 	 * @throws NullPointerException if the {@code name} is null.
 	 */
-	public boolean hasFriend(String name) {
+	public boolean hasFriend(String name)
+	{
 		return this.hasFriend(name, true);
 	}
 
@@ -202,7 +212,8 @@ public class Profile {
 	 *
 	 * @throws NullPointerException if the {@code name} is null.
 	 */
-	public boolean hasFriend(String name, boolean caseSensitive) {
+	public boolean hasFriend(String name, boolean caseSensitive)
+	{
 		Objects.requireNonNull(name, "name");
 		return this.friends.stream().anyMatch(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name));
 	}
@@ -212,7 +223,8 @@ public class Profile {
 	 *
 	 * @return time this {@code Profile} was cached at.
 	 */
-	public long getCacheTime() {
+	public long getCacheTime()
+	{
 		return this.cacheTime;
 	}
 
@@ -227,7 +239,8 @@ public class Profile {
 	 *
 	 * @throws NullPointerException if the {@code server} is null.
 	 */
-	public boolean hasLiked(Server server) {
+	public boolean hasLiked(Server server)
+	{
 		Objects.requireNonNull(server, "server");
 		return server.hasLiked(this.uniqueId);
 	}
@@ -242,11 +255,14 @@ public class Profile {
 	 * are the same, {@code false} otherwise.
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
+	public boolean equals(Object object)
+	{
+		if (this == object)
+		{
 			return true;
 		}
-		if (object == null || this.getClass() != object.getClass()) {
+		if (object == null || this.getClass() != object.getClass())
+		{
 			return false;
 		}
 		Profile that = (Profile) object;
@@ -259,7 +275,8 @@ public class Profile {
 	 * @return a hash code of this class.
 	 */
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return Objects.hash(this.uniqueId, this.friends, this.cacheTime);
 	}
 
@@ -269,7 +286,8 @@ public class Profile {
 	 * @return a nice looking representation of this class.
 	 */
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "Profile{" + "uniqueId=" + this.uniqueId + ", friends=" + this.friends + ", cacheTime=" + this.cacheTime + "}";
 	}
 
@@ -277,11 +295,12 @@ public class Profile {
 	 * Class that holds all possible
 	 * information about the friend.
 	 */
-	public static class Friend {
+	public static class Friend
+	{
 		/**
 		 * Unique id of the {@code Friend}.
 		 */
-		private final UUID uniqueId;
+		private final UUID   uniqueId;
 		/**
 		 * Name of the {@code Friend}.
 		 */
@@ -294,7 +313,8 @@ public class Profile {
 		 * @param uniqueId a unique id of the friend.
 		 * @param name     a name of the friend.
 		 */
-		protected Friend(UUID uniqueId, String name) {
+		protected Friend(UUID uniqueId, String name)
+		{
 			this.uniqueId = uniqueId;
 			this.name = name;
 		}
@@ -304,7 +324,8 @@ public class Profile {
 		 *
 		 * @return a unique id of this {@code Friend}.
 		 */
-		public UUID getUniqueId() {
+		public UUID getUniqueId()
+		{
 			return this.uniqueId;
 		}
 
@@ -313,7 +334,8 @@ public class Profile {
 		 *
 		 * @return a name of this {@code Friend}.
 		 */
-		public String getName() {
+		public String getName()
+		{
 			return this.name;
 		}
 
@@ -329,7 +351,8 @@ public class Profile {
 		 *
 		 * @throws NullPointerException if the {@code profile} is null.
 		 */
-		public boolean isFriendOf(Profile profile) {
+		public boolean isFriendOf(Profile profile)
+		{
 			return this.isFriendOf(profile, true);
 		}
 
@@ -348,10 +371,12 @@ public class Profile {
 		 *
 		 * @throws NullPointerException if the {@code profile} is null.
 		 */
-		public boolean isFriendOf(Profile profile, boolean caseSensitive) {
+		public boolean isFriendOf(Profile profile, boolean caseSensitive)
+		{
 			Objects.requireNonNull(profile, "profile");
 			boolean is = profile.hasFriend(this.uniqueId);
-			if (is) {
+			if (is)
+			{
 				return true;
 			}
 			return profile.hasFriend(this.name, caseSensitive);
@@ -368,7 +393,8 @@ public class Profile {
 		 *
 		 * @throws NullPointerException if the {@code server} is null.
 		 */
-		public boolean hasLiked(Server server) {
+		public boolean hasLiked(Server server)
+		{
 			Objects.requireNonNull(server, "server");
 			return server.hasLiked(this.uniqueId);
 		}
@@ -383,11 +409,14 @@ public class Profile {
 		 * are the same, {@code false} otherwise.
 		 */
 		@Override
-		public boolean equals(Object object) {
-			if (this == object) {
+		public boolean equals(Object object)
+		{
+			if (this == object)
+			{
 				return true;
 			}
-			if (object == null || this.getClass() != object.getClass()) {
+			if (object == null || this.getClass() != object.getClass())
+			{
 				return false;
 			}
 			Friend that = (Friend) object;
@@ -400,7 +429,8 @@ public class Profile {
 		 * @return a hash code of this class.
 		 */
 		@Override
-		public int hashCode() {
+		public int hashCode()
+		{
 			return Objects.hash(this.uniqueId, this.name);
 		}
 
@@ -410,7 +440,8 @@ public class Profile {
 		 * @return a nice looking representation of this class.
 		 */
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return "Friend{" + "uniqueId=" + this.uniqueId + ", name=" + this.name + "}";
 		}
 	}

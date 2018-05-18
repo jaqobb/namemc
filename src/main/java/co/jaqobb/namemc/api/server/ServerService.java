@@ -43,13 +43,15 @@ import co.jaqobb.namemc.api.util.IOUtils;
  * Class used to store cached {@code Server},
  * and to cache new ones.
  */
-public class ServerService {
+public class ServerService
+{
 	/**
 	 * Creates new {@code ServerService} instance
 	 * with the default values being 10 as a time
 	 * and minutes, as a time unit.
 	 */
-	public static ServerService newDefault() {
+	public static ServerService newDefault()
+	{
 		return new ServerService();
 	}
 
@@ -60,7 +62,8 @@ public class ServerService {
 	 * @param time a time.
 	 * @param unit a time unit.
 	 */
-	public static ServerService newCustom(long time, TimeUnit unit) {
+	public static ServerService newCustom(long time, TimeUnit unit)
+	{
 		return new ServerService(time, unit);
 	}
 
@@ -76,16 +79,16 @@ public class ServerService {
 	/**
 	 * Executor used to cache {@code Server}.
 	 */
-	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	private static final Executor      EXECUTOR                = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	/**
 	 * Time that indicates whenever {@code Server} should be recached.
 	 */
-	private final long time;
+	private final long                time;
 	/**
 	 * Time unit used to describe a unit of {@code time}.
 	 */
-	private final TimeUnit unit;
+	private final TimeUnit            unit;
 	/**
 	 * Collection of currently cached {@code Server}s.
 	 */
@@ -96,7 +99,8 @@ public class ServerService {
 	 * with the default values being 10 as a time
 	 * and minutes, as a time unit.
 	 */
-	private ServerService() {
+	private ServerService()
+	{
 		this(10, TimeUnit.MINUTES);
 	}
 
@@ -107,7 +111,8 @@ public class ServerService {
 	 * @param time a time.
 	 * @param unit a time unit.
 	 */
-	private ServerService(long time, TimeUnit unit) {
+	private ServerService(long time, TimeUnit unit)
+	{
 		this.time = time;
 		this.unit = unit;
 	}
@@ -117,7 +122,8 @@ public class ServerService {
 	 *
 	 * @return time that indicates whenever {@code Server} should be recached.
 	 */
-	public long getTime() {
+	public long getTime()
+	{
 		return this.time;
 	}
 
@@ -126,7 +132,8 @@ public class ServerService {
 	 *
 	 * @return unit of the tracked {@code} time.
 	 */
-	public TimeUnit getUnit() {
+	public TimeUnit getUnit()
+	{
 		return this.unit;
 	}
 
@@ -137,7 +144,8 @@ public class ServerService {
 	 * @return time in milliseconds that indicated
 	 * whenever {@code Server} should be recached
 	 */
-	public long getTimeInMillis() {
+	public long getTimeInMillis()
+	{
 		return TimeUnit.MILLISECONDS.convert(this.time, this.unit);
 	}
 
@@ -147,7 +155,8 @@ public class ServerService {
 	 *
 	 * @return an immutable collection of currently cached {@code Server}s.
 	 */
-	public Collection<Server> getServers() {
+	public Collection<Server> getServers()
+	{
 		return Collections.unmodifiableCollection(this.servers.values());
 	}
 
@@ -168,24 +177,31 @@ public class ServerService {
 	 *
 	 * @throws NullPointerException if the {@code ip} or the {@code callback} is null.
 	 */
-	public void getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback) {
+	public void getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback)
+	{
 		Objects.requireNonNull(ip, "ip");
 		Objects.requireNonNull(callback, "callback");
-		synchronized (this.servers) {
+		synchronized (this.servers)
+		{
 			Server server = this.servers.get(ip.toLowerCase());
-			if (this.isServerValid(server) && !recache) {
+			if (this.isServerValid(server) && !recache)
+			{
 				callback.accept(server, null);
 			}
 		}
-		EXECUTOR.execute(() -> {
+		EXECUTOR.execute(() ->
+		{
 			String url = String.format(SERVER_VOTES_URL, ip);
-			try {
+			try
+			{
 				String content = IOUtils.getWebsiteContent(url);
 				JSONArray array = new JSONArray(content);
 				Server server = new Server(ip, array);
 				this.servers.put(ip.toLowerCase(), server);
 				callback.accept(server, null);
-			} catch (IOException exception) {
+			}
+			catch (IOException exception)
+			{
 				callback.accept(null, exception);
 			}
 		});
@@ -202,15 +218,18 @@ public class ServerService {
 	 * not {@code null} and does not need to be recached,
 	 * {@code false} otherwise.
 	 */
-	public boolean isServerValid(Server server) {
+	public boolean isServerValid(Server server)
+	{
 		return server != null && System.currentTimeMillis() - server.getCacheTime() < this.getTimeInMillis();
 	}
 
 	/**
 	 * Clears {@code Server}s cache.
 	 */
-	public void clearServers() {
-		synchronized (this.servers) {
+	public void clearServers()
+	{
+		synchronized (this.servers)
+		{
 			this.servers.clear();
 		}
 	}

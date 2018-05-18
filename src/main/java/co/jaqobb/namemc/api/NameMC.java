@@ -33,7 +33,8 @@ import co.jaqobb.namemc.api.server.ServerService;
  * Class where the fun
  * with the API begins.
  */
-public class NameMC {
+public class NameMC
+{
 	/**
 	 * Creates new {@code NameMC} instance
 	 * with the default settings.
@@ -41,7 +42,8 @@ public class NameMC {
 	 * @return new {@code NameMC} instance
 	 * with the default settings.
 	 */
-	public static NameMC newDefault() {
+	public static NameMC newDefault()
+	{
 		return new NameMC();
 	}
 
@@ -58,7 +60,8 @@ public class NameMC {
 	 *                              or the {@code serverService}
 	 *                              is null.
 	 */
-	public static NameMC newCustom(ProfileService profileService, ServerService serverService) {
+	public static NameMC newCustom(ProfileService profileService, ServerService serverService)
+	{
 		Objects.requireNonNull(profileService);
 		Objects.requireNonNull(serverService);
 		return new NameMC(profileService, serverService);
@@ -71,7 +74,7 @@ public class NameMC {
 	/**
 	 * Currently used {@code ServerService}.
 	 */
-	private final ServerService serverService;
+	private final ServerService  serverService;
 
 	/**
 	 * Creates new {@code NameMC} instance
@@ -80,7 +83,8 @@ public class NameMC {
 	 * @return new {@code NameMC} instance
 	 * with the default settings.
 	 */
-	private NameMC() {
+	private NameMC()
+	{
 		this.profileService = ProfileService.newDefault();
 		this.serverService = ServerService.newDefault();
 	}
@@ -94,7 +98,8 @@ public class NameMC {
 	 * possibly custom {@code ProfileService} and
 	 * {@code ServerService}.
 	 */
-	private NameMC(ProfileService profileService, ServerService serverService) {
+	private NameMC(ProfileService profileService, ServerService serverService)
+	{
 		this.profileService = profileService;
 		this.serverService = serverService;
 	}
@@ -104,7 +109,8 @@ public class NameMC {
 	 *
 	 * @return currently used {@code ProfileService}.
 	 */
-	public ProfileService getProfileService() {
+	public ProfileService getProfileService()
+	{
 		return this.profileService;
 	}
 
@@ -113,7 +119,8 @@ public class NameMC {
 	 *
 	 * @return currently used {@code ServerService}.
 	 */
-	public ServerService getServerService() {
+	public ServerService getServerService()
+	{
 		return this.serverService;
 	}
 
@@ -121,7 +128,8 @@ public class NameMC {
 	 * Clears the {@code profileService} and
 	 * the {@code serverService} cache.
 	 */
-	public void clearCaches() {
+	public void clearCaches()
+	{
 		this.profileService.clearProfiles();
 		this.serverService.clearServers();
 	}

@@ -59,14 +59,15 @@ import java.util.Map;
  * @author JSON.org
  * @version 2016-08-08
  */
-public class JSONWriter {
+public class JSONWriter
+{
 	private static final int MAX_DEPTH = 200;
 
 	/**
 	 * The comma flag determines if a comma should be output before the next
 	 * value.
 	 */
-	private boolean comma;
+	private       boolean      comma;
 	/**
 	 * The current mode. Values:
 	 * 'a' (array),
@@ -75,7 +76,7 @@ public class JSONWriter {
 	 * 'k' (key),
 	 * 'o' (object).
 	 */
-	protected char mode;
+	protected     char         mode;
 	/**
 	 * The object/array stack.
 	 */
@@ -83,16 +84,17 @@ public class JSONWriter {
 	/**
 	 * The stack top index. A value of 0 indicates that the stack is empty.
 	 */
-	private int top;
+	private       int          top;
 	/**
 	 * The writer that will receive the output.
 	 */
-	protected Appendable writer;
+	protected     Appendable   writer;
 
 	/**
 	 * Make a fresh JSONWriter. It can be used to build one JSON text.
 	 */
-	public JSONWriter(Appendable writer) {
+	public JSONWriter(Appendable writer)
+	{
 		this.comma = false;
 		this.mode = 'i';
 		this.stack = new JSONObject[MAX_DEPTH];
@@ -109,23 +111,31 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if the value is out of sequence.
 	 */
-	private JSONWriter append(String pointer) throws JSONException {
-		if (pointer == null) {
+	private JSONWriter append(String pointer) throws JSONException
+	{
+		if (pointer == null)
+		{
 			throw new JSONException("Null pointer");
 		}
-		if (this.mode == 'o' || this.mode == 'a') {
-			try {
-				if (this.comma && this.mode == 'a') {
+		if (this.mode == 'o' || this.mode == 'a')
+		{
+			try
+			{
+				if (this.comma && this.mode == 'a')
+				{
 					this.writer.append(',');
 				}
 				this.writer.append(pointer);
-			} catch (IOException exception) {
+			}
+			catch (IOException exception)
+			{
 				// Android as of API 25 does not support this exception constructor
 				// however we won't worry about it. If an exception is happening here
 				// it will just throw a "Method not found" exception instead.
 				throw new JSONException(exception);
 			}
-			if (this.mode == 'o') {
+			if (this.mode == 'o')
+			{
 				this.mode = 'k';
 			}
 			this.comma = true;
@@ -145,8 +155,10 @@ public class JSONWriter {
 	 *                       started in the wrong place (for example as a key or after the end of the
 	 *                       outermost array or object).
 	 */
-	public JSONWriter array() throws JSONException {
-		if (this.mode == 'i' || this.mode == 'o' || this.mode == 'a') {
+	public JSONWriter array() throws JSONException
+	{
+		if (this.mode == 'i' || this.mode == 'o' || this.mode == 'a')
+		{
 			this.push(null);
 			this.append("[");
 			this.comma = false;
@@ -165,14 +177,19 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if unbalanced.
 	 */
-	private JSONWriter end(char mode, char closingCharacter) throws JSONException {
-		if (this.mode != mode) {
+	private JSONWriter end(char mode, char closingCharacter) throws JSONException
+	{
+		if (this.mode != mode)
+		{
 			throw new JSONException(mode == 'a' ? "Misplaced endArray" : "Misplaced endObject");
 		}
 		this.pop(mode);
-		try {
+		try
+		{
 			this.writer.append(closingCharacter);
-		} catch (IOException exception) {
+		}
+		catch (IOException exception)
+		{
 			// Android as of API 25 does not support this exception constructor
 			// however we won't worry about it. If an exception is happening here
 			// it will just throw a "Method not found" exception instead.
@@ -190,7 +207,8 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if incorrectly nested.
 	 */
-	public JSONWriter endArray() throws JSONException {
+	public JSONWriter endArray() throws JSONException
+	{
 		return this.end('a', ']');
 	}
 
@@ -202,7 +220,8 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if incorrectly nested.
 	 */
-	public JSONWriter endObject() throws JSONException {
+	public JSONWriter endObject() throws JSONException
+	{
 		return this.end('k', '}');
 	}
 
@@ -217,19 +236,25 @@ public class JSONWriter {
 	 * @throws JSONException if the key is out of place. For example, keys
 	 *                       do not belong in arrays or if the key is null.
 	 */
-	public JSONWriter key(String key) throws JSONException {
-		if (key == null) {
+	public JSONWriter key(String key) throws JSONException
+	{
+		if (key == null)
+		{
 			throw new JSONException("Null key");
 		}
-		if (this.mode == 'k') {
-			try {
+		if (this.mode == 'k')
+		{
+			try
+			{
 				JSONObject topObject = this.stack[this.top - 1];
 				// don't use the built in putOnce method to maintain Android support
-				if (topObject.has(key)) {
+				if (topObject.has(key))
+				{
 					throw new JSONException("Duplicate key \"" + key + "\"");
 				}
 				topObject.put(key, true);
-				if (this.comma) {
+				if (this.comma)
+				{
 					this.writer.append(',');
 				}
 				this.writer.append(JSONObject.quote(key));
@@ -237,7 +262,9 @@ public class JSONWriter {
 				this.comma = false;
 				this.mode = 'o';
 				return this;
-			} catch (IOException exception) {
+			}
+			catch (IOException exception)
+			{
 				// Android as of API 25 does not support this exception constructor
 				// however we won't worry about it. If an exception is happening here
 				// it will just throw a "Method not found" exception instead.
@@ -258,11 +285,14 @@ public class JSONWriter {
 	 *                       started in the wrong place (for example as a key or after the end of the
 	 *                       outermost array or object).
 	 */
-	public JSONWriter object() throws JSONException {
-		if (this.mode == 'i') {
+	public JSONWriter object() throws JSONException
+	{
+		if (this.mode == 'i')
+		{
 			this.mode = 'o';
 		}
-		if (this.mode == 'o' || this.mode == 'a') {
+		if (this.mode == 'o' || this.mode == 'a')
+		{
 			this.append("{");
 			this.push(new JSONObject());
 			this.comma = false;
@@ -278,12 +308,15 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if nesting is wrong.
 	 */
-	private void pop(char character) throws JSONException {
-		if (this.top <= 0) {
+	private void pop(char character) throws JSONException
+	{
+		if (this.top <= 0)
+		{
 			throw new JSONException("Nesting error");
 		}
 		char m = this.stack[this.top - 1] == null ? 'a' : 'k';
-		if (m != character) {
+		if (m != character)
+		{
 			throw new JSONException("Nesting error");
 		}
 		this.top -= 1;
@@ -297,8 +330,10 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if nesting is too deep.
 	 */
-	private void push(JSONObject object) throws JSONException {
-		if (this.top >= MAX_DEPTH) {
+	private void push(JSONObject object) throws JSONException
+	{
+		if (this.top >= MAX_DEPTH)
+		{
 			throw new JSONException("Nesting too deep");
 		}
 		this.stack[this.top] = object;
@@ -329,52 +364,68 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if the value is or contains an invalid number.
 	 */
-	public static String valueToString(Object value) throws JSONException {
-		if (value == null) {
+	public static String valueToString(Object value) throws JSONException
+	{
+		if (value == null)
+		{
 			return "null";
 		}
-		if (value instanceof JSONString) {
+		if (value instanceof JSONString)
+		{
 			Object object;
-			try {
+			try
+			{
 				object = ((JSONString) value).toJSONString();
-			} catch (Exception exception) {
+			}
+			catch (Exception exception)
+			{
 				throw new JSONException(exception);
 			}
-			if (object != null) {
+			if (object != null)
+			{
 				return (String) object;
 			}
 			throw new JSONException("Bad value from toJSONString: null");
 		}
-		if (value instanceof Number) {
+		if (value instanceof Number)
+		{
 			// not all Numbers may match actual JSON Numbers. i.e. Fractions or Complex
 			final String numberAsString = JSONObject.numberToString((Number) value);
-			try {
+			try
+			{
 				// Use the BigDecimal constructor for it's parser to validate the format.
 				@SuppressWarnings("unused")
 				BigDecimal unused = new BigDecimal(numberAsString);
 				// Close enough to a JSON number that we will return it unquoted
 				return numberAsString;
-			} catch (NumberFormatException exception) {
+			}
+			catch (NumberFormatException exception)
+			{
 				// The Number value is not a valid JSON number.
 				// Instead we will quote it as a string
 				return JSONObject.quote(numberAsString);
 			}
 		}
-		if (value instanceof Boolean || value instanceof JSONObject || value instanceof JSONArray) {
+		if (value instanceof Boolean || value instanceof JSONObject || value instanceof JSONArray)
+		{
 			return value.toString();
 		}
-		if (value instanceof Map) {
+		if (value instanceof Map)
+		{
 			Map<?, ?> map = (Map<?, ?>) value;
 			return new JSONObject(map).toString();
 		}
-		if (value instanceof Collection) {
+		if (value instanceof Collection)
+		{
 			Collection<?> collection = (Collection<?>) value;
 			return new JSONArray(collection).toString();
 		}
-		if (value.getClass().isArray()) {
+		if (value.getClass().isArray())
+		{
 			return new JSONArray(value).toString();
 		}
-		if (value instanceof Enum<?>) {
+		if (value instanceof Enum<?>)
+		{
 			return JSONObject.quote(((Enum<?>) value).name());
 		}
 		return JSONObject.quote(value.toString());
@@ -388,7 +439,8 @@ public class JSONWriter {
 	 *
 	 * @return this.
 	 */
-	public JSONWriter value(boolean value) throws JSONException {
+	public JSONWriter value(boolean value) throws JSONException
+	{
 		return this.append(value ? "true" : "false");
 	}
 
@@ -401,7 +453,8 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if the value is a non-finite number.
 	 */
-	public JSONWriter value(double value) throws JSONException {
+	public JSONWriter value(double value) throws JSONException
+	{
 		return this.value(new Double(value));
 	}
 
@@ -414,7 +467,8 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if the value is a non-finite number.
 	 */
-	public JSONWriter value(long value) throws JSONException {
+	public JSONWriter value(long value) throws JSONException
+	{
 		return this.append(Long.toString(value));
 	}
 
@@ -428,7 +482,8 @@ public class JSONWriter {
 	 *
 	 * @throws JSONException if the value is out of sequence.
 	 */
-	public JSONWriter value(Object object) throws JSONException {
+	public JSONWriter value(Object object) throws JSONException
+	{
 		return this.append(valueToString(object));
 	}
 }

@@ -36,11 +36,12 @@ import co.jaqobb.namemc.api.json.JSONArray;
  * Class that holds all possible
  * information about the server.
  */
-public class Server {
+public class Server
+{
 	/**
 	 * Ip of the {@code Server}.
 	 */
-	private final String ip;
+	private final String           ip;
 	/**
 	 * Collection of unique ids that liked the {@code Server}.
 	 */
@@ -48,7 +49,7 @@ public class Server {
 	/**
 	 * Time the {@code Server} was cached at.
 	 */
-	private final long cacheTime = System.currentTimeMillis();
+	private final long             cacheTime = System.currentTimeMillis();
 
 	/**
 	 * Constructs new {@code Server} instance
@@ -60,10 +61,12 @@ public class Server {
 	 *              unique ids that liked
 	 *              the {@code Server}.
 	 */
-	protected Server(String ip, JSONArray array) {
+	protected Server(String ip, JSONArray array)
+	{
 		this.ip = ip;
 		Collection<UUID> likes = new ArrayList<>(array.length());
-		for (int index = 0; index < array.length(); index++) {
+		for (int index = 0; index < array.length(); index++)
+		{
 			likes.add(UUID.fromString(array.getString(index)));
 		}
 		this.likes = likes;
@@ -74,7 +77,8 @@ public class Server {
 	 *
 	 * @return this {@code Server} ip.
 	 */
-	public String getIp() {
+	public String getIp()
+	{
 		return this.ip;
 	}
 
@@ -85,7 +89,8 @@ public class Server {
 	 * @return an immutable collection of the unique ids
 	 * that have liked this {@code Server}.
 	 */
-	public Collection<UUID> getLikes() {
+	public Collection<UUID> getLikes()
+	{
 		return Collections.unmodifiableCollection(this.likes);
 	}
 
@@ -100,7 +105,8 @@ public class Server {
 	 *
 	 * @throws NullPointerException if the {@code uniqueId} is null.
 	 */
-	public boolean hasLiked(UUID uniqueId) {
+	public boolean hasLiked(UUID uniqueId)
+	{
 		Objects.requireNonNull(uniqueId, "uniqueId");
 		return this.likes.contains(uniqueId);
 	}
@@ -110,7 +116,8 @@ public class Server {
 	 *
 	 * @return time this {@code Server} was cached at.
 	 */
-	public long getCacheTime() {
+	public long getCacheTime()
+	{
 		return this.cacheTime;
 	}
 
@@ -124,11 +131,14 @@ public class Server {
 	 * are the same, {@code false} otherwise.
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (this == object) {
+	public boolean equals(Object object)
+	{
+		if (this == object)
+		{
 			return true;
 		}
-		if (object == null || this.getClass() != object.getClass()) {
+		if (object == null || this.getClass() != object.getClass())
+		{
 			return false;
 		}
 		Server that = (Server) object;
@@ -141,7 +151,8 @@ public class Server {
 	 * @return a hash code of this class.
 	 */
 	@Override
-	public int hashCode() {
+	public int hashCode()
+	{
 		return Objects.hash(this.ip, this.likes, this.cacheTime);
 	}
 
@@ -151,7 +162,8 @@ public class Server {
 	 * @return a nice looking representation of this class.
 	 */
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "Server{" + "ip=" + this.ip + ", likes=" + this.likes + ", cacheTime=" + this.cacheTime + "}";
 	}
 }

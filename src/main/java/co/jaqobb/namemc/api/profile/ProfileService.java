@@ -44,13 +44,15 @@ import co.jaqobb.namemc.api.util.IOUtils;
  * Class used to store cached {@code Profile},
  * and to cache new ones.
  */
-public class ProfileService {
+public class ProfileService
+{
 	/**
 	 * Creates new {@code ProfileService} instance
 	 * with the default values being 5 as a time
 	 * and minutes, as a time unit.
 	 */
-	public static ProfileService newDefault() {
+	public static ProfileService newDefault()
+	{
 		return new ProfileService();
 	}
 
@@ -61,7 +63,8 @@ public class ProfileService {
 	 * @param time a time.
 	 * @param unit a time unit.
 	 */
-	public static ProfileService newCustom(long time, TimeUnit unit) {
+	public static ProfileService newCustom(long time, TimeUnit unit)
+	{
 		return new ProfileService(time, unit);
 	}
 
@@ -77,16 +80,16 @@ public class ProfileService {
 	/**
 	 * Executor used to cache {@code Profile}.
 	 */
-	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	private static final Executor      EXECUTOR                = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	/**
 	 * Time that indicates whenever profile should be recached.
 	 */
-	private final long time;
+	private final long               time;
 	/**
 	 * Time unit used to describe a unit of {@code time}.
 	 */
-	private final TimeUnit unit;
+	private final TimeUnit           unit;
 	/**
 	 * Collection of currently cached {@code Profile}s.
 	 */
@@ -97,7 +100,8 @@ public class ProfileService {
 	 * with the default values being 5 as a time
 	 * and minutes, as a time unit.
 	 */
-	private ProfileService() {
+	private ProfileService()
+	{
 		this(5, TimeUnit.MINUTES);
 	}
 
@@ -108,7 +112,8 @@ public class ProfileService {
 	 * @param time a time.
 	 * @param unit a time unit.
 	 */
-	private ProfileService(long time, TimeUnit unit) {
+	private ProfileService(long time, TimeUnit unit)
+	{
 		this.time = time;
 		this.unit = unit;
 	}
@@ -118,7 +123,8 @@ public class ProfileService {
 	 *
 	 * @return time that indicates whenever {@code Profile} should be recached.
 	 */
-	public long getTime() {
+	public long getTime()
+	{
 		return this.time;
 	}
 
@@ -127,7 +133,8 @@ public class ProfileService {
 	 *
 	 * @return unit of the tracked {@code time}.
 	 */
-	public TimeUnit getUnit() {
+	public TimeUnit getUnit()
+	{
 		return this.unit;
 	}
 
@@ -138,7 +145,8 @@ public class ProfileService {
 	 * @return time in milliseconds that indicated
 	 * whenever {@code Profile} should be recached
 	 */
-	public long getTimeInMillis() {
+	public long getTimeInMillis()
+	{
 		return TimeUnit.MILLISECONDS.convert(this.time, this.unit);
 	}
 
@@ -148,7 +156,8 @@ public class ProfileService {
 	 *
 	 * @return an immutable collection of currently cached {@code Profile}s.
 	 */
-	public Collection<Profile> getProfiles() {
+	public Collection<Profile> getProfiles()
+	{
 		return Collections.unmodifiableCollection(this.profiles.values());
 	}
 
@@ -169,25 +178,32 @@ public class ProfileService {
 	 *
 	 * @throws NullPointerException if the {@code uniqueId} or the {@code callback} is null.
 	 */
-	public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback) {
+	public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback)
+	{
 		Objects.requireNonNull(uniqueId, "ip");
 		Objects.requireNonNull(callback, "callback");
-		synchronized (this.profiles) {
+		synchronized (this.profiles)
+		{
 			Profile profile = this.profiles.get(uniqueId);
-			if (this.isProfileValid(profile) && !recache) {
+			if (this.isProfileValid(profile) && !recache)
+			{
 				callback.accept(profile, null);
 				return;
 			}
 		}
-		EXECUTOR.execute(() -> {
+		EXECUTOR.execute(() ->
+		{
 			String url = String.format(PROFILE_FRIENDS_URL, uniqueId.toString());
-			try {
+			try
+			{
 				String content = IOUtils.getWebsiteContent(url);
 				JSONArray array = new JSONArray(content);
 				Profile profile = new Profile(uniqueId, array);
 				this.profiles.put(uniqueId, profile);
 				callback.accept(profile, null);
-			} catch (IOException exception) {
+			}
+			catch (IOException exception)
+			{
 				callback.accept(null, exception);
 			}
 		});
@@ -204,15 +220,18 @@ public class ProfileService {
 	 * not {@code null} and does not need to be recached,
 	 * {@code false} otherwise.
 	 */
-	public boolean isProfileValid(Profile profile) {
+	public boolean isProfileValid(Profile profile)
+	{
 		return profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.getTimeInMillis();
 	}
 
 	/**
 	 * Clears {@code Profile}s cache.
 	 */
-	public void clearProfiles() {
-		synchronized (this.profiles) {
+	public void clearProfiles()
+	{
+		synchronized (this.profiles)
+		{
 			this.profiles.clear();
 		}
 	}

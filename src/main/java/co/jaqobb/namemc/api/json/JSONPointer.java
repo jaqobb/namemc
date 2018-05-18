@@ -24,8 +24,6 @@
 
 package co.jaqobb.namemc.api.json;
 
-import static java.lang.String.format;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -50,7 +48,8 @@ import java.util.List;
  * @author JSON.org
  * @version 2016-05-14
  */
-public class JSONPointer {
+public class JSONPointer
+{
 	// used for URL encoding and decoding
 	private static final String ENCODING = "UTF-8";
 
@@ -58,7 +57,8 @@ public class JSONPointer {
 	 * This class allows the user to build a JSONPointer in steps, using
 	 * exactly one segment in each step.
 	 */
-	public static class Builder {
+	public static class Builder
+	{
 		// Segments for the eventual JSONPointer string
 		private final List<String> tokens = new ArrayList<>(10);
 
@@ -66,7 +66,8 @@ public class JSONPointer {
 		 * Creates a {@code JSONPointer} instance using the tokens previously set using the
 		 * {@link #append(String)} method calls.
 		 */
-		public JSONPointer build() {
+		public JSONPointer build()
+		{
 			return new JSONPointer(this.tokens);
 		}
 
@@ -83,8 +84,10 @@ public class JSONPointer {
 		 *
 		 * @throws NullPointerException if {@code token} is null.
 		 */
-		public Builder append(String token) {
-			if (token == null) {
+		public Builder append(String token)
+		{
+			if (token == null)
+			{
 				throw new NullPointerException("Token cannot be null");
 			}
 			this.tokens.add(token);
@@ -99,7 +102,8 @@ public class JSONPointer {
 		 *
 		 * @return {@code this}.
 		 */
-		public Builder append(int arrayIndex) {
+		public Builder append(int arrayIndex)
+		{
 			this.tokens.add(String.valueOf(arrayIndex));
 			return this;
 		}
@@ -119,7 +123,8 @@ public class JSONPointer {
 	 * @return a builder instance which can be used to construct a {@code JSONPointer} instance by chained.
 	 * {@link Builder#append(String)} calls.
 	 */
-	public static Builder builder() {
+	public static Builder builder()
+	{
 		return new Builder();
 	}
 
@@ -135,57 +140,77 @@ public class JSONPointer {
 	 *
 	 * @throws IllegalArgumentException if {@code pointer} is not a valid JSON pointer
 	 */
-	public JSONPointer(String pointer) {
-		if (pointer == null) {
+	public JSONPointer(String pointer)
+	{
+		if (pointer == null)
+		{
 			throw new NullPointerException("Pointer cannot be null");
 		}
-		if (pointer.isEmpty() || pointer.equals("#")) {
+		if (pointer.isEmpty() || pointer.equals("#"))
+		{
 			this.tokens = Collections.emptyList();
 			return;
 		}
 		String tokens;
-		if (pointer.startsWith("#/")) {
+		if (pointer.startsWith("#/"))
+		{
 			tokens = pointer.substring(2);
-			try {
+			try
+			{
 				tokens = URLDecoder.decode(tokens, ENCODING);
-			} catch (UnsupportedEncodingException exception) {
+			}
+			catch (UnsupportedEncodingException exception)
+			{
 				throw new RuntimeException(exception);
 			}
-		} else if (pointer.startsWith("/")) {
+		}
+		else if (pointer.startsWith("/"))
+		{
 			tokens = pointer.substring(1);
-		} else {
+		}
+		else
+		{
 			throw new IllegalArgumentException("a JSON pointer should start with '/' or '#/'");
 		}
 		this.tokens = new ArrayList<>(10);
 		int slashIndex = -1;
 		int previousSlashIndex;
-		do {
+		do
+		{
 			previousSlashIndex = slashIndex + 1;
 			slashIndex = tokens.indexOf('/', previousSlashIndex);
-			if (previousSlashIndex == slashIndex || previousSlashIndex == tokens.length()) {
+			if (previousSlashIndex == slashIndex || previousSlashIndex == tokens.length())
+			{
 				// found 2 slashes in a row ( obj//next )
 				// or single slash at the end of a string ( obj/test/ )
 				this.tokens.add("");
-			} else if (slashIndex >= 0) {
+			}
+			else if (slashIndex >= 0)
+			{
 				final String token = tokens.substring(previousSlashIndex, slashIndex);
 				this.tokens.add(this.unescape(token));
-			} else {
+			}
+			else
+			{
 				// last item after separator, or no separator at all.
 				final String token = tokens.substring(previousSlashIndex);
 				this.tokens.add(this.unescape(token));
 			}
-		} while (slashIndex >= 0);
+		}
+		while (slashIndex >= 0);
 		// using split does not take into account consecutive separators or "ending nulls"
 		//for (String token : refs.split("/")) {
 		//    this.tokens.add(unescape(token));
 		//}
 	}
 
-	public JSONPointer(List<String> tokens) {
+	public JSONPointer(List<String> tokens)
+	{
 		this.tokens = new ArrayList<>(tokens);
 	}
 
-	private String unescape(String token) {
+	private String unescape(String token)
+	{
 		return token.replace("~1", "/").replace("~0", "~").replace("\\\"", "\"").replace("\\\\", "\\");
 	}
 
@@ -201,18 +226,26 @@ public class JSONPointer {
 	 *
 	 * @throws JSONPointerException if an error occurs during evaluation.
 	 */
-	public Object queryFrom(Object document) throws JSONPointerException {
-		if (this.tokens.isEmpty()) {
+	public Object queryFrom(Object document) throws JSONPointerException
+	{
+		if (this.tokens.isEmpty())
+		{
 			return document;
 		}
 		Object current = document;
-		for (String token : this.tokens) {
-			if (current instanceof JSONObject) {
+		for (String token : this.tokens)
+		{
+			if (current instanceof JSONObject)
+			{
 				current = ((JSONObject) current).opt(this.unescape(token));
-			} else if (current instanceof JSONArray) {
+			}
+			else if (current instanceof JSONArray)
+			{
 				current = this.readByIndexToken(current, token);
-			} else {
-				throw new JSONPointerException(format("value [%s] is not an array or object therefore its key %s cannot be resolved", current, token));
+			}
+			else
+			{
+				throw new JSONPointerException("value [" + current + "] is not an array or object therefore its key " + token + " cannot be resolved");
 			}
 		}
 		return current;
@@ -228,20 +261,28 @@ public class JSONPointer {
 	 *
 	 * @throws JSONPointerException if the index is out of bounds.
 	 */
-	private Object readByIndexToken(Object current, String indexToken) throws JSONPointerException {
-		try {
+	private Object readByIndexToken(Object current, String indexToken) throws JSONPointerException
+	{
+		try
+		{
 			int index = Integer.parseInt(indexToken);
 			JSONArray currentArray = (JSONArray) current;
-			if (index >= currentArray.length()) {
-				throw new JSONPointerException(format("index %d is out of bounds - the array has %d elements", index, currentArray.length()));
+			if (index >= currentArray.length())
+			{
+				throw new JSONPointerException("index " + index + " is out of bounds - the array has " + currentArray.length() + " elements");
 			}
-			try {
+			try
+			{
 				return currentArray.get(index);
-			} catch (JSONException exception) {
+			}
+			catch (JSONException exception)
+			{
 				throw new JSONPointerException("Error reading value at index position " + index, exception);
 			}
-		} catch (NumberFormatException exception) {
-			throw new JSONPointerException(format("%s is not an array index", indexToken), exception);
+		}
+		catch (NumberFormatException exception)
+		{
+			throw new JSONPointerException(indexToken + " is not an array index", exception);
 		}
 	}
 
@@ -250,9 +291,11 @@ public class JSONPointer {
 	 * representation
 	 */
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		StringBuilder builder = new StringBuilder();
-		for (String token : this.tokens) {
+		for (String token : this.tokens)
+		{
 			builder.append('/').append(this.escape(token));
 		}
 		return builder.toString();
@@ -268,7 +311,8 @@ public class JSONPointer {
 	 *
 	 * @return the escaped value for the token.
 	 */
-	private String escape(String token) {
+	private String escape(String token)
+	{
 		return token.replace("~", "~0").replace("/", "~1").replace("\\", "\\\\").replace("\"", "\\\"");
 	}
 
@@ -276,14 +320,19 @@ public class JSONPointer {
 	 * Returns a string representing the JSONPointer path value using URI
 	 * fragment identifier representation
 	 */
-	public String toURIFragment() {
-		try {
+	public String toURIFragment()
+	{
+		try
+		{
 			StringBuilder value = new StringBuilder("#");
-			for (String token : this.tokens) {
+			for (String token : this.tokens)
+			{
 				value.append('/').append(URLEncoder.encode(token, ENCODING));
 			}
 			return value.toString();
-		} catch (UnsupportedEncodingException exception) {
+		}
+		catch (UnsupportedEncodingException exception)
+		{
 			throw new RuntimeException(exception);
 		}
 	}

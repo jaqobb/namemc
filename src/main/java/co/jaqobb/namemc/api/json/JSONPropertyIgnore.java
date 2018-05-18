@@ -24,11 +24,10 @@
 
 package co.jaqobb.namemc.api.json;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
@@ -38,6 +37,8 @@ import java.lang.annotation.Target;
  * not be serialized from the bean into the JSONObject.
  */
 @Documented
-@Retention(RUNTIME)
-@Target({METHOD})
-public @interface JSONPropertyIgnore {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface JSONPropertyIgnore
+{
+}
