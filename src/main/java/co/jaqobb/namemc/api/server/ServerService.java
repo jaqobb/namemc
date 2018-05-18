@@ -60,7 +60,7 @@ public class ServerService
 	 * with the given duration and duration unit.
 	 *
 	 * @param duration a duration.
-	 * @param unit     a duration unit.
+	 * @param unit     a time unit.
 	 *
 	 * @throws IllegalArgumentException if the {@code duration} is either 0 or negative.
 	 * @throws NullPointerException     if the {@code unit} is null.
