@@ -48,7 +48,7 @@ public class ServerService
 	/**
 	 * Creates new {@code ServerService} instance
 	 * with the default values being 10 as a duration
-	 * and minutes as a duration unit.
+	 * and minutes as a time unit.
 	 */
 	public static ServerService ofDefault()
 	{
@@ -62,8 +62,8 @@ public class ServerService
 	 * @param duration a duration.
 	 * @param unit     a time unit.
 	 *
-	 * @throws IllegalArgumentException if the {@code duration} is either 0 or negative.
-	 * @throws NullPointerException     if the {@code unit} is null.
+	 * @throws IllegalArgumentException if the {@code duration} is less than 1.
+	 * @throws NullPointerException     if the {@code unit} is {@code null}.
 	 */
 	public static ServerService ofCustom(long duration, TimeUnit unit)
 	{
@@ -104,7 +104,7 @@ public class ServerService
 	/**
 	 * Creates new {@code ServerService} instance
 	 * with the default values being 10 as a duration
-	 * and minutes, as a duration unit.
+	 * and minutes, as a time unit.
 	 */
 	private ServerService()
 	{
@@ -113,10 +113,10 @@ public class ServerService
 
 	/**
 	 * Creates new {@code ServerService} instance
-	 * with the given duration and duration unit.
+	 * with the given duration and time unit.
 	 *
 	 * @param duration a duration.
-	 * @param unit     a duration unit.
+	 * @param unit     a time unit.
 	 */
 	private ServerService(long duration, TimeUnit unit)
 	{
@@ -181,8 +181,8 @@ public class ServerService
 	 *                 be forced.
 	 * @param callback a callback where cached
 	 *                 {@code Server} and exception
-	 *                 (null if everything went good)
-	 *                 will be delegated to.
+	 *                 ({@code null} if everything
+	 *                 went good) will be delegated to.
 	 *
 	 * @throws NullPointerException if the {@code ip} or the {@code callback} is null.
 	 */

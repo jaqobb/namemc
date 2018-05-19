@@ -128,7 +128,7 @@ public class Profile
 	 * has a {@code Friend} with the given {@code name},
 	 * {@code null} otherwise.
 	 *
-	 * @throws NullPointerException if the {@code name} is null.
+	 * @throws NullPointerException if the {@code name} is {@code null}.
 	 */
 	public Friend getFriend(String name)
 	{
@@ -151,7 +151,7 @@ public class Profile
 	 * has a {@code Friend} with the given {@code name},
 	 * {@code null} otherwise.
 	 *
-	 * @throws NullPointerException if the {@code name} is null.
+	 * @throws NullPointerException if the {@code name} is {@code null}.
 	 */
 	public Friend getFriend(String name, boolean caseSensitive)
 	{
@@ -169,7 +169,7 @@ public class Profile
 	 * {@code Friend} with the given {@code uniqueId},
 	 * {@code false} otherwise.
 	 *
-	 * @throws NullPointerException if the {@code uniqueId} is null.
+	 * @throws NullPointerException if the {@code uniqueId} is {@code null}.
 	 */
 	public boolean hasFriend(UUID uniqueId)
 	{
@@ -188,7 +188,7 @@ public class Profile
 	 * {@code Friend} with the given {@code name},
 	 * {@code false} otherwise.
 	 *
-	 * @throws NullPointerException if the {@code name} is null.
+	 * @throws NullPointerException if the {@code name} is {@code null}.
 	 */
 	public boolean hasFriend(String name)
 	{
@@ -210,7 +210,7 @@ public class Profile
 	 * {@code Friend} with the given {@code name},
 	 * {@code false} otherwise.
 	 *
-	 * @throws NullPointerException if the {@code name} is null.
+	 * @throws NullPointerException if the {@code name} is {@code null|.
 	 */
 	public boolean hasFriend(String name, boolean caseSensitive)
 	{
@@ -230,14 +230,14 @@ public class Profile
 
 	/**
 	 * Returns true if this {@code Profile} has
-	 * liked the given server, false otherwise.
+	 * liked the given {@code server}, false otherwise.
 	 *
 	 * @param server {@code Server} to be checked.
 	 *
 	 * @return {@code true} if this {@code Profile} has liked
 	 * given {@code server}, {@code false} otherwise.
 	 *
-	 * @throws NullPointerException if the {@code server} is null.
+	 * @throws NullPointerException if the {@code server} is {@code null}.
 	 */
 	public boolean hasLiked(Server server)
 	{
@@ -246,7 +246,7 @@ public class Profile
 	}
 
 	/**
-	 * Checks if the given object
+	 * Checks if the given {@code object}
 	 * is the same as this class.
 	 *
 	 * @param object an object to be checked.
@@ -312,7 +312,7 @@ public class Profile
 
 		/**
 		 * Constructs new {@code Friend} instance
-		 * with the given unique id and name.
+		 * with the given {@code uniqueId} and {@code name}.
 		 *
 		 * @param uniqueId a unique id of the friend.
 		 * @param name     a name of the friend.
@@ -363,7 +363,7 @@ public class Profile
 		 * @return {@code true} if this {@code Friend} is
 		 * the given {@code profile}'s friend.
 		 *
-		 * @throws NullPointerException if the {@code profile} is null.
+		 * @throws NullPointerException if the {@code profile} is {@code null}.
 		 */
 		public boolean isFriendOf(Profile profile)
 		{
@@ -383,7 +383,7 @@ public class Profile
 		 * @return {@code true} if this {@code Friend} is
 		 * the given {@code profile}'s friend.
 		 *
-		 * @throws NullPointerException if the {@code profile} is null.
+		 * @throws NullPointerException if the {@code profile} is {@code null}.
 		 */
 		public boolean isFriendOf(Profile profile, boolean caseSensitive)
 		{
@@ -405,7 +405,7 @@ public class Profile
 		 * @return {@code true} if this {@code Friend}
 		 * has liked the given {@code server}.
 		 *
-		 * @throws NullPointerException if the {@code server} is null.
+		 * @throws NullPointerException if the {@code server} is {@code null}.
 		 */
 		public boolean hasLiked(Server server)
 		{
@@ -414,7 +414,7 @@ public class Profile
 		}
 
 		/**
-		 * Checks if the given object
+		 * Checks if the given {@code object}
 		 * is the same as this class.
 		 *
 		 * @param object an object to be checked.

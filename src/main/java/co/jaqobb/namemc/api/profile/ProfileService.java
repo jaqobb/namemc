@@ -63,8 +63,8 @@ public class ProfileService
 	 * @param duration a duration.
 	 * @param unit     a time unit.
 	 *
-	 * @throws IllegalArgumentException if the {@code duration} is either 0 or negative.
-	 * @throws NullPointerException     if the {@code unit} is null.
+	 * @throws IllegalArgumentException if the {@code duration} is less than 1.
+	 * @throws NullPointerException     if the {@code unit} is {@code null}.
 	 */
 	public static ProfileService ofCustom(long duration, TimeUnit unit)
 	{

@@ -53,7 +53,7 @@ public class Server
 
 	/**
 	 * Constructs new {@code Server} instance
-	 * with the given {@code ip} and {@code array{}.
+	 * with the given {@code ip} and {@code array}.
 	 *
 	 * @param ip    an ip of the server.
 	 * @param array an array that contains
@@ -103,7 +103,7 @@ public class Server
 	 * @return {@code true} if the given {@code uniqueId} has
 	 * liked this {@code Server}, {@code false} otherwise.
 	 *
-	 * @throws NullPointerException if the {@code uniqueId} is null.
+	 * @throws NullPointerException if the {@code uniqueId} is {@code null}.
 	 */
 	public boolean hasLiked(UUID uniqueId)
 	{
