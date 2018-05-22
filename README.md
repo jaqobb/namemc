@@ -25,7 +25,7 @@ and add dependency:
 	<dependency>
 		<groupId>co.jaqobb</groupId>
 		<artifactId>namemc-api</artifactId>
-		<version>1.1.9-SNAPSHOT</version>
+		<version>1.2-SNAPSHOT</version>
 		<scope>compile</scope>
 	</dependency>
 </dependencies>
@@ -149,6 +149,15 @@ Since version 1.1.3-SNAPSHOT you are able to check if profile or server is valid
 ```java
 nameMC.getProfileService().isProfileValid(Profile profile);
 nameMC.getServerService().isServerValid(Server server);
+```
+
+Since version 1.2-SNAPSHOT you are able to get all valid or invalid profiles/servers by using this API (so you won't have to do that on your own):
+```java
+nameMC.getProfileService().getValidProfiles();
+nameMC.getProfileService().getInvalidProfiles();
+
+nameMC.getServerService().getValidServers();
+nameMC.getServerService().getInvalidServers();
 ```
 
 ### End

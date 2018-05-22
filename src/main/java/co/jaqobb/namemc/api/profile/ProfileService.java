@@ -36,6 +36,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import co.jaqobb.namemc.api.json.JSONArray;
 import co.jaqobb.namemc.api.util.IOUtils;
@@ -154,7 +155,7 @@ public class ProfileService
 	 * @return duration in milliseconds that indicates
 	 * how long {@code Profile} will be marked as cached.
 	 */
-	public long getDurationInMillis()
+	public long getDurationMillis()
 	{
 		return this.unit.toMillis(this.duration);
 	}
@@ -167,7 +168,38 @@ public class ProfileService
 	 */
 	public Collection<Profile> getProfiles()
 	{
-		return Collections.unmodifiableCollection(this.profiles.values());
+		synchronized (this.profiles)
+		{
+			return Collections.unmodifiableCollection(this.profiles.values());
+		}
+	}
+
+	/**
+	 * Returns an immutable collection of
+	 * currently cached valid {@code Profile}s.
+	 *
+	 * @return an immutable collection of currently cached valid {@code Profile}s.
+	 */
+	public Collection<Profile> getValidProfiles()
+	{
+		synchronized (this.profiles)
+		{
+			return Collections.unmodifiableCollection(this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toList()));
+		}
+	}
+
+	/**
+	 * Returns an immutable collection of
+	 * currently cached invalid {@code Profile}s.
+	 *
+	 * @return an immutable collection of currently cached invalid {@code Profile}s.
+	 */
+	public Collection<Profile> getInvalidProfiles()
+	{
+		synchronized (this.profiles)
+		{
+			return Collections.unmodifiableCollection(this.profiles.values().stream().filter(profile -> ! this.isProfileValid(profile)).collect(Collectors.toList()));
+		}
 	}
 
 	/**
@@ -231,7 +263,7 @@ public class ProfileService
 	 */
 	public boolean isProfileValid(Profile profile)
 	{
-		return profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.getDurationInMillis();
+		return profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.getDurationMillis();
 	}
 
 	/**

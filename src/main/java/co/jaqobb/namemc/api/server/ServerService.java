@@ -35,6 +35,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import co.jaqobb.namemc.api.json.JSONArray;
 import co.jaqobb.namemc.api.util.IOUtils;
@@ -153,7 +154,7 @@ public class ServerService
 	 * @return duration in milliseconds that indicates
 	 * how long {@code Server} will be marked as cached.
 	 */
-	public long getDurationInMillis()
+	public long getDurationMillis()
 	{
 		return this.unit.toMillis(this.duration);
 	}
@@ -166,7 +167,38 @@ public class ServerService
 	 */
 	public Collection<Server> getServers()
 	{
-		return Collections.unmodifiableCollection(this.servers.values());
+		synchronized (this.servers)
+		{
+			return Collections.unmodifiableCollection(this.servers.values());
+		}
+	}
+
+	/**
+	 * Returns an immutable collection of
+	 * currently cached valid {@code Server}s.
+	 *
+	 * @return an immutable collection of currently cached valid {@code Server}s.
+	 */
+	public Collection<Server> getValidServers()
+	{
+		synchronized (this.servers)
+		{
+			return Collections.unmodifiableCollection(this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toList()));
+		}
+	}
+
+	/**
+	 * Returns an immutable collection of
+	 * currently cached invalid {@code Server}s.
+	 *
+	 * @return an immutable collection of currently cached invalid {@code Server}s.
+	 */
+	public Collection<Server> getInvalidServers()
+	{
+		synchronized (this.servers)
+		{
+			return Collections.unmodifiableCollection(this.servers.values().stream().filter(server -> ! this.isServerValid(server)).collect(Collectors.toList()));
+		}
 	}
 
 	/**
@@ -229,7 +261,7 @@ public class ServerService
 	 */
 	public boolean isServerValid(Server server)
 	{
-		return server != null && System.currentTimeMillis() - server.getCacheTime() < this.getDurationInMillis();
+		return server != null && System.currentTimeMillis() - server.getCacheTime() < this.getDurationMillis();
 	}
 
 	/**
