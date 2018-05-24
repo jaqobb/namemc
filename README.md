@@ -9,7 +9,7 @@ What are the purposes of this API? Well, you can reward players on your Minecraf
 ### Requirements
 All you need is Java 8 and optionally Maven if you don't want to download sources on your own.
 
-### How to use
+### How to use (Maven)
 You need to add repository to your project's pom.xml:
 ```xml
 <repositories>
@@ -31,6 +31,9 @@ and add dependency:
 </dependencies>
 ```
 Yeah, you actually need to compile this library if you are using Maven due to it's not shaded anywhere by default.
+
+### How to use (No Maven)
+Simply download source and add it to your current project and then do it the same with the org.json library.
 
 ### API
 Everythings begins with the class NameMC. You can either use preset settings created by me, or experiment with settings numbers on your own:
