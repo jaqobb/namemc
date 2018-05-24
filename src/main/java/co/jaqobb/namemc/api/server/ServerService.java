@@ -37,8 +37,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import co.jaqobb.namemc.api.json.JSONArray;
 import co.jaqobb.namemc.api.util.IOUtils;
+
+import org.json.JSONArray;
 
 /**
  * Class used to store cached {@code Server},

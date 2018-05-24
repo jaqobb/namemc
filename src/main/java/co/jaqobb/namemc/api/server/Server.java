@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
-import co.jaqobb.namemc.api.json.JSONArray;
+import org.json.JSONArray;
 
 /**
  * Class that holds all possible

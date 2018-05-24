@@ -30,9 +30,10 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
-import co.jaqobb.namemc.api.json.JSONArray;
-import co.jaqobb.namemc.api.json.JSONObject;
 import co.jaqobb.namemc.api.server.Server;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Class that holds all possible
