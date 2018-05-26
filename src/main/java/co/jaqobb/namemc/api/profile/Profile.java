@@ -296,7 +296,7 @@ public class Profile
 	 * Class that holds all possible
 	 * information about the friend.
 	 */
-	public static class Friend
+	public class Friend
 	{
 		/**
 		 * Unique id of the {@code Friend}.
@@ -389,8 +389,7 @@ public class Profile
 		public boolean isFriendOf(Profile profile, boolean caseSensitive)
 		{
 			Objects.requireNonNull(profile, "profile");
-			boolean is = profile.hasFriend(this.uniqueId);
-			if (is)
+			if (profile.hasFriend(this.uniqueId))
 			{
 				return true;
 			}
