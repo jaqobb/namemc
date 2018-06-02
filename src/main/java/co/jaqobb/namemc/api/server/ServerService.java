@@ -44,7 +44,7 @@ import org.json.JSONArray;
 /**
  * Class used to store cached servers and to cache new ones.
  */
-public class ServerService {
+public final class ServerService {
 
   /**
    * Creates new server service instance with the default values being 10 as a duration and minutes as a time unit.

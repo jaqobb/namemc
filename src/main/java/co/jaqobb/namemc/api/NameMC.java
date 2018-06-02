@@ -32,7 +32,7 @@ import co.jaqobb.namemc.api.server.ServerService;
 /**
  * Class where the fun with the API begins.
  */
-public class NameMC {
+public final class NameMC {
 
   /**
    * Creates new name mc instance with the default settings.

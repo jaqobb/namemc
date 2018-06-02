@@ -35,7 +35,7 @@ import org.json.JSONArray;
 /**
  * Class that holds all possible information about the server.
  */
-public class Server {
+public final class Server {
 
   /**
    * Ip of the server.

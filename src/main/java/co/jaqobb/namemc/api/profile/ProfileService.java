@@ -45,7 +45,7 @@ import org.json.JSONArray;
 /**
  * Class used to store cached profile and to cache new ones.
  */
-public class ProfileService {
+public final class ProfileService {
 
   /**
    * Creates new profile service instance with the default values being 5 as a duration and minutes as a time unit.

@@ -38,7 +38,7 @@ import org.json.JSONObject;
 /**
  * Class that holds all possible information about the profile.
  */
-public class Profile {
+public final class Profile {
 
   /**
    * Unique id of the profile.
