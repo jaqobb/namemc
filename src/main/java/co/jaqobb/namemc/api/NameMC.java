@@ -24,10 +24,9 @@
 
 package co.jaqobb.namemc.api;
 
-import java.util.Objects;
-
 import co.jaqobb.namemc.api.profile.ProfileService;
 import co.jaqobb.namemc.api.server.ServerService;
+import java.util.Objects;
 
 /**
  * Class where the fun with the API begins.

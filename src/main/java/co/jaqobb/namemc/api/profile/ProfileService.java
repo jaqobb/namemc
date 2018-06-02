@@ -24,6 +24,7 @@
 
 package co.jaqobb.namemc.api.profile;
 
+import co.jaqobb.namemc.api.util.IOUtils;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,9 +38,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
-import co.jaqobb.namemc.api.util.IOUtils;
-
 import org.json.JSONArray;
 
 /**
@@ -182,7 +180,7 @@ public final class ProfileService {
    * @param recache A state which defines if the recache should be forced.
    * @param callback A callback where cached profile and exception (that is null if everything went good) will be
    * delegated to.
-   * @throws NullPointerException If the given unique id or the given callback is null.
+   * @throws NullPointerException If the given unique id or callback is null.
    */
   public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback) {
     Objects.requireNonNull(uniqueId, "uniqueId");
