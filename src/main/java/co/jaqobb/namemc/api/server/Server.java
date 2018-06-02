@@ -33,137 +33,113 @@ import java.util.UUID;
 import org.json.JSONArray;
 
 /**
- * Class that holds all possible
- * information about the server.
+ * Class that holds all possible information about the server.
  */
-public class Server
-{
-	/**
-	 * Ip of the {@code Server}.
-	 */
-	private final String           ip;
-	/**
-	 * Collection of unique ids that liked the {@code Server}.
-	 */
-	private final Collection<UUID> likes;
-	/**
-	 * Time the {@code Server} was cached at.
-	 */
-	private final long             cacheTime = System.currentTimeMillis();
+public class Server {
 
-	/**
-	 * Constructs new {@code Server} instance
-	 * with the given {@code ip} and {@code array}.
-	 *
-	 * @param ip    an ip of the server.
-	 * @param array an array that contains
-	 *              information about the
-	 *              unique ids that liked
-	 *              the {@code Server}.
-	 */
-	protected Server(String ip, JSONArray array)
-	{
-		this.ip = ip;
-		Collection<UUID> likes = new ArrayList<>(array.length());
-		for (int index = 0; index < array.length(); index++)
-		{
-			likes.add(UUID.fromString(array.getString(index)));
-		}
-		this.likes = likes;
-	}
+  /**
+   * Ip of the server.
+   */
+  private final String ip;
+  /**
+   * Collection of unique ids that liked the server.
+   */
+  private final Collection<UUID> likes;
+  /**
+   * Time the server was cached at.
+   */
+  private final long cacheTime = System.currentTimeMillis();
 
-	/**
-	 * Returns this {@code Server} ip.
-	 *
-	 * @return this {@code Server} ip.
-	 */
-	public String getIp()
-	{
-		return this.ip;
-	}
+  /**
+   * Constructs new server instance with the given ip and JSON array.
+   *
+   * @param ip An ip of the server.
+   * @param array An array that contains information about the unique ids that liked the server.
+   */
+  protected Server(String ip, JSONArray array) {
+    this.ip = ip;
+    Collection<UUID> likes = new ArrayList<>(array.length());
+    for (int index = 0; index < array.length(); index++) {
+      likes.add(UUID.fromString(array.getString(index)));
+    }
+    this.likes = likes;
+  }
 
-	/**
-	 * Returns an immutable collection of the unique ids
-	 * that have liked this {@code Server}.
-	 *
-	 * @return an immutable collection of the unique ids
-	 * that have liked this {@code Server}.
-	 */
-	public Collection<UUID> getLikes()
-	{
-		return Collections.unmodifiableCollection(this.likes);
-	}
+  /**
+   * Returns this server ip.
+   *
+   * @return This server ip.
+   */
+  public String getIp() {
+    return this.ip;
+  }
 
-	/**
-	 * Checks if the given {@code uniqueId}
-	 * has liked this {@code Server}.
-	 *
-	 * @param uniqueId a unique id to be checked.
-	 *
-	 * @return {@code true} if the given {@code uniqueId} has
-	 * liked this {@code Server}, {@code false} otherwise.
-	 *
-	 * @throws NullPointerException if the {@code uniqueId} is {@code null}.
-	 */
-	public boolean hasLiked(UUID uniqueId)
-	{
-		Objects.requireNonNull(uniqueId, "uniqueId");
-		return this.likes.contains(uniqueId);
-	}
+  /**
+   * Returns an immutable collection of the unique ids that have liked this server.
+   *
+   * @return An immutable collection of the unique ids that have liked this server.
+   */
+  public Collection<UUID> getLikes() {
+    return Collections.unmodifiableCollection(this.likes);
+  }
 
-	/**
-	 * Returns time this {@code Server} was cached at.
-	 *
-	 * @return time this {@code Server} was cached at.
-	 */
-	public long getCacheTime()
-	{
-		return this.cacheTime;
-	}
+  /**
+   * Returns true if the given unique id has liked this server and false otherwise.
+   *
+   * @param uniqueId A unique id to check.
+   * @return True if the given unique id has liked this server and false otherwise.
+   * @throws NullPointerException If the given unique id is null.
+   */
+  public boolean hasLiked(UUID uniqueId) {
+    Objects.requireNonNull(uniqueId, "uniqueId");
+    return this.likes.contains(uniqueId);
+  }
 
-	/**
-	 * Checks if the given object
-	 * is the same as this class.
-	 *
-	 * @param object an object to be checked.
-	 *
-	 * @return {@code true} if both objects
-	 * are the same, {@code false} otherwise.
-	 */
-	@Override
-	public boolean equals(Object object)
-	{
-		if (this == object)
-		{
-			return true;
-		}
-		if (object == null || this.getClass() != object.getClass())
-		{
-			return false;
-		}
-		Server that = (Server) object;
-		return Objects.equals(this.ip, that.ip) && Objects.equals(this.likes, that.likes);
-	}
+  /**
+   * Returns time this server was cached at.
+   *
+   * @return Time this server was cached at.
+   */
+  public long getCacheTime() {
+    return this.cacheTime;
+  }
 
-	/**
-	 * Returns a hash code of this class.
-	 *
-	 * @return a hash code of this class.
-	 */
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(this.ip, this.likes);
-	}
+  /**
+   * Returns true if the given object is the same as this class and false otherwise.
+   *
+   * @param object An object to check.
+   * @return True if the given object is the same as this class and false otherwise.
+   */
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (object == null || this.getClass() != object.getClass()) {
+      return false;
+    }
+    Server that = (Server) object;
+    return Objects.equals(this.ip, that.ip) && Objects.equals(this.likes, that.likes);
+  }
 
-	/**
-	 * Returns a nice looking representation of this class.
-	 *
-	 * @return a nice looking representation of this class.
-	 */
-	@Override
-	public String toString()
-	{
-		return "Server{" + "ip=" + this.ip + ", likes=" + this.likes + "}";
-	}
+  /**
+   * Returns a hash code of this class.
+   *
+   * @return A hash code of this class.
+   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.ip, this.likes);
+  }
+
+  /**
+   * Returns a nice looking representation of this class.
+   *
+   * @return A nice looking representation of this class.
+   */
+  @Override
+  public String toString() {
+    return "Server{" + "ip=" + this.ip + ", likes=" + this.likes + "}";
+  }
+
 }

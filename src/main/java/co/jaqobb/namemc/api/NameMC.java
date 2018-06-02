@@ -30,105 +30,82 @@ import co.jaqobb.namemc.api.profile.ProfileService;
 import co.jaqobb.namemc.api.server.ServerService;
 
 /**
- * Class where the fun
- * with the API begins.
+ * Class where the fun with the API begins.
  */
-public class NameMC
-{
-	/**
-	 * Creates new {@code NameMC} instance
-	 * with the default settings.
-	 *
-	 * @return new {@code NameMC} instance
-	 * with the default settings.
-	 */
-	public static NameMC ofDefault()
-	{
-		return new NameMC();
-	}
+public class NameMC {
 
-	/**
-	 * Creates new {@code NameMC} instance with the
-	 * ability to customize {@code ProfileService}
-	 * and {@code ServerService}.
-	 *
-	 * @return new {@code NameMC} instance with the
-	 * possibly custom {@code ProfileService} and
-	 * {@code ServerService}.
-	 *
-	 * @throws NullPointerException if the {@code profileServer}
-	 *                              or the {@code serverService}
-	 *                              is null.
-	 */
-	public static NameMC ofCustom(ProfileService profileService, ServerService serverService)
-	{
-		return new NameMC(Objects.requireNonNull(profileService, "profileService"), Objects.requireNonNull(serverService, "serverService"));
-	}
+  /**
+   * Creates new name mc instance with the default settings.
+   *
+   * @return New name mc instance with the default settings.
+   */
+  public static NameMC ofDefault() {
+    return new NameMC();
+  }
 
-	/**
-	 * Currently used {@code ProfileService}.
-	 */
-	private final ProfileService profileService;
-	/**
-	 * Currently used {@code ServerService}.
-	 */
-	private final ServerService  serverService;
+  /**
+   * Creates new name mc instance with the possibly custom profile service and server service.
+   *
+   * @return New name mc instance with the possibly custom profile service and server service.
+   * @throws NullPointerException If the given profile service or the given server service is null.
+   */
+  public static NameMC ofCustom(ProfileService profileService, ServerService serverService) {
+    return new NameMC(Objects.requireNonNull(profileService, "profileService"), Objects.requireNonNull(serverService, "serverService"));
+  }
 
-	/**
-	 * Creates new {@code NameMC} instance
-	 * with the default settings.
-	 *
-	 * @return new {@code NameMC} instance
-	 * with the default settings.
-	 */
-	private NameMC()
-	{
-		this.profileService = ProfileService.ofDefault();
-		this.serverService = ServerService.ofDefault();
-	}
+  /**
+   * Currently used profile service.
+   */
+  private final ProfileService profileService;
+  /**
+   * Currently used server service.
+   */
+  private final ServerService serverService;
 
-	/**
-	 * Creates new {@code NameMC} instance with the
-	 * ability to customize {@code ProfileService}
-	 * and {@code ServerService}.
-	 *
-	 * @return new {@code NameMC} instance with the
-	 * possibly custom {@code ProfileService} and
-	 * {@code ServerService}.
-	 */
-	private NameMC(ProfileService profileService, ServerService serverService)
-	{
-		this.profileService = profileService;
-		this.serverService = serverService;
-	}
+  /**
+   * Creates new name mc instance with the default settings.
+   *
+   * @return New name mc instance with the default settings.
+   */
+  private NameMC() {
+    this.profileService = ProfileService.ofDefault();
+    this.serverService = ServerService.ofDefault();
+  }
 
-	/**
-	 * Returns currently used {@code ProfileService}.
-	 *
-	 * @return currently used {@code ProfileService}.
-	 */
-	public ProfileService getProfileService()
-	{
-		return this.profileService;
-	}
+  /**
+   * Creates new namemc instance with the possibly custom profile service and server service.
+   *
+   * @return New namemc instance with the possibly custom profile service and server service.
+   */
+  private NameMC(ProfileService profileService, ServerService serverService) {
+    this.profileService = profileService;
+    this.serverService = serverService;
+  }
 
-	/**
-	 * Returns currently used {@code ServerService}.
-	 *
-	 * @return currently used {@code ServerService}.
-	 */
-	public ServerService getServerService()
-	{
-		return this.serverService;
-	}
+  /**
+   * Returns currently used profile service.
+   *
+   * @return Currently used profile service.
+   */
+  public ProfileService getProfileService() {
+    return this.profileService;
+  }
 
-	/**
-	 * Clears the {@code profileService} and
-	 * the {@code serverService} cache.
-	 */
-	public void clearCaches()
-	{
-		this.profileService.clearProfiles();
-		this.serverService.clearServers();
-	}
+  /**
+   * Returns currently used server service.
+   *
+   * @return Currently used server service.
+   */
+  public ServerService getServerService() {
+    return this.serverService;
+  }
+
+  /**
+   * Clears the profile service and the server service cache.
+   */
+  public void clearCaches() {
+    this.profileService.clearProfiles();
+    this.serverService.clearServers();
+  }
+
 }
