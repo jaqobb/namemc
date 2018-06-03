@@ -7,7 +7,7 @@ Basically, this API doesn't support much (but everything it actually can due to 
 What are the purposes of this API? Well, you can reward players on your Minecraft server that have liked your server on the NameMC. Besides that, you can easily handle friends of your players and add some interactaction between them, like every 5 new friends on the NameMC, player will receive 5 diamonds and so on.
 
 ### Requirements
-All you need is Java 8 and optionally Maven if you don't want to download sources on your own.
+All you need is Java 8 and optionally Maven/Gradle if you don't want to download sources on your own.
 
 ### How to use (Maven)
 You need to add repository to your project's pom.xml:
@@ -30,9 +30,26 @@ and add dependency:
 	</dependency>
 </dependencies>
 ```
-Yeah, you actually need to compile this library if you are using Maven due to it's not shaded anywhere by default.
+You need to compile this library due to it's not shaded anywhere by default.
 
-### How to use (No Maven)
+### How to use (Gradle)
+You need to add repository to your project's build.gradle:
+```
+repositories {
+  maven {
+    url "https://repo.jaqobb.co/repository/maven-snapshots/"
+  }
+}
+```
+and add dependency:
+```
+dependencies {
+  compile "co.jaqobb:namemc-api:1.2.3-SNAPSHOT"
+}
+```
+You need to compile this library due to it's not shaded anywhere by default.
+
+### How to use (No Maven/Gradle)
 Simply download source and add it to your current project and then do it the same with the org.json library.
 
 ### API
