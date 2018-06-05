@@ -1,10 +1,10 @@
-## NameMC-API
+## NameMC API
 Java wrapper for the popular Minecraft related site: https://namemc.com
 
 ### Purposes of this project
-Basically, this API doesn't support much (but everything it actually can due to lack of API from NameMC creators).
+API doesn't support much (but everything it actually can due to lack of API from NameMC creators).
 
-What are the purposes of this API? Well, you can reward players on your Minecraft server that have liked your server on the NameMC. Besides that, you can easily handle friends of your players and add some interactaction between them, like every 5 new friends on the NameMC, player will receive 5 diamonds and so on.
+What are the purposes of this API you may ask. You can reward players on your Minecraft server that have liked your server on the NameMC. Besides that, you can easily handle friends of your players and add some interactaction between them, like every 5 new friends on the NameMC, player will receive 5 diamonds and so on.
 
 ### Requirements
 All you need is Java 8 and optionally Maven/Gradle if you don't want to download sources on your own.
@@ -178,4 +178,4 @@ nameMC.getServerService().getInvalidServers();
 ```
 
 ### End
-That's all! Thank you for using NameMC-API!
+That's all! Thank you for using NameMC API!
