@@ -1,4 +1,4 @@
-## NameMCAPI
+## NameMC-API
 Java wrapper for the popular Minecraft related site: https://namemc.com
 
 ### Purposes of this project
@@ -178,4 +178,4 @@ nameMC.getServerService().getInvalidServers();
 ```
 
 ### End
-That's all! Thank you for using NameMCAPI!
+That's all! Thank you for using NameMC-API!
