@@ -27,7 +27,7 @@
 	<groupId>co.jaqobb</groupId>
 	<artifactId>namemc-api</artifactId>
 	<version>1.2.3-SNAPSHOT</version>
-	<name>NameMC API</name>
+	<name>NameMC-API</name>
 	<description>Java wrapper for the popular Minecraft related site: https://namemc.com</description>
 	<url>https://jaqobb.co</url>
 
