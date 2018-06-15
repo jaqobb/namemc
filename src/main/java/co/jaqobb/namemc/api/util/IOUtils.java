@@ -35,41 +35,49 @@ import java.nio.charset.StandardCharsets;
 /**
  * Collection of useful methods used in this project.
  */
-public final class IOUtils {
+public final class IOUtils
+{
+	/**
+	 * Useless constructor, just to make sure no one will initialize this class.
+	 */
+	private IOUtils()
+	{
+	}
 
-  /**
-   * Useless constructor, just to make sure no one will initialize this class.
-   */
-  private IOUtils() {
-  }
+	/**
+	 * Returns a content of the given url.
+	 *
+	 * @param url A url.
+	 *
+	 * @return A content of the given url.
+	 *
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public static String getWebsiteContent(String url) throws IOException
+	{
+		try (InputStream inputStream = new URL(url).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)))
+		{
+			return IOUtils.getContent(reader);
+		}
+	}
 
-  /**
-   * Returns a content of the given url.
-   *
-   * @param url A url.
-   * @return A content of the given url.
-   * @throws IOException If an I/O error occurs.
-   */
-  public static String getWebsiteContent(String url) throws IOException {
-    try (InputStream inputStream = new URL(url).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-      return IOUtils.getContent(reader);
-    }
-  }
-
-  /**
-   * Returns a content of the given reader.
-   *
-   * @param reader A reader.
-   * @return A content of the given reader.
-   * @throws IOException If an I/O error occurs.
-   */
-  public static String getContent(Reader reader) throws IOException {
-    StringBuilder content = new StringBuilder();
-    int character;
-    while ((character = reader.read()) != -1) {
-      content.append((char) character);
-    }
-    return content.toString();
-  }
-
+	/**
+	 * Returns a content of the given reader.
+	 *
+	 * @param reader A reader.
+	 *
+	 * @return A content of the given reader.
+	 *
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public static String getContent(Reader reader) throws IOException
+	{
+		StringBuilder content = new StringBuilder();
+		int character;
+		while ((character = reader.read()) != -1)
+		{
+			content.append((char) character);
+		}
+		return content.toString();
+	}
 }
