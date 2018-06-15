@@ -46,6 +46,15 @@
 		</snapshotRepository>
 	</distributionManagement>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20180130</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<defaultGoal>clean deploy</defaultGoal>
 		<finalName>${project.artifactId}-${project.version}</finalName>
@@ -116,13 +125,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20180130</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
 </project>
