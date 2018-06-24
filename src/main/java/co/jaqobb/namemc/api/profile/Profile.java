@@ -36,7 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 /**
- * Class that holds all possible information about the profile.
+ * Class that represents a profile.
  */
 public final class Profile
 {
@@ -45,7 +45,7 @@ public final class Profile
 	 */
 	private final UUID               uniqueId;
 	/**
-	 * Collection of friends.
+	 * Collection of the profile friends.
 	 */
 	private final Collection<Friend> friends;
 	/**
@@ -54,10 +54,10 @@ public final class Profile
 	private final long               cacheTime = System.currentTimeMillis();
 
 	/**
-	 * Constructs new profile instance with the given unique id and JSON array.
+	 * Constructs a new Profile instance with the given unique id and JSON array (friends).
 	 *
 	 * @param uniqueId A unique id of the profile
-	 * @param array    An array that contains information about the friends.
+	 * @param array    An array that contains information about friends.
 	 */
 	protected Profile(UUID uniqueId, JSONArray array)
 	{
@@ -74,9 +74,9 @@ public final class Profile
 	}
 
 	/**
-	 * Returns a unique id of this profile.
+	 * Returns this profile unique id.
 	 *
-	 * @return A unique id of this profile.
+	 * @return This profile unique id.
 	 */
 	public UUID getUniqueId()
 	{
@@ -94,11 +94,11 @@ public final class Profile
 	}
 
 	/**
-	 * Returns a friend instance if this profile has a friend with the given unique id and null otherwise.
+	 * Returns a Friend class instance if this profile has a friend with the given unique id and null otherwise.
 	 *
-	 * @param uniqueId A unique id of the friend to check.
+	 * @param uniqueId A unique id to check.
 	 *
-	 * @return A friend instance if this profile has a friend with the given unique id and null otherwise.
+	 * @return A Friend class instance if this profile has a friend with the given unique id and null otherwise.
 	 *
 	 * @throws NullPointerException If the given unique id is null.
 	 */
@@ -109,11 +109,11 @@ public final class Profile
 	}
 
 	/**
-	 * Returns a friend instance if this profile has a friend with the given name and null otherwise.
+	 * Returns a Friend class instance if this profile has a friend with the given name and null otherwise.
 	 *
-	 * @param name A name of the friend to check (case sensitive).
+	 * @param name A name to check (case sensitive).
 	 *
-	 * @return A friend instance if this profile has a friend with the given name and null otherwise.
+	 * @return A Friend class instance if this profile has a friend with the given name and null otherwise.
 	 *
 	 * @throws NullPointerException If the given name is null.
 	 */
@@ -123,12 +123,12 @@ public final class Profile
 	}
 
 	/**
-	 * Returns a friend instance if this profile has a friend with the given name and null otherwise.
+	 * Returns a Friend class instance if this profile has a friend with the given name and null otherwise.
 	 *
-	 * @param name          A name of the friend to check.
+	 * @param name          A name to check.
 	 * @param caseSensitive A state which defines if case sensitivity in the given name should be checked.
 	 *
-	 * @return A friend instance if this profile has a friend with the given name and null otherwise.
+	 * @return A Friend class instance if this profile has a friend with the given name and null otherwise.
 	 *
 	 * @throws NullPointerException if the given name is null.
 	 */
@@ -141,9 +141,9 @@ public final class Profile
 	/**
 	 * Returns true if this profile has a friend with the given unique id and false otherwise.
 	 *
-	 * @param uniqueId A unique id of the friend to check.
+	 * @param uniqueId A unique id to check.
 	 *
-	 * @return True if this profilee has a friend with the given unique id and false otherwise.
+	 * @return True if this profile has a friend with the given unique id and false otherwise.
 	 *
 	 * @throws NullPointerException If the given unique id is null.
 	 */
@@ -156,7 +156,7 @@ public final class Profile
 	/**
 	 * Returns true if this profile has a friend with the given name and false otherwise.
 	 *
-	 * @param name A name of the friend to check (case sensitive).
+	 * @param name A name to check (case sensitive).
 	 *
 	 * @return True if this profile has a friend with the given name and false otherwise.
 	 *
@@ -170,7 +170,7 @@ public final class Profile
 	/**
 	 * Returns true if this profile has a friend with the given name and false otherwise.
 	 *
-	 * @param name          A name of the friend to check.
+	 * @param name          A name to check.
 	 * @param caseSensitive A state which defines if case sensitivity in the given name should be checked.
 	 *
 	 * @return True if this profile has a friend with the given name and false otherwise.
@@ -184,9 +184,9 @@ public final class Profile
 	}
 
 	/**
-	 * Returns time this profile was cached at.
+	 * Returns this profile cache time.
 	 *
-	 * @return time this profile was cached at.
+	 * @return This profile cache time.
 	 */
 	public long getCacheTime()
 	{
