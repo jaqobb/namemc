@@ -33,7 +33,7 @@ import java.util.UUID;
 import org.json.JSONArray;
 
 /**
- * Class that represents server.
+ * Class that represents a server.
  */
 public final class Server
 {
