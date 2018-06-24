@@ -47,7 +47,9 @@ import org.json.JSONArray;
 public final class ServerService
 {
 	/**
-	 * Creates new server service instance with the default values being 10 as a duration and minutes as a time unit.
+	 * Creates a new ServerService class instance with the default settings being 10 as a duration and minutes as a time unit.
+	 *
+	 * @return A new ServerService class instance with the default settings.
 	 */
 	public static ServerService ofDefault()
 	{
@@ -55,21 +57,23 @@ public final class ServerService
 	}
 
 	/**
-	 * Creates new server service instance with the given duration and duration unit.
+	 * Creates a new ServerService class instance with the given duration and duration unit.
 	 *
-	 * @param duration A duration.
-	 * @param unit     A time unit.
+	 * @param duration     A duration.
+	 * @param durationUnit A duration unit.
 	 *
-	 * @throws IllegalArgumentException If the given duration is 0 or negative.
-	 * @throws NullPointerException     If the given unit is null.
+	 * @return A new ServerService class instance with the given settings.
+	 *
+	 * @throws IllegalArgumentException If the given duration is lower than 1.
+	 * @throws NullPointerException     If the given duration unit is null.
 	 */
-	public static ServerService ofCustom(long duration, TimeUnit unit)
+	public static ServerService ofCustom(long duration, TimeUnit durationUnit)
 	{
 		if (duration < 1)
 		{
 			throw new IllegalArgumentException("duration < 1");
 		}
-		return new ServerService(duration, Objects.requireNonNull(unit, "unit"));
+		return new ServerService(duration, Objects.requireNonNull(durationUnit, "durationUnit"));
 	}
 
 	/**
@@ -100,7 +104,7 @@ public final class ServerService
 	private final Map<String, Server> servers = Collections.synchronizedMap(new WeakHashMap<>(100));
 
 	/**
-	 * Creates new server service instance with the default values being 10 as a duration and minutes as a time unit.
+	 * Creates a new ServerService class instance with the default settings being 10 as a duration and minutes as a time unit.
 	 */
 	private ServerService()
 	{
@@ -108,10 +112,10 @@ public final class ServerService
 	}
 
 	/**
-	 * Creates new server service instance with the given duration and time unit.
+	 * Creates a new ServerService class instance with the given duration and duration unit.
 	 *
-	 * @param duration A duration.
-	 * @param unit     A time unit.
+	 * @param duration     A duration.
+	 * @param durationUnit A duration unit.
 	 */
 	private ServerService(long duration, TimeUnit unit)
 	{
@@ -120,9 +124,9 @@ public final class ServerService
 	}
 
 	/**
-	 * Returns duration that indicates how long servers will be marked as cached.
+	 * Returns a duration that indicates how long servers will be marked as cached.
 	 *
-	 * @return Duration that indicates how long servers will be marked as cached.
+	 * @return A duration that indicates how long servers will be marked as cached.
 	 */
 	public long getDuration()
 	{
@@ -130,9 +134,9 @@ public final class ServerService
 	}
 
 	/**
-	 * Returns unit of the tracked duration.
+	 * Returns a unit of the duration.
 	 *
-	 * @return Unit of the tracked duration.
+	 * @return A unit of the duration.
 	 */
 	public TimeUnit getUnit()
 	{
@@ -140,9 +144,9 @@ public final class ServerService
 	}
 
 	/**
-	 * Returns duration in milliseconds that indicates how long servers will be marked as cached.
+	 * Returns a duration in milliseconds that indicates how long servers will be marked as cached.
 	 *
-	 * @return Duration in milliseconds that indicates how long servers will be marked as cached.
+	 * @return A duration in milliseconds that indicates how long servers will be marked as cached.
 	 */
 	public long getDurationMillis()
 	{
@@ -189,10 +193,10 @@ public final class ServerService
 	}
 
 	/**
-	 * Delegates cached server or caches new server with the given ip and then delegates it to the given callback.
+	 * Delegates cached server or caches a new server with the given ip and then delegates it to the given callback.
 	 *
 	 * @param ip       An ip to cache (case insensitive).
-	 * @param recache  A state which defines if the recache should be forced.
+	 * @param recache  A state which defines if the re-cache should be forced.
 	 * @param callback A callback where cached server and exception (that is null if everything went good) will be delegated to.
 	 *
 	 * @throws NullPointerException If the given ip or callback is null.
@@ -228,11 +232,11 @@ public final class ServerService
 	}
 
 	/**
-	 * Returns true if the given server is not null and does not need to be recached and false otherwise.
+	 * Returns true if the given server is not null and does not need to be re-cached and false otherwise.
 	 *
 	 * @param server A server to check.
 	 *
-	 * @return True if the given server is not null and does not need to be recached and false otherwise.
+	 * @return True if the given server is not null and does not need to be re-cached and false otherwise.
 	 */
 	public boolean isServerValid(Server server)
 	{
