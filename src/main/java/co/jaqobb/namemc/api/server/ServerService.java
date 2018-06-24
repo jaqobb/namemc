@@ -47,7 +47,7 @@ import org.json.JSONArray;
 public final class ServerService
 {
 	/**
-	 * Creates a new ServerService class instance with the default settings being 10 as a duration and minutes as a time unit.
+	 * Creates a new ServerService class instance with the default settings being 10 as a duration and minutes as a duration unit.
 	 *
 	 * @return A new ServerService class instance with the default settings.
 	 */
@@ -95,7 +95,7 @@ public final class ServerService
 	 */
 	private final long                duration;
 	/**
-	 * Time unit used to describe a unit of the duration.
+	 * Duration unit.
 	 */
 	private final TimeUnit            unit;
 	/**
@@ -134,9 +134,9 @@ public final class ServerService
 	}
 
 	/**
-	 * Returns a unit of the duration.
+	 * Returns a duration unit.
 	 *
-	 * @return A unit of the duration.
+	 * @return A duration unit.
 	 */
 	public TimeUnit getUnit()
 	{

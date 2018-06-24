@@ -48,7 +48,9 @@ import org.json.JSONArray;
 public final class ProfileService
 {
 	/**
-	 * Creates new profile service instance with the default values being 5 as a duration and minutes as a time unit.
+	 * Creates a new ProfileService class instance with the default settings being 5 as a duration and minutes as a duration unit.
+	 *
+	 * @return A new ProfileService class instance with the default settings.
 	 */
 	public static ProfileService ofDefault()
 	{
@@ -56,21 +58,23 @@ public final class ProfileService
 	}
 
 	/**
-	 * Creates new profile service instance with the given duration and time unit.
+	 * Creates a new ProfileService class instance with the given duration and duration unit.
 	 *
-	 * @param duration A duration.
-	 * @param unit     A time unit.
+	 * @param duration     A duration.
+	 * @param durationUnit A duration unit.
 	 *
-	 * @throws IllegalArgumentException If the given duration is 0 or negative.
-	 * @throws NullPointerException     If the given unit is null.
+	 * @return A new ProfileService class instance with the given settings.
+	 *
+	 * @throws IllegalArgumentException If the given duration is lower than 1.
+	 * @throws NullPointerException     If the given duration unit is null.
 	 */
-	public static ProfileService ofCustom(long duration, TimeUnit unit)
+	public static ProfileService ofCustom(long duration, TimeUnit durationUnit)
 	{
 		if (duration < 1)
 		{
 			throw new IllegalArgumentException("duration < 1");
 		}
-		return new ProfileService(duration, Objects.requireNonNull(unit, "unit"));
+		return new ProfileService(duration, Objects.requireNonNull(durationUnit, "durationUnit"));
 	}
 
 	/**
@@ -92,7 +96,7 @@ public final class ProfileService
 	 */
 	private final long               duration;
 	/**
-	 * Time unit used to describe a unit of the duration.
+	 * Duration unti.
 	 */
 	private final TimeUnit           unit;
 	/**
@@ -101,7 +105,7 @@ public final class ProfileService
 	private final Map<UUID, Profile> profiles = Collections.synchronizedMap(new WeakHashMap<>(100));
 
 	/**
-	 * Creates new profile service instance with the default values being 5 as a duration and minutes as a time unit.
+	 * Creates a new ProfileService class instance with the default settings being 5 as a duration and minutes as a time unit.
 	 */
 	private ProfileService()
 	{
@@ -109,21 +113,21 @@ public final class ProfileService
 	}
 
 	/**
-	 * Creates new profile service instance with the given time and time unit.
+	 * Creates a new ProfileService class instance with the given duration and duration unit.
 	 *
-	 * @param duration A duration.
-	 * @param unit     A time unit.
+	 * @param duration     A duration.
+	 * @param durationUnit A duration unit.
 	 */
-	private ProfileService(long duration, TimeUnit unit)
+	private ProfileService(long duration, TimeUnit durationUnit)
 	{
 		this.duration = duration;
-		this.unit = unit;
+		this.unit = durationUnit;
 	}
 
 	/**
-	 * Returns duration that indicates how long profiles will be marked as cached.
+	 * Returns a duration that indicates how long profiles will be marked as cached.
 	 *
-	 * @return Duration that indicates how long profiles will be marked as cached.
+	 * @return A duration that indicates how long profiles will be marked as cached.
 	 */
 	public long getDuration()
 	{
@@ -131,9 +135,9 @@ public final class ProfileService
 	}
 
 	/**
-	 * Returns unit of the tracked duration
+	 * Returns a duration unit.
 	 *
-	 * @return Unit of the tracked duration.
+	 * @return A duration unit.
 	 */
 	public TimeUnit getUnit()
 	{
@@ -141,9 +145,9 @@ public final class ProfileService
 	}
 
 	/**
-	 * Returns duration in milliseconds that indicates how long profiles will be marked as cached.
+	 * Returns a duration in milliseconds that indicates how long profiles will be marked as cached.
 	 *
-	 * @return Duration in milliseconds that indicates how long profiles will be marked as cached.
+	 * @return A Duration in milliseconds that indicates how long profiles will be marked as cached.
 	 */
 	public long getDurationMillis()
 	{
@@ -190,10 +194,10 @@ public final class ProfileService
 	}
 
 	/**
-	 * Delegates cached profile or caches new profile with the given unique id and then delegates it to the given callback.
+	 * Delegates cached profile or caches a new profile with the given unique id and then delegates it to the given callback.
 	 *
 	 * @param uniqueId A unique id to cache.
-	 * @param recache  A state which defines if the recache should be forced.
+	 * @param recache  A state which defines if the re-cache should be forced.
 	 * @param callback A callback where cached profile and exception (that is null if everything went good) will be delegated to.
 	 *
 	 * @throws NullPointerException If the given unique id or callback is null.
@@ -230,11 +234,11 @@ public final class ProfileService
 	}
 
 	/**
-	 * Returns true if the given profile is not null and does not need to be recached and false otherwise.
+	 * Returns true if the given profile is not null and does not need to be re-cached and false otherwise.
 	 *
 	 * @param profile A profile to check.
 	 *
-	 * @return True if the given profile is not null and does not need to be recached and false otherwise.
+	 * @return True if the given profile is not null and does not need to be re-cached and false otherwise.
 	 */
 	public boolean isProfileValid(Profile profile)
 	{
