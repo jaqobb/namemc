@@ -69,8 +69,6 @@ public final class NameMC
 
 	/**
 	 * Creates a new NameMC class instance with the default settings.
-	 *
-	 * @return A new NameMC class instance with the default settings.
 	 */
 	private NameMC()
 	{
@@ -80,8 +78,6 @@ public final class NameMC
 
 	/**
 	 * Creates a new NameeMC instance with a possibly custom profile and server service.
-	 *
-	 * @return A new NameMC instance with a possibly custom profile and server service.
 	 */
 	private NameMC(ProfileService profileService, ServerService serverService)
 	{
