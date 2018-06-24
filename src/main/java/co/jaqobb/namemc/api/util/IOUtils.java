@@ -51,7 +51,7 @@ public final class IOUtils
 	 *
 	 * @return A content of the given url.
 	 *
-	 * @throws IOException If an I/O error occured.
+	 * @throws IOException If an I/O error occurs.
 	 */
 	public static String getWebsiteContent(String url) throws IOException
 	{
@@ -68,7 +68,7 @@ public final class IOUtils
 	 *
 	 * @return A content of the given reader.
 	 *
-	 * @throws IOException If an I/O error occured.
+	 * @throws IOException If an I/O error occurs.
 	 */
 	public static String getContent(Reader reader) throws IOException
 	{
