@@ -2,15 +2,13 @@
 Java wrapper for the popular Minecraft related site: https://namemc.com
 
 ### Purposes of this project
-API doesn't support much (but everything it actually can due to lack of API from NameMC creators).
-
-What are the purposes of this API you may ask. You can reward players on your Minecraft server that have liked your server on the NameMC. Besides that, you can easily handle friends of your players and add some interactaction between them, like every 5 new friends on the NameMC, player will receive 5 diamonds and so on.
+This project is supposed to give you easier access to the NameMC API.
 
 ### Requirements
 All you need is Java 8 and optionally Maven if you don't want to download sources on your own.
 
 ### How to use (Maven)
-You need to add repository to your project's pom.xml:
+You need to add repository to your project pom.xml file:
 ```xml
 <repositories>
 	<repository>
@@ -19,7 +17,7 @@ You need to add repository to your project's pom.xml:
 	</repository>
 </repositories>
 ```
-and add dependency:
+and then add dependency:
 ```xml
 <dependencies>
 	<dependency>
@@ -36,41 +34,36 @@ You need to compile this library due to it's not shaded anywhere by default.
 Simply download source and add it to your current project and then do it the same with the org.json library.
 
 ### API
-Everythings begins with the class NameMC. You can either use preset settings created by me, or experiment with settings numbers on your own:
+Everything begins with the NameMC class. You can either use preset settings created by me, or experiment with settings on your own:
 ```java
 NameMC.ofDefault();
-```
-to create a new instance of NameMC class with default settings, or:
-```java
 NameMC.ofCustom(ProfileService profileService, ServerService serverService);
 ```
-to create a new instance of NameMC class with custom settings.
+Profile and server service are being used to store cached profiles and servers and give you possibility to lookup a new ones.
 
-But what the hell is profile and server service? They are being used to store cached profiles and servers and give you possibility to lookup a new ones.
+At this moment you are able to only change time between which cached profiles and servers don't need to be re-cached again.
 
-At this moment you are able to only change time between which cached profiles and servers don't need to be recached again.
-
-You use both the profile and the server service in the same way.
+You use both the profile and server service in the same way.
 
 You create profile service with either:
 ```java
 ProfileService.ofDefault();
 ```
-to create profile service with default values being 5 as a time and minutes as a unit, or:
+to create profile service with default settings being 5 as a time and minutes as a unit, or:
 ```java
-ProfileService.ofCustom(long time, TimeUnit unit);
+ProfileService.ofCustom(long time, TimeUnit durationUnit);
 ```
-to create profile service with custom time and unit.
+to create profile service with custom settings.
 
 The same thing goes for the server service, just replace "Profile" with "Server".
 
-When you created NameMC class instance, you can now use profile service to lookup a profile:
+When you created a new NameMC class instance, you can now use profile service to lookup a profile:
 ```java
 nameMC.getProfileService().getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback);
 ```
 Unique id is the unique id of the profile you want to lookup.
-Recache defines if the profile should be forced to be recached even if there is already a cached profile with the given unique id and if the cache time was smaller than store time.
-Callback returns you a profile filled with all information that could possibly be get about the profile (unique id of this profile, all friends and the time this profile was cached at) and exception which is null if the error didn't occur when trying to lookup the profile.
+Re-cache defines if the profile should be forced to be re-cached even if there is already a cached profile with the given unique id and if the cache time was smaller than the store time.
+Callback returns you a profile filled with all information that could possibly be get about the profile (unique id of this profile, all friends and so on) and exception which is null if the error didn't occur when trying to lookup the profile.
 
 When you have your profile ready, you can access some nice methods:
 ```java
@@ -111,8 +104,8 @@ You can also use server service to lookup a server:
 nameMC.getServerService().getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback);
 ```
 Ip is the ip of the server you want to lookup (case insensitive).
-Recache defines if the server should be forced to be recached even if there is already a cached server with the given ip and if the cache time was smaller than store time.
-Callback returns you a server filled with all information that could possibly be get about the server (ip of this server, all unique ids that have liked this server and the time this server was cached at) and exception which is null if the error didn't occur when trying to lookup the server.
+Re-cache defines if the server should be forced to be re-cached even if there is already a cached server with the given ip and if the cache time was smaller than the store time.
+Callback returns you a server filled with all information that could possibly be get about the server (ip of this server, all unique ids that have liked this server and so on) and exception which is null if the error didn't occur when trying to lookup the server.
 
 When you have your server ready, you can access some nice methods:
 ```java
@@ -145,13 +138,13 @@ nameMC.getProfileService().clearProfiles();
 nameMC.getServerService().clearServers();
 ```
 
-Since version 1.1.3-SNAPSHOT you are able to check if profile or server is valid. Being valid means so profile or server is not null, and doesn't need to be recached:
+Since version 1.1.3-SNAPSHOT you are able to check if profile or server is valid. Being valid means so profile or server is not null, and doesn't need to be re-cached:
 ```java
 nameMC.getProfileService().isProfileValid(Profile profile);
 nameMC.getServerService().isServerValid(Server server);
 ```
 
-Since version 1.2-SNAPSHOT you are able to get all valid or invalid profiles/servers by using this API (so you won't have to do that on your own):
+Since version 1.2-SNAPSHOT you are able to get all valid or invalid profiles/servers by using:
 ```java
 nameMC.getProfileService().getValidProfiles();
 nameMC.getProfileService().getInvalidProfiles();
