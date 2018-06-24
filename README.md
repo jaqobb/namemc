@@ -128,7 +128,7 @@ nameMC.getProfileService().getProfiles();
 nameMC.getServerService().getServers();
 ```
 
-Since version 1.1.1-SNAPSHOT you can also clear both caches at once by using:
+Since the 1.1.1-SNAPSHOT version you can also clear both caches at once by using:
 ```java
 nameMC.clearCaches();
 ```
@@ -138,13 +138,13 @@ nameMC.getProfileService().clearProfiles();
 nameMC.getServerService().clearServers();
 ```
 
-Since version 1.1.3-SNAPSHOT you are able to check if profile or server is valid. Being valid means so profile or server is not null, and doesn't need to be re-cached:
+Since the 1.1.3-SNAPSHOT version you are able to check if profile or server is valid. Being valid means so profile or server is not null, and doesn't need to be re-cached:
 ```java
 nameMC.getProfileService().isProfileValid(Profile profile);
 nameMC.getServerService().isServerValid(Server server);
 ```
 
-Since version 1.2-SNAPSHOT you are able to get all valid or invalid profiles/servers by using:
+Since the 1.2-SNAPSHOT version you are able to get all valid or invalid profiles/servers by using:
 ```java
 nameMC.getProfileService().getValidProfiles();
 nameMC.getProfileService().getInvalidProfiles();
