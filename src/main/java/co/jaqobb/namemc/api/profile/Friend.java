@@ -30,7 +30,7 @@ import java.util.UUID;
 import co.jaqobb.namemc.api.server.Server;
 
 /**
- * Class that holds all possible information about the friend.
+ * Class that represents a friend.
  */
 public class Friend
 {
@@ -48,7 +48,7 @@ public class Friend
 	private final long   cacheTime = System.currentTimeMillis();
 
 	/**
-	 * Constructs new friend instance with the given unique id and name.
+	 * Constructs a new Friend class instance with the given unique id and name.
 	 *
 	 * @param uniqueId A unique id of the friend.
 	 * @param name     A name of the friend.
@@ -60,9 +60,9 @@ public class Friend
 	}
 
 	/**
-	 * Returns a unique id of this friend.
+	 * Returns this friend unique id.
 	 *
-	 * @return A unique id of this friend.
+	 * @return This friend unique id.
 	 */
 	public UUID getUniqueId()
 	{
@@ -70,9 +70,9 @@ public class Friend
 	}
 
 	/**
-	 * Returns a name of this friend.
+	 * Returns this friend name.
 	 *
-	 * @return A name of this friend.
+	 * @return This friend name.
 	 */
 	public String getName()
 	{
@@ -80,9 +80,9 @@ public class Friend
 	}
 
 	/**
-	 * Returns time this friend was cached at.
+	 * Returns this friend cache time.
 	 *
-	 * @return Time this friend was cached at.
+	 * @return Time friend cache time.
 	 */
 	public long getCacheTime()
 	{
@@ -90,11 +90,11 @@ public class Friend
 	}
 
 	/**
-	 * Returns true if this friend is the given profile's friend and false otherwise. Profile's name is case sensitive.
+	 * Returns true if this friend is the given profile friend and false otherwise. Profile name is case sensitive.
 	 *
 	 * @param profile A profile to check.
 	 *
-	 * @return True if this friend is the given profile's friend.
+	 * @return True if this friend is the given profile friend.
 	 *
 	 * @throws NullPointerException If the given profile is null.
 	 */
@@ -104,12 +104,12 @@ public class Friend
 	}
 
 	/**
-	 * Returns true if this friend is the given profile's friend and false otherwise.
+	 * Returns true if this friend is the given profile friend and false otherwise.
 	 *
 	 * @param profile       A profile to check.
-	 * @param caseSensitive A state which defines if case sensitivity in the given profile's name should be checked.
+	 * @param caseSensitive A state which defines if case sensitivity in the given profile name should be checked.
 	 *
-	 * @return True if this friend is the given profile's friend and false otherwise.
+	 * @return True if this friend is the given profile friend and false otherwise.
 	 *
 	 * @throws NullPointerException If the given profile is null.
 	 */
