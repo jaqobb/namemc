@@ -33,7 +33,7 @@ import java.util.UUID;
 import org.json.JSONArray;
 
 /**
- * Class that holds all possible information about the server.
+ * Class that represents server.
  */
 public final class Server
 {
@@ -51,7 +51,7 @@ public final class Server
 	private final long             cacheTime = System.currentTimeMillis();
 
 	/**
-	 * Constructs new server instance with the given ip and JSON array.
+	 * Constructs a new Server class instance with the given ip and JSON array (likes).
 	 *
 	 * @param ip    An ip of the server.
 	 * @param array An array that contains information about the unique ids that liked the server.
@@ -103,9 +103,9 @@ public final class Server
 	}
 
 	/**
-	 * Returns time this server was cached at.
+	 * Returns this server cache time.
 	 *
-	 * @return Time this server was cached at.
+	 * @return This server cache time.
 	 */
 	public long getCacheTime()
 	{
