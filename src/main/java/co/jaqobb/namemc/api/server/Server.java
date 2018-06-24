@@ -88,11 +88,11 @@ public final class Server
 	}
 
 	/**
-	 * Returns true if the given unique id has liked this server and false otherwise.
+	 * Returns true if the given unique id has liked this server, and false otherwise.
 	 *
 	 * @param uniqueId A unique id to check.
 	 *
-	 * @return True if the given unique id has liked this server and false otherwise.
+	 * @return True if the given unique id has liked this server, and false otherwise.
 	 *
 	 * @throws NullPointerException If the given unique id is null.
 	 */
@@ -113,11 +113,11 @@ public final class Server
 	}
 
 	/**
-	 * Returns true if the given object is the same as this class and false otherwise.
+	 * Returns true if the given object is the same as this class, and false otherwise.
 	 *
 	 * @param object An object to check.
 	 *
-	 * @return True if the given object is the same as this class and false otherwise.
+	 * @return True if the given object is the same as this class, and false otherwise.
 	 */
 	@Override
 	public boolean equals(Object object)

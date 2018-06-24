@@ -234,11 +234,11 @@ public final class ProfileService
 	}
 
 	/**
-	 * Returns true if the given profile is not null and does not need to be re-cached and false otherwise.
+	 * Returns true if the given profile is not null and does not need to be re-cached, and false otherwise.
 	 *
 	 * @param profile A profile to check.
 	 *
-	 * @return True if the given profile is not null and does not need to be re-cached and false otherwise.
+	 * @return True if the given profile is not null and does not need to be re-cached, and false otherwise.
 	 */
 	public boolean isProfileValid(Profile profile)
 	{

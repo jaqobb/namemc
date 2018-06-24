@@ -90,11 +90,11 @@ public class Friend
 	}
 
 	/**
-	 * Returns true if this friend is the given profile friend and false otherwise. Profile name is case sensitive.
+	 * Returns true if this friend is the given profile friend, and false otherwise. Profile name is case sensitive.
 	 *
 	 * @param profile A profile to check.
 	 *
-	 * @return True if this friend is the given profile friend.
+	 * @return True if this friend is the given profile friend, and false otherwise.
 	 *
 	 * @throws NullPointerException If the given profile is null.
 	 */
@@ -104,12 +104,12 @@ public class Friend
 	}
 
 	/**
-	 * Returns true if this friend is the given profile friend and false otherwise.
+	 * Returns true if this friend is the given profile friend, and false otherwise.
 	 *
 	 * @param profile       A profile to check.
 	 * @param caseSensitive A state which defines if case sensitivity in the given profile name should be checked.
 	 *
-	 * @return True if this friend is the given profile friend and false otherwise.
+	 * @return True if this friend is the given profile friend, and false otherwise.
 	 *
 	 * @throws NullPointerException If the given profile is null.
 	 */
@@ -124,11 +124,11 @@ public class Friend
 	}
 
 	/**
-	 * Returns true if this friend has liked the given server and false otherwise.
+	 * Returns true if this friend has liked the given server, and false otherwise.
 	 *
 	 * @param server A server to check.
 	 *
-	 * @return True if this friend has liked the given server and false otherwise.
+	 * @return True if this friend has liked the given server, and false otherwise.
 	 *
 	 * @throws NullPointerException If the given server is null.
 	 */
@@ -139,11 +139,11 @@ public class Friend
 	}
 
 	/**
-	 * Returns true if the given object is the same as this class and false otherwise.
+	 * Returns true if the given object is the same as this class, and false otherwise.
 	 *
 	 * @param object An object to check.
 	 *
-	 * @return True if the given object is the same as this class and false otherwise.
+	 * @return True if the given object is the same as this class, and false otherwise.
 	 */
 	@Override
 	public boolean equals(Object object)

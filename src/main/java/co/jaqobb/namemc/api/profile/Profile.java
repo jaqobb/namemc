@@ -94,11 +94,11 @@ public final class Profile
 	}
 
 	/**
-	 * Returns a Friend class instance if this profile has a friend with the given unique id and null otherwise.
+	 * Returns a Friend class instance if this profile has a friend with the given unique id, and null otherwise.
 	 *
 	 * @param uniqueId A unique id to check.
 	 *
-	 * @return A Friend class instance if this profile has a friend with the given unique id and null otherwise.
+	 * @return A Friend class instance if this profile has a friend with the given unique id, and null otherwise.
 	 *
 	 * @throws NullPointerException If the given unique id is null.
 	 */
@@ -109,11 +109,11 @@ public final class Profile
 	}
 
 	/**
-	 * Returns a Friend class instance if this profile has a friend with the given name and null otherwise.
+	 * Returns a Friend class instance if this profile has a friend with the given name, and null otherwise.
 	 *
 	 * @param name A name to check (case sensitive).
 	 *
-	 * @return A Friend class instance if this profile has a friend with the given name and null otherwise.
+	 * @return A Friend class instance if this profile has a friend with the given name, and null otherwise.
 	 *
 	 * @throws NullPointerException If the given name is null.
 	 */
@@ -123,12 +123,12 @@ public final class Profile
 	}
 
 	/**
-	 * Returns a Friend class instance if this profile has a friend with the given name and null otherwise.
+	 * Returns a Friend class instance if this profile has a friend with the given name, and null otherwise.
 	 *
 	 * @param name          A name to check.
 	 * @param caseSensitive A state which defines if case sensitivity in the given name should be checked.
 	 *
-	 * @return A Friend class instance if this profile has a friend with the given name and null otherwise.
+	 * @return A Friend class instance if this profile has a friend with the given name, and null otherwise.
 	 *
 	 * @throws NullPointerException if the given name is null.
 	 */
@@ -139,11 +139,11 @@ public final class Profile
 	}
 
 	/**
-	 * Returns true if this profile has a friend with the given unique id and false otherwise.
+	 * Returns true if this profile has a friend with the given unique id, and false otherwise.
 	 *
 	 * @param uniqueId A unique id to check.
 	 *
-	 * @return True if this profile has a friend with the given unique id and false otherwise.
+	 * @return True if this profile has a friend with the given unique id, and false otherwise.
 	 *
 	 * @throws NullPointerException If the given unique id is null.
 	 */
@@ -154,11 +154,11 @@ public final class Profile
 	}
 
 	/**
-	 * Returns true if this profile has a friend with the given name and false otherwise.
+	 * Returns true if this profile has a friend with the given name, and false otherwise.
 	 *
 	 * @param name A name to check (case sensitive).
 	 *
-	 * @return True if this profile has a friend with the given name and false otherwise.
+	 * @return True if this profile has a friend with the given name, and false otherwise.
 	 *
 	 * @throws NullPointerException If the given name is null.
 	 */
@@ -168,12 +168,12 @@ public final class Profile
 	}
 
 	/**
-	 * Returns true if this profile has a friend with the given name and false otherwise.
+	 * Returns true if this profile has a friend with the given name, and false otherwise.
 	 *
 	 * @param name          A name to check.
 	 * @param caseSensitive A state which defines if case sensitivity in the given name should be checked.
 	 *
-	 * @return True if this profile has a friend with the given name and false otherwise.
+	 * @return True if this profile has a friend with the given name, and false otherwise.
 	 *
 	 * @throws NullPointerException If the given name is null.
 	 */
@@ -209,11 +209,11 @@ public final class Profile
 	}
 
 	/**
-	 * Returns true if the given object is the same as this class and false otherwise.
+	 * Returns true if the given object is the same as this class, and false otherwise.
 	 *
 	 * @param object An object to check.
 	 *
-	 * @return True if the given object is the same as this class and false otherwise.
+	 * @return True if the given object is the same as this class, and false otherwise.
 	 */
 	@Override
 	public boolean equals(Object object)

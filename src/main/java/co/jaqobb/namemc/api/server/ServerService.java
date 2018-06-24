@@ -232,11 +232,11 @@ public final class ServerService
 	}
 
 	/**
-	 * Returns true if the given server is not null and does not need to be re-cached and false otherwise.
+	 * Returns true if the given server is not null and does not need to be re-cached, and false otherwise.
 	 *
 	 * @param server A server to check.
 	 *
-	 * @return True if the given server is not null and does not need to be re-cached and false otherwise.
+	 * @return True if the given server is not null and does not need to be re-cached, and false otherwise.
 	 */
 	public boolean isServerValid(Server server)
 	{
