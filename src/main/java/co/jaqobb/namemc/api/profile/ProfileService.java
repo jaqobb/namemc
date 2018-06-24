@@ -1,5 +1,5 @@
 /*
- * The MIT License
+ * The MIT License.
  *
  * Copyright (c) jaqobb (Jakub Zagórski) <jaqobb@jaqobb.co>
  *
