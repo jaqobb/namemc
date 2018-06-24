@@ -33,12 +33,12 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Collection of useful methods used in this project.
+ * Collection of useful methods related to the I/O.
  */
 public final class IOUtils
 {
 	/**
-	 * Useless constructor, just to make sure no one will initialize this class.
+	 * Private constructor to make sure no one will initialize this class.
 	 */
 	private IOUtils()
 	{
@@ -51,7 +51,7 @@ public final class IOUtils
 	 *
 	 * @return A content of the given url.
 	 *
-	 * @throws IOException If an I/O error occurs.
+	 * @throws IOException If an I/O error occured.
 	 */
 	public static String getWebsiteContent(String url) throws IOException
 	{
@@ -68,7 +68,7 @@ public final class IOUtils
 	 *
 	 * @return A content of the given reader.
 	 *
-	 * @throws IOException If an I/O error occurs.
+	 * @throws IOException If an I/O error occured.
 	 */
 	public static String getContent(Reader reader) throws IOException
 	{
