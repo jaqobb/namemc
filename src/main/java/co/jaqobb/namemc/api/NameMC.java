@@ -30,14 +30,14 @@ import co.jaqobb.namemc.api.profile.ProfileService;
 import co.jaqobb.namemc.api.server.ServerService;
 
 /**
- * Class where the fun with the API begins.
+ * Class where the whole API begins.
  */
 public final class NameMC
 {
 	/**
-	 * Creates new name mc instance with the default settings.
+	 * Creates a new NameMC class instance with the default settings.
 	 *
-	 * @return New name mc instance with the default settings.
+	 * @return A new NameMC class instance with the default settings.
 	 */
 	public static NameMC ofDefault()
 	{
@@ -45,15 +45,17 @@ public final class NameMC
 	}
 
 	/**
-	 * Creates new name mc instance with the possibly custom profile service and server service.
+	 * Creates a new NameeMC instance with a possibly custom profile and server service.
 	 *
-	 * @return New name mc instance with the possibly custom profile service and server service.
+	 * @return A new NameMC instance with a possibly custom profile and server service.
 	 *
-	 * @throws NullPointerException If the given profile service or the given server service is null.
+	 * @throws NullPointerException If the given profile or server service is null.
 	 */
 	public static NameMC ofCustom(ProfileService profileService, ServerService serverService)
 	{
-		return new NameMC(Objects.requireNonNull(profileService, "profileService"), Objects.requireNonNull(serverService, "serverService"));
+		Objects.requireNonNull(profileService, "profileService");
+		Objects.requireNonNull(serverService, "serverService");
+		return new NameMC(profileService, serverService);
 	}
 
 	/**
@@ -66,9 +68,9 @@ public final class NameMC
 	private final ServerService  serverService;
 
 	/**
-	 * Creates new name mc instance with the default settings.
+	 * Creates a new NameMC class instance with the default settings.
 	 *
-	 * @return New name mc instance with the default settings.
+	 * @return A new NameMC class instance with the default settings.
 	 */
 	private NameMC()
 	{
@@ -77,9 +79,9 @@ public final class NameMC
 	}
 
 	/**
-	 * Creates new namemc instance with the possibly custom profile service and server service.
+	 * Creates a new NameeMC instance with a possibly custom profile and server service.
 	 *
-	 * @return New namemc instance with the possibly custom profile service and server service.
+	 * @return A new NameMC instance with a possibly custom profile and server service.
 	 */
 	private NameMC(ProfileService profileService, ServerService serverService)
 	{
@@ -88,9 +90,9 @@ public final class NameMC
 	}
 
 	/**
-	 * Returns currently used profile service.
+	 * Returns the currently used profile service.
 	 *
-	 * @return Currently used profile service.
+	 * @return The currently used profile service.
 	 */
 	public ProfileService getProfileService()
 	{
@@ -98,9 +100,9 @@ public final class NameMC
 	}
 
 	/**
-	 * Returns currently used server service.
+	 * Returns the currently used server service.
 	 *
-	 * @return Currently used server service.
+	 * @return The currently used server service.
 	 */
 	public ServerService getServerService()
 	{
@@ -108,7 +110,7 @@ public final class NameMC
 	}
 
 	/**
-	 * Clears the profile service and the server service cache.
+	 * Clears all services cache.
 	 */
 	public void clearCaches()
 	{
