@@ -1,7 +1,8 @@
 /*
- * The MIT License.
+ * This file is a part of namemc-api, licensed under the MIT License.
  *
  * Copyright (c) jaqobb (Jakub Zagórski) <jaqobb@jaqobb.co>
+ * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
