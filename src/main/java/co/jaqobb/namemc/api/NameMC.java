@@ -66,7 +66,7 @@ public final class NameMC
 	/**
 	 * Currently used server service.
 	 */
-	private final ServerService  serverService;
+	private final ServerService serverService;
 
 	/**
 	 * Creates a new NameMC class instance with the default settings.

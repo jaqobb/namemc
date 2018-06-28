@@ -90,16 +90,16 @@ public final class ProfileService
 	/**
 	 * Executor used to cache profiles.
 	 */
-	private static final Executor      EXECUTOR                = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	/**
 	 * Duration that indicates how long profiles will be marked as cached.
 	 */
-	private final long               duration;
+	private final long duration;
 	/**
 	 * Duration unti.
 	 */
-	private final TimeUnit           unit;
+	private final TimeUnit unit;
 	/**
 	 * Collection of the currently cached profiles.
 	 */

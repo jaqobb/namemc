@@ -41,7 +41,7 @@ public final class Server
 	/**
 	 * Ip of the server.
 	 */
-	private final String           ip;
+	private final String ip;
 	/**
 	 * Collection of unique ids that liked the server.
 	 */
@@ -49,7 +49,7 @@ public final class Server
 	/**
 	 * Time the server was cached at.
 	 */
-	private final long             cacheTime = System.currentTimeMillis();
+	private final long cacheTime = System.currentTimeMillis();
 
 	/**
 	 * Constructs a new Server class instance with the given ip and JSON array (likes).

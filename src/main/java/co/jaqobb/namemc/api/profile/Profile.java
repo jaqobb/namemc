@@ -44,7 +44,7 @@ public final class Profile
 	/**
 	 * Unique id of the profile.
 	 */
-	private final UUID               uniqueId;
+	private final UUID uniqueId;
 	/**
 	 * Collection of the profile friends.
 	 */
@@ -52,7 +52,7 @@ public final class Profile
 	/**
 	 * Time the profile was cached at.
 	 */
-	private final long               cacheTime = System.currentTimeMillis();
+	private final long cacheTime = System.currentTimeMillis();
 
 	/**
 	 * Constructs a new Profile instance with the given unique id and JSON array (friends).

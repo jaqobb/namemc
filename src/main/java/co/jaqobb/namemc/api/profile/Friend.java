@@ -38,7 +38,7 @@ public class Friend
 	/**
 	 * Unique id of the friend.
 	 */
-	private final UUID   uniqueId;
+	private final UUID uniqueId;
 	/**
 	 * Name of the friend.
 	 */
@@ -46,7 +46,7 @@ public class Friend
 	/**
 	 * Time the friend was cached at.
 	 */
-	private final long   cacheTime = System.currentTimeMillis();
+	private final long cacheTime = System.currentTimeMillis();
 
 	/**
 	 * Constructs a new Friend class instance with the given unique id and name.

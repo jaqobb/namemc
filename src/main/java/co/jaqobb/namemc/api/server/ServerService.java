@@ -89,16 +89,16 @@ public final class ServerService
 	/**
 	 * Executor used to cache servers.
 	 */
-	private static final Executor      EXECUTOR                = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMC API Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	/**
 	 * Duration that indicates how long servers will be marked as cached.
 	 */
-	private final long                duration;
+	private final long duration;
 	/**
 	 * Duration unit.
 	 */
-	private final TimeUnit            unit;
+	private final TimeUnit unit;
 	/**
 	 * Collection of the currently cached servers.
 	 */
