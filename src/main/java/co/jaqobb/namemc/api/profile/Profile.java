@@ -58,7 +58,7 @@ public final class Profile
 	 * Constructs a new Profile instance with the given unique id and JSON array (friends).
 	 *
 	 * @param uniqueId A unique id of the profile
-	 * @param array    An array that contains information about friends.
+	 * @param array An array that contains information about friends.
 	 */
 	protected Profile(UUID uniqueId, JSONArray array)
 	{
@@ -126,7 +126,7 @@ public final class Profile
 	/**
 	 * Returns a Friend class instance if this profile has a friend with the given name, and null otherwise.
 	 *
-	 * @param name          A name to check.
+	 * @param name A name to check.
 	 * @param caseSensitive A state which defines if case sensitivity in the given name should be checked.
 	 *
 	 * @return A Friend class instance if this profile has a friend with the given name, and null otherwise.
@@ -171,7 +171,7 @@ public final class Profile
 	/**
 	 * Returns true if this profile has a friend with the given name, and false otherwise.
 	 *
-	 * @param name          A name to check.
+	 * @param name A name to check.
 	 * @param caseSensitive A state which defines if case sensitivity in the given name should be checked.
 	 *
 	 * @return True if this profile has a friend with the given name, and false otherwise.

@@ -52,7 +52,7 @@ public class Friend
 	 * Constructs a new Friend class instance with the given unique id and name.
 	 *
 	 * @param uniqueId A unique id of the friend.
-	 * @param name     A name of the friend.
+	 * @param name A name of the friend.
 	 */
 	protected Friend(UUID uniqueId, String name)
 	{
@@ -107,7 +107,7 @@ public class Friend
 	/**
 	 * Returns true if this friend is the given profile friend, and false otherwise.
 	 *
-	 * @param profile       A profile to check.
+	 * @param profile A profile to check.
 	 * @param caseSensitive A state which defines if case sensitivity in the given profile name should be checked.
 	 *
 	 * @return True if this friend is the given profile friend, and false otherwise.

@@ -61,13 +61,13 @@ public final class ProfileService
 	/**
 	 * Creates a new ProfileService class instance with the given duration and duration unit.
 	 *
-	 * @param duration     A duration.
+	 * @param duration A duration.
 	 * @param durationUnit A duration unit.
 	 *
 	 * @return A new ProfileService class instance with the given settings.
 	 *
 	 * @throws IllegalArgumentException If the given duration is lower than 1.
-	 * @throws NullPointerException     If the given duration unit is null.
+	 * @throws NullPointerException If the given duration unit is null.
 	 */
 	public static ProfileService ofCustom(long duration, TimeUnit durationUnit)
 	{
@@ -116,7 +116,7 @@ public final class ProfileService
 	/**
 	 * Creates a new ProfileService class instance with the given duration and duration unit.
 	 *
-	 * @param duration     A duration.
+	 * @param duration A duration.
 	 * @param durationUnit A duration unit.
 	 */
 	private ProfileService(long duration, TimeUnit durationUnit)
@@ -198,7 +198,7 @@ public final class ProfileService
 	 * Delegates cached profile or caches a new profile with the given unique id and then delegates it to the given callback.
 	 *
 	 * @param uniqueId A unique id to cache.
-	 * @param recache  A state which defines if the re-cache should be forced.
+	 * @param recache A state which defines if the re-cache should be forced.
 	 * @param callback A callback where cached profile and exception (that is null if everything went good) will be delegated to.
 	 *
 	 * @throws NullPointerException If the given unique id or callback is null.

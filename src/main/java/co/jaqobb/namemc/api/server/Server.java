@@ -54,7 +54,7 @@ public final class Server
 	/**
 	 * Constructs a new Server class instance with the given ip and JSON array (likes).
 	 *
-	 * @param ip    An ip of the server.
+	 * @param ip An ip of the server.
 	 * @param array An array that contains information about the unique ids that liked the server.
 	 */
 	protected Server(String ip, JSONArray array)

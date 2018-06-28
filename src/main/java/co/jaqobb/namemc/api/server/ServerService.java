@@ -60,13 +60,13 @@ public final class ServerService
 	/**
 	 * Creates a new ServerService class instance with the given duration and duration unit.
 	 *
-	 * @param duration     A duration.
+	 * @param duration A duration.
 	 * @param durationUnit A duration unit.
 	 *
 	 * @return A new ServerService class instance with the given settings.
 	 *
 	 * @throws IllegalArgumentException If the given duration is lower than 1.
-	 * @throws NullPointerException     If the given duration unit is null.
+	 * @throws NullPointerException If the given duration unit is null.
 	 */
 	public static ServerService ofCustom(long duration, TimeUnit durationUnit)
 	{
@@ -115,7 +115,7 @@ public final class ServerService
 	/**
 	 * Creates a new ServerService class instance with the given duration and duration unit.
 	 *
-	 * @param duration     A duration.
+	 * @param duration A duration.
 	 * @param durationUnit A duration unit.
 	 */
 	private ServerService(long duration, TimeUnit unit)
@@ -196,8 +196,8 @@ public final class ServerService
 	/**
 	 * Delegates cached server or caches a new server with the given ip and then delegates it to the given callback.
 	 *
-	 * @param ip       An ip to cache (case insensitive).
-	 * @param recache  A state which defines if the re-cache should be forced.
+	 * @param ip An ip to cache (case insensitive).
+	 * @param recache A state which defines if the re-cache should be forced.
 	 * @param callback A callback where cached server and exception (that is null if everything went good) will be delegated to.
 	 *
 	 * @throws NullPointerException If the given ip or callback is null.
