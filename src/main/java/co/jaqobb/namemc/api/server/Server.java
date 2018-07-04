@@ -36,8 +36,7 @@ import org.json.JSONArray;
 /**
  * Class that represents a server.
  */
-public final class Server
-{
+public final class Server {
 	/**
 	 * Ip of the server.
 	 */
@@ -57,12 +56,10 @@ public final class Server
 	 * @param ip An ip of the server.
 	 * @param array An array that contains information about the unique ids that liked the server.
 	 */
-	protected Server(String ip, JSONArray array)
-	{
+	protected Server(String ip, JSONArray array) {
 		this.ip = ip;
 		Collection<UUID> likes = new ArrayList<>(array.length());
-		for (int index = 0; index < array.length(); index++)
-		{
+		for (int index = 0; index < array.length(); index++) {
 			likes.add(UUID.fromString(array.getString(index)));
 		}
 		this.likes = likes;
@@ -73,8 +70,7 @@ public final class Server
 	 *
 	 * @return This server ip.
 	 */
-	public String getIp()
-	{
+	public String getIp() {
 		return this.ip;
 	}
 
@@ -83,8 +79,7 @@ public final class Server
 	 *
 	 * @return An immutable collection of the unique ids that have liked this server.
 	 */
-	public Collection<UUID> getLikes()
-	{
+	public Collection<UUID> getLikes() {
 		return Collections.unmodifiableCollection(this.likes);
 	}
 
@@ -97,8 +92,7 @@ public final class Server
 	 *
 	 * @throws NullPointerException If the given unique id is null.
 	 */
-	public boolean hasLiked(UUID uniqueId)
-	{
+	public boolean hasLiked(UUID uniqueId) {
 		Objects.requireNonNull(uniqueId, "uniqueId");
 		return this.likes.contains(uniqueId);
 	}
@@ -108,8 +102,7 @@ public final class Server
 	 *
 	 * @return This server cache time.
 	 */
-	public long getCacheTime()
-	{
+	public long getCacheTime() {
 		return this.cacheTime;
 	}
 
@@ -121,14 +114,11 @@ public final class Server
 	 * @return True if the given object is the same as this class, and false otherwise.
 	 */
 	@Override
-	public boolean equals(Object object)
-	{
-		if (this == object)
-		{
+	public boolean equals(Object object) {
+		if (this == object) {
 			return true;
 		}
-		if (object == null || this.getClass() != object.getClass())
-		{
+		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
 		Server that = (Server) object;
@@ -141,8 +131,7 @@ public final class Server
 	 * @return A hash code of this class.
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(this.ip, this.likes);
 	}
 
@@ -152,8 +141,7 @@ public final class Server
 	 * @return A nice looking representation of this class.
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Server{" + "ip=" + this.ip + ", likes=" + this.likes + "}";
 	}
 }

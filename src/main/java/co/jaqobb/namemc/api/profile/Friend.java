@@ -33,8 +33,7 @@ import co.jaqobb.namemc.api.server.Server;
 /**
  * Class that represents a friend.
  */
-public class Friend
-{
+public class Friend {
 	/**
 	 * Unique id of the friend.
 	 */
@@ -54,8 +53,7 @@ public class Friend
 	 * @param uniqueId A unique id of the friend.
 	 * @param name A name of the friend.
 	 */
-	protected Friend(UUID uniqueId, String name)
-	{
+	protected Friend(UUID uniqueId, String name) {
 		this.uniqueId = uniqueId;
 		this.name = name;
 	}
@@ -65,8 +63,7 @@ public class Friend
 	 *
 	 * @return This friend unique id.
 	 */
-	public UUID getUniqueId()
-	{
+	public UUID getUniqueId() {
 		return this.uniqueId;
 	}
 
@@ -75,8 +72,7 @@ public class Friend
 	 *
 	 * @return This friend name.
 	 */
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
@@ -85,8 +81,7 @@ public class Friend
 	 *
 	 * @return Time friend cache time.
 	 */
-	public long getCacheTime()
-	{
+	public long getCacheTime() {
 		return this.cacheTime;
 	}
 
@@ -99,8 +94,7 @@ public class Friend
 	 *
 	 * @throws NullPointerException If the given profile is null.
 	 */
-	public boolean isFriendOf(Profile profile)
-	{
+	public boolean isFriendOf(Profile profile) {
 		return this.isFriendOf(profile, true);
 	}
 
@@ -114,11 +108,9 @@ public class Friend
 	 *
 	 * @throws NullPointerException If the given profile is null.
 	 */
-	public boolean isFriendOf(Profile profile, boolean caseSensitive)
-	{
+	public boolean isFriendOf(Profile profile, boolean caseSensitive) {
 		Objects.requireNonNull(profile, "profile");
-		if (profile.hasFriend(this.uniqueId))
-		{
+		if (profile.hasFriend(this.uniqueId)) {
 			return true;
 		}
 		return profile.hasFriend(this.name, caseSensitive);
@@ -133,8 +125,7 @@ public class Friend
 	 *
 	 * @throws NullPointerException If the given server is null.
 	 */
-	public boolean hasLiked(Server server)
-	{
+	public boolean hasLiked(Server server) {
 		Objects.requireNonNull(server, "server");
 		return server.hasLiked(this.uniqueId);
 	}
@@ -147,14 +138,11 @@ public class Friend
 	 * @return True if the given object is the same as this class, and false otherwise.
 	 */
 	@Override
-	public boolean equals(Object object)
-	{
-		if (this == object)
-		{
+	public boolean equals(Object object) {
+		if (this == object) {
 			return true;
 		}
-		if (object == null || this.getClass() != object.getClass())
-		{
+		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
 		Friend that = (Friend) object;
@@ -167,8 +155,7 @@ public class Friend
 	 * @return A hash code of this class.
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(this.uniqueId, this.name);
 	}
 
@@ -178,8 +165,7 @@ public class Friend
 	 * @return A nice looking representation of this class.
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Friend{" + "uniqueId=" + this.uniqueId + ", name=" + this.name + "}";
 	}
 }

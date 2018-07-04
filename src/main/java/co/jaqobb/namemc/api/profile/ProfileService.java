@@ -46,15 +46,13 @@ import org.json.JSONArray;
 /**
  * Class used to store cached profile and to cache new ones.
  */
-public final class ProfileService
-{
+public final class ProfileService {
 	/**
 	 * Creates a new ProfileService class instance with the default settings being 5 as a duration and minutes as a duration unit.
 	 *
 	 * @return A new ProfileService class instance with the default settings.
 	 */
-	public static ProfileService ofDefault()
-	{
+	public static ProfileService of() {
 		return new ProfileService();
 	}
 
@@ -69,10 +67,8 @@ public final class ProfileService
 	 * @throws IllegalArgumentException If the given duration is lower than 1.
 	 * @throws NullPointerException If the given duration unit is null.
 	 */
-	public static ProfileService ofCustom(long duration, TimeUnit durationUnit)
-	{
-		if (duration < 1)
-		{
+	public static ProfileService of(long duration, TimeUnit durationUnit) {
+		if (duration < 1) {
 			throw new IllegalArgumentException("duration < 1");
 		}
 		return new ProfileService(duration, Objects.requireNonNull(durationUnit, "durationUnit"));
@@ -108,8 +104,7 @@ public final class ProfileService
 	/**
 	 * Creates a new ProfileService class instance with the default settings being 5 as a duration and minutes as a time unit.
 	 */
-	private ProfileService()
-	{
+	private ProfileService() {
 		this(5, TimeUnit.MINUTES);
 	}
 
@@ -119,8 +114,7 @@ public final class ProfileService
 	 * @param duration A duration.
 	 * @param durationUnit A duration unit.
 	 */
-	private ProfileService(long duration, TimeUnit durationUnit)
-	{
+	private ProfileService(long duration, TimeUnit durationUnit) {
 		this.duration = duration;
 		this.unit = durationUnit;
 	}
@@ -130,8 +124,7 @@ public final class ProfileService
 	 *
 	 * @return A duration that indicates how long profiles will be marked as cached.
 	 */
-	public long getDuration()
-	{
+	public long getDuration() {
 		return this.duration;
 	}
 
@@ -140,8 +133,7 @@ public final class ProfileService
 	 *
 	 * @return A duration unit.
 	 */
-	public TimeUnit getUnit()
-	{
+	public TimeUnit getUnit() {
 		return this.unit;
 	}
 
@@ -150,8 +142,7 @@ public final class ProfileService
 	 *
 	 * @return A Duration in milliseconds that indicates how long profiles will be marked as cached.
 	 */
-	public long getDurationMillis()
-	{
+	public long getDurationMillis() {
 		return this.unit.toMillis(this.duration);
 	}
 
@@ -160,10 +151,8 @@ public final class ProfileService
 	 *
 	 * @return An immutable collection of the currently cached profiles.
 	 */
-	public Collection<Profile> getProfiles()
-	{
-		synchronized (this.profiles)
-		{
+	public Collection<Profile> getProfiles() {
+		synchronized (this.profiles) {
 			return Collections.unmodifiableCollection(this.profiles.values());
 		}
 	}
@@ -173,10 +162,8 @@ public final class ProfileService
 	 *
 	 * @return An immutable collection of the currently cached valid profiles.
 	 */
-	public Collection<Profile> getValidProfiles()
-	{
-		synchronized (this.profiles)
-		{
+	public Collection<Profile> getValidProfiles() {
+		synchronized (this.profiles) {
 			return Collections.unmodifiableCollection(this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toList()));
 		}
 	}
@@ -186,10 +173,8 @@ public final class ProfileService
 	 *
 	 * @return An immutable collection of the currently cached invalid profiles.
 	 */
-	public Collection<Profile> getInvalidProfiles()
-	{
-		synchronized (this.profiles)
-		{
+	public Collection<Profile> getInvalidProfiles() {
+		synchronized (this.profiles) {
 			return Collections.unmodifiableCollection(this.profiles.values().stream().filter(profile -> !this.isProfileValid(profile)).collect(Collectors.toList()));
 		}
 	}
@@ -203,32 +188,25 @@ public final class ProfileService
 	 *
 	 * @throws NullPointerException If the given unique id or callback is null.
 	 */
-	public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback)
-	{
+	public void getProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Exception> callback) {
 		Objects.requireNonNull(uniqueId, "uniqueId");
 		Objects.requireNonNull(callback, "callback");
-		synchronized (this.profiles)
-		{
+		synchronized (this.profiles) {
 			Profile profile = this.profiles.get(uniqueId);
-			if (this.isProfileValid(profile) && !recache)
-			{
+			if (this.isProfileValid(profile) && !recache) {
 				callback.accept(profile, null);
 				return;
 			}
 		}
-		EXECUTOR.execute(() ->
-		{
+		EXECUTOR.execute(() -> {
 			String url = String.format(PROFILE_FRIENDS_URL, uniqueId.toString());
-			try
-			{
+			try {
 				String content = IOUtils.getWebsiteContent(url);
 				JSONArray array = new JSONArray(content);
 				Profile profile = new Profile(uniqueId, array);
 				this.profiles.put(uniqueId, profile);
 				callback.accept(profile, null);
-			}
-			catch (IOException exception)
-			{
+			} catch (IOException exception) {
 				callback.accept(null, exception);
 			}
 		});
@@ -241,18 +219,15 @@ public final class ProfileService
 	 *
 	 * @return True if the given profile is not null and does not need to be re-cached, and false otherwise.
 	 */
-	public boolean isProfileValid(Profile profile)
-	{
+	public boolean isProfileValid(Profile profile) {
 		return profile != null && System.currentTimeMillis() - profile.getCacheTime() < this.getDurationMillis();
 	}
 
 	/**
 	 * Clears profiles cache.
 	 */
-	public void clearProfiles()
-	{
-		synchronized (this.profiles)
-		{
+	public void clearProfiles() {
+		synchronized (this.profiles) {
 			this.profiles.clear();
 		}
 	}

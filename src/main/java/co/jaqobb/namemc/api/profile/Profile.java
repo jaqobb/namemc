@@ -39,8 +39,7 @@ import org.json.JSONObject;
 /**
  * Class that represents a profile.
  */
-public final class Profile
-{
+public final class Profile {
 	/**
 	 * Unique id of the profile.
 	 */
@@ -60,12 +59,10 @@ public final class Profile
 	 * @param uniqueId A unique id of the profile
 	 * @param array An array that contains information about friends.
 	 */
-	protected Profile(UUID uniqueId, JSONArray array)
-	{
+	protected Profile(UUID uniqueId, JSONArray array) {
 		this.uniqueId = uniqueId;
 		Collection<Friend> friends = new ArrayList<>(array.length());
-		for (int index = 0; index < array.length(); index++)
-		{
+		for (int index = 0; index < array.length(); index++) {
 			JSONObject object = array.getJSONObject(index);
 			UUID friendUniqueId = UUID.fromString(object.getString("uuid"));
 			String friendName = object.getString("name");
@@ -79,8 +76,7 @@ public final class Profile
 	 *
 	 * @return This profile unique id.
 	 */
-	public UUID getUniqueId()
-	{
+	public UUID getUniqueId() {
 		return this.uniqueId;
 	}
 
@@ -89,8 +85,7 @@ public final class Profile
 	 *
 	 * @return An immutable collection of friends of this profile.
 	 */
-	public Collection<Friend> getFriends()
-	{
+	public Collection<Friend> getFriends() {
 		return Collections.unmodifiableCollection(this.friends);
 	}
 
@@ -103,8 +98,7 @@ public final class Profile
 	 *
 	 * @throws NullPointerException If the given unique id is null.
 	 */
-	public Friend getFriend(UUID uniqueId)
-	{
+	public Friend getFriend(UUID uniqueId) {
 		Objects.requireNonNull(uniqueId, "uniqueId");
 		return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
 	}
@@ -118,8 +112,7 @@ public final class Profile
 	 *
 	 * @throws NullPointerException If the given name is null.
 	 */
-	public Friend getFriend(String name)
-	{
+	public Friend getFriend(String name) {
 		return this.getFriend(name, true);
 	}
 
@@ -133,8 +126,7 @@ public final class Profile
 	 *
 	 * @throws NullPointerException if the given name is null.
 	 */
-	public Friend getFriend(String name, boolean caseSensitive)
-	{
+	public Friend getFriend(String name, boolean caseSensitive) {
 		Objects.requireNonNull(name, "name");
 		return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
 	}
@@ -148,8 +140,7 @@ public final class Profile
 	 *
 	 * @throws NullPointerException If the given unique id is null.
 	 */
-	public boolean hasFriend(UUID uniqueId)
-	{
+	public boolean hasFriend(UUID uniqueId) {
 		Objects.requireNonNull(uniqueId, "uniqueId");
 		return this.friends.stream().anyMatch(friend -> friend.getUniqueId().equals(uniqueId));
 	}
@@ -163,8 +154,7 @@ public final class Profile
 	 *
 	 * @throws NullPointerException If the given name is null.
 	 */
-	public boolean hasFriend(String name)
-	{
+	public boolean hasFriend(String name) {
 		return this.hasFriend(name, true);
 	}
 
@@ -178,8 +168,7 @@ public final class Profile
 	 *
 	 * @throws NullPointerException If the given name is null.
 	 */
-	public boolean hasFriend(String name, boolean caseSensitive)
-	{
+	public boolean hasFriend(String name, boolean caseSensitive) {
 		Objects.requireNonNull(name, "name");
 		return this.friends.stream().anyMatch(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name));
 	}
@@ -189,8 +178,7 @@ public final class Profile
 	 *
 	 * @return This profile cache time.
 	 */
-	public long getCacheTime()
-	{
+	public long getCacheTime() {
 		return this.cacheTime;
 	}
 
@@ -203,8 +191,7 @@ public final class Profile
 	 *
 	 * @throws NullPointerException If the given server is null.
 	 */
-	public boolean hasLiked(Server server)
-	{
+	public boolean hasLiked(Server server) {
 		Objects.requireNonNull(server, "server");
 		return server.hasLiked(this.uniqueId);
 	}
@@ -217,14 +204,11 @@ public final class Profile
 	 * @return True if the given object is the same as this class, and false otherwise.
 	 */
 	@Override
-	public boolean equals(Object object)
-	{
-		if (this == object)
-		{
+	public boolean equals(Object object) {
+		if (this == object) {
 			return true;
 		}
-		if (object == null || this.getClass() != object.getClass())
-		{
+		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
 		Profile that = (Profile) object;
@@ -237,8 +221,7 @@ public final class Profile
 	 * @return A hash code of this class.
 	 */
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Objects.hash(this.uniqueId, this.friends);
 	}
 
@@ -248,8 +231,7 @@ public final class Profile
 	 * @return A nice looking representation of this class.
 	 */
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return "Profile{" + "uniqueId=" + this.uniqueId + ", friends=" + this.friends + "}";
 	}
 }

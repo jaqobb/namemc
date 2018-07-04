@@ -36,8 +36,8 @@ Simply download source and add it to your current project and then do it the sam
 ### API
 Everything begins with the NameMC class. You can either use preset settings created by me, or experiment with settings on your own:
 ```java
-NameMC.ofDefault();
-NameMC.ofCustom(ProfileService profileService, ServerService serverService);
+NameMC.of();
+NameMC.of(ProfileService profileService, ServerService serverService);
 ```
 Profile and server service are being used to store cached profiles and servers and give you possibility to lookup a new ones.
 
@@ -47,11 +47,11 @@ You use both the profile and server service in the same way.
 
 You create profile service with either:
 ```java
-ProfileService.ofDefault();
+ProfileService.of();
 ```
 to create profile service with default settings being 5 as a time and minutes as a unit, or:
 ```java
-ProfileService.ofCustom(long time, TimeUnit durationUnit);
+ProfileService.of(long time, TimeUnit durationUnit);
 ```
 to create profile service with custom settings.
 

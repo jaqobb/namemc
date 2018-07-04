@@ -45,15 +45,13 @@ import org.json.JSONArray;
 /**
  * Class used to store cached servers and to cache new ones.
  */
-public final class ServerService
-{
+public final class ServerService {
 	/**
 	 * Creates a new ServerService class instance with the default settings being 10 as a duration and minutes as a duration unit.
 	 *
 	 * @return A new ServerService class instance with the default settings.
 	 */
-	public static ServerService ofDefault()
-	{
+	public static ServerService of() {
 		return new ServerService();
 	}
 
@@ -68,10 +66,8 @@ public final class ServerService
 	 * @throws IllegalArgumentException If the given duration is lower than 1.
 	 * @throws NullPointerException If the given duration unit is null.
 	 */
-	public static ServerService ofCustom(long duration, TimeUnit durationUnit)
-	{
-		if (duration < 1)
-		{
+	public static ServerService of(long duration, TimeUnit durationUnit) {
+		if (duration < 1) {
 			throw new IllegalArgumentException("duration < 1");
 		}
 		return new ServerService(duration, Objects.requireNonNull(durationUnit, "durationUnit"));
@@ -107,8 +103,7 @@ public final class ServerService
 	/**
 	 * Creates a new ServerService class instance with the default settings being 10 as a duration and minutes as a time unit.
 	 */
-	private ServerService()
-	{
+	private ServerService() {
 		this(10, TimeUnit.MINUTES);
 	}
 
@@ -118,8 +113,7 @@ public final class ServerService
 	 * @param duration A duration.
 	 * @param durationUnit A duration unit.
 	 */
-	private ServerService(long duration, TimeUnit unit)
-	{
+	private ServerService(long duration, TimeUnit unit) {
 		this.duration = duration;
 		this.unit = unit;
 	}
@@ -129,8 +123,7 @@ public final class ServerService
 	 *
 	 * @return A duration that indicates how long servers will be marked as cached.
 	 */
-	public long getDuration()
-	{
+	public long getDuration() {
 		return this.duration;
 	}
 
@@ -139,8 +132,7 @@ public final class ServerService
 	 *
 	 * @return A duration unit.
 	 */
-	public TimeUnit getUnit()
-	{
+	public TimeUnit getUnit() {
 		return this.unit;
 	}
 
@@ -149,8 +141,7 @@ public final class ServerService
 	 *
 	 * @return A duration in milliseconds that indicates how long servers will be marked as cached.
 	 */
-	public long getDurationMillis()
-	{
+	public long getDurationMillis() {
 		return this.unit.toMillis(this.duration);
 	}
 
@@ -159,10 +150,8 @@ public final class ServerService
 	 *
 	 * @return An immutable collection of the currently cached servers.
 	 */
-	public Collection<Server> getServers()
-	{
-		synchronized (this.servers)
-		{
+	public Collection<Server> getServers() {
+		synchronized (this.servers) {
 			return Collections.unmodifiableCollection(this.servers.values());
 		}
 	}
@@ -172,10 +161,8 @@ public final class ServerService
 	 *
 	 * @return An immutable collection of the currently cached valid servers.
 	 */
-	public Collection<Server> getValidServers()
-	{
-		synchronized (this.servers)
-		{
+	public Collection<Server> getValidServers() {
+		synchronized (this.servers) {
 			return Collections.unmodifiableCollection(this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toList()));
 		}
 	}
@@ -185,10 +172,8 @@ public final class ServerService
 	 *
 	 * @return An immutable collection of the currently cached invalid servers.
 	 */
-	public Collection<Server> getInvalidServers()
-	{
-		synchronized (this.servers)
-		{
+	public Collection<Server> getInvalidServers() {
+		synchronized (this.servers) {
 			return Collections.unmodifiableCollection(this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toList()));
 		}
 	}
@@ -202,31 +187,24 @@ public final class ServerService
 	 *
 	 * @throws NullPointerException If the given ip or callback is null.
 	 */
-	public void getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback)
-	{
+	public void getServer(String ip, boolean recache, BiConsumer<Server, Exception> callback) {
 		Objects.requireNonNull(ip, "ip");
 		Objects.requireNonNull(callback, "callback");
-		synchronized (this.servers)
-		{
+		synchronized (this.servers) {
 			Server server = this.servers.get(ip.toLowerCase());
-			if (this.isServerValid(server) && !recache)
-			{
+			if (this.isServerValid(server) && !recache) {
 				callback.accept(server, null);
 			}
 		}
-		EXECUTOR.execute(() ->
-		{
+		EXECUTOR.execute(() -> {
 			String url = String.format(SERVER_VOTES_URL, ip);
-			try
-			{
+			try {
 				String content = IOUtils.getWebsiteContent(url);
 				JSONArray array = new JSONArray(content);
 				Server server = new Server(ip, array);
 				this.servers.put(ip.toLowerCase(), server);
 				callback.accept(server, null);
-			}
-			catch (IOException exception)
-			{
+			} catch (IOException exception) {
 				callback.accept(null, exception);
 			}
 		});
@@ -239,18 +217,15 @@ public final class ServerService
 	 *
 	 * @return True if the given server is not null and does not need to be re-cached, and false otherwise.
 	 */
-	public boolean isServerValid(Server server)
-	{
+	public boolean isServerValid(Server server) {
 		return server != null && System.currentTimeMillis() - server.getCacheTime() < this.getDurationMillis();
 	}
 
 	/**
 	 * Clears servers cache.
 	 */
-	public void clearServers()
-	{
-		synchronized (this.servers)
-		{
+	public void clearServers() {
+		synchronized (this.servers) {
 			this.servers.clear();
 		}
 	}

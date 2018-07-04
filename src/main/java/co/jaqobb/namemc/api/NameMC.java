@@ -33,15 +33,13 @@ import co.jaqobb.namemc.api.server.ServerService;
 /**
  * Class where the whole API begins.
  */
-public final class NameMC
-{
+public final class NameMC {
 	/**
 	 * Creates a new NameMC class instance with the default settings.
 	 *
 	 * @return A new NameMC class instance with the default settings.
 	 */
-	public static NameMC ofDefault()
-	{
+	public static NameMC of() {
 		return new NameMC();
 	}
 
@@ -52,8 +50,7 @@ public final class NameMC
 	 *
 	 * @throws NullPointerException If the given profile or server service is null.
 	 */
-	public static NameMC ofCustom(ProfileService profileService, ServerService serverService)
-	{
+	public static NameMC of(ProfileService profileService, ServerService serverService) {
 		Objects.requireNonNull(profileService, "profileService");
 		Objects.requireNonNull(serverService, "serverService");
 		return new NameMC(profileService, serverService);
@@ -71,17 +68,15 @@ public final class NameMC
 	/**
 	 * Creates a new NameMC class instance with the default settings.
 	 */
-	private NameMC()
-	{
-		this.profileService = ProfileService.ofDefault();
-		this.serverService = ServerService.ofDefault();
+	private NameMC() {
+		this.profileService = ProfileService.of();
+		this.serverService = ServerService.of();
 	}
 
 	/**
 	 * Creates a new NameeMC instance with a possibly custom profile and server service.
 	 */
-	private NameMC(ProfileService profileService, ServerService serverService)
-	{
+	private NameMC(ProfileService profileService, ServerService serverService) {
 		this.profileService = profileService;
 		this.serverService = serverService;
 	}
@@ -91,8 +86,7 @@ public final class NameMC
 	 *
 	 * @return The currently used profile service.
 	 */
-	public ProfileService getProfileService()
-	{
+	public ProfileService getProfileService() {
 		return this.profileService;
 	}
 
@@ -101,16 +95,14 @@ public final class NameMC
 	 *
 	 * @return The currently used server service.
 	 */
-	public ServerService getServerService()
-	{
+	public ServerService getServerService() {
 		return this.serverService;
 	}
 
 	/**
 	 * Clears all services cache.
 	 */
-	public void clearCaches()
-	{
+	public void clearCaches() {
 		this.profileService.clearProfiles();
 		this.serverService.clearServers();
 	}

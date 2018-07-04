@@ -36,13 +36,11 @@ import java.nio.charset.StandardCharsets;
 /**
  * Collection of useful methods related to the I/O.
  */
-public final class IOUtils
-{
+public final class IOUtils {
 	/**
 	 * Private constructor to make sure no one will initialize this class.
 	 */
-	private IOUtils()
-	{
+	private IOUtils() {
 	}
 
 	/**
@@ -54,10 +52,8 @@ public final class IOUtils
 	 *
 	 * @throws IOException If the error occured while trying to read url content.
 	 */
-	public static String getWebsiteContent(String url) throws IOException
-	{
-		try (InputStream inputStream = new URL(url).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8)))
-		{
+	public static String getWebsiteContent(String url) throws IOException {
+		try (InputStream inputStream = new URL(url).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 			return IOUtils.getContent(reader);
 		}
 	}
@@ -71,12 +67,10 @@ public final class IOUtils
 	 *
 	 * @throws IOException If the error occured while trying to read reader content.
 	 */
-	public static String getContent(Reader reader) throws IOException
-	{
+	public static String getContent(Reader reader) throws IOException {
 		StringBuilder content = new StringBuilder();
 		int character;
-		while ((character = reader.read()) != -1)
-		{
+		while ((character = reader.read()) != -1) {
 			content.append((char) character);
 		}
 		return content.toString();
