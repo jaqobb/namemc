@@ -58,7 +58,6 @@
 
 	<build>
 		<defaultGoal>clean deploy</defaultGoal>
-		<finalName>${project.artifactId}-${project.version}</finalName>
 
 		<plugins>
 			<plugin>
