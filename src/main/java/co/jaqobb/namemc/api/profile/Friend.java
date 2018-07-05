@@ -1,9 +1,8 @@
 package co.jaqobb.namemc.api.profile;
 
+import co.jaqobb.namemc.api.server.Server;
 import java.util.Objects;
 import java.util.UUID;
-
-import co.jaqobb.namemc.api.server.Server;
 
 /**
  * Class that represents a friend.

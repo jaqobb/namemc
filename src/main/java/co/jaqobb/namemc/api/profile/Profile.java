@@ -1,13 +1,11 @@
 package co.jaqobb.namemc.api.profile;
 
+import co.jaqobb.namemc.api.server.Server;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
-
-import co.jaqobb.namemc.api.server.Server;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 

@@ -1,5 +1,6 @@
 package co.jaqobb.namemc.api.profile;
 
+import co.jaqobb.namemc.api.util.IOUtils;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,9 +14,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
-import co.jaqobb.namemc.api.util.IOUtils;
-
 import org.json.JSONArray;
 
 /**
