@@ -1,5 +1,5 @@
 # Project end
-This project is no longer maintained by me. If someone want to take care of this project, please contact me via Discord: jaqobb#6998.
+This project is no longer maintained by me. If someone want to take care of thee project, please contact me via Discord: jaqobb#6998.
 
 ## NameMC-API
 Java wrapper for the popular Minecraft related site: https://namemc.com
