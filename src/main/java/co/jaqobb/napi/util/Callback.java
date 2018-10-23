@@ -24,6 +24,6 @@
 package co.jaqobb.napi.util;
 
 @FunctionalInterface
-public interface Callback<O> {
-  void done(final O object, final Throwable exception);
+public interface Callback<T> {
+  void done(final T object, final Throwable exception);
 }
