@@ -1,0 +1,39 @@
+plugins {
+  id 'java'
+  id 'net.minecrell.licenser' version '0.4.1'
+}
+
+group 'co.jaqobb'
+version '2.0.0'
+
+description 'A https://namemc.com Java wrapper'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+defaultTasks 'clean', 'build', 'javadocJar', 'sourcesJar'
+
+license {
+  header project.file('header.txt')
+  include '**/*.java'
+  newLine false
+}
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'org.json:json:20180130'
+  compileOnly 'org.jetbrains:annotations:16.0.3'
+}
+
+task javadocJar(type: Jar) {
+  classifier 'javadoc'
+  from javadoc
+}
+
+task sourcesJar(type: Jar) {
+  classifier = 'sources'
+  from sourceSets.main.allJava
+}
