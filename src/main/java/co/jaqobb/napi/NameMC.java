@@ -25,39 +25,23 @@ package co.jaqobb.napi;
 
 import co.jaqobb.napi.repository.ProfileRepository;
 import co.jaqobb.napi.repository.ServerRepository;
-import org.jetbrains.annotations.NotNull;
 
-/**
- * A namemc.
- */
 public final class NameMC {
-  /**
-   * Creates a namemc.
-   *
-   * @return the namemc
-   */
   public static NameMC of() {
     return new NameMC(ProfileRepository.of(), ServerRepository.of());
   }
 
-  /**
-   * Creates a namemc with profile and server repository.
-   *
-   * @param profileRepository the namemc profile repository
-   * @param serverRepository the namemc server repository
-   * @return the namemc
-   */
-  public static NameMC of(final @NotNull ProfileRepository profileRepository, final @NotNull ServerRepository serverRepository) {
+  public static NameMC of(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
+    if(profileRepository == null) {
+      throw new NullPointerException("Profile repository cannot be null");
+    }
+    if(serverRepository == null) {
+      throw new NullPointerException("Server repository cannot be null");
+    }
     return new NameMC(profileRepository, serverRepository);
   }
 
-  /**
-   * The profile repository.
-   */
   private final ProfileRepository profileRepository;
-  /**
-   * The server repository.
-   */
   private final ServerRepository serverRepository;
 
   private NameMC(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
@@ -65,29 +49,11 @@ public final class NameMC {
     this.serverRepository = serverRepository;
   }
 
-  /**
-   * Gets the namemc profile repository.
-   *
-   * @return the namemc profile repository
-   */
   public ProfileRepository getProfileRepository() {
     return this.profileRepository;
   }
 
-  /**
-   * Gets the namemc server repository.
-   *
-   * @return the namemc server repository
-   */
   public ServerRepository getServerRepository() {
     return this.serverRepository;
-  }
-
-  /**
-   * Clears all repositories' cache.
-   */
-  public void clearCaches() {
-    this.profileRepository.clearProfiles();
-    this.serverRepository.clearServers();
   }
 }

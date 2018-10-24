@@ -26,7 +26,6 @@ package co.jaqobb.napi.repository;
 import co.jaqobb.napi.data.Server;
 import co.jaqobb.napi.helper.IOHelper;
 import co.jaqobb.napi.util.Callback;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -40,58 +39,28 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-/**
- * A server repository.
- */
 public final class ServerRepository {
-  /**
-   * Creates a server repository.
-   *
-   * @return the server repository
-   */
   public static ServerRepository of() {
     return new ServerRepository(10L, TimeUnit.MINUTES);
   }
 
-  /**
-   * Creates a server repository with duration and unit.
-   *
-   * @param duration the duration
-   * @param unit the duration unit
-   * @return the server repository
-   * @throws IllegalArgumentException if the duration is less than 1
-   */
-  public static ServerRepository of(final long duration, final @NotNull TimeUnit unit) {
+  public static ServerRepository of(final long duration, final TimeUnit unit) {
     if(duration < 1) {
-      throw new IllegalArgumentException("duration < 1");
+      throw new IllegalArgumentException("Duration cannot be lower than 1");
+    }
+    if(unit == null) {
+      throw new NullPointerException("Unit cannot be null");
     }
     return new ServerRepository(duration, unit);
   }
 
-  /**
-   * The server's friends url.
-   */
   private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
-  /**
-   * The server query executor thread counter.
-   */
+
   private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  /**
-   * The server query executor.
-   */
   private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  /**
-   * The duration.
-   */
   private final long duration;
-  /**
-   * The duration unit.
-   */
   private final TimeUnit unit;
-  /**
-   * The cached servers.
-   */
   private final Map<String, Server> servers = Collections.synchronizedMap(new WeakHashMap<>(1, 1.0F));
 
   private ServerRepository(final long duration, final TimeUnit unit) {
@@ -99,68 +68,37 @@ public final class ServerRepository {
     this.unit = unit;
   }
 
-  /**
-   * Gets the duration servers are cached.
-   *
-   * @return the duration servers are cached
-   */
   public long getDuration() {
     return this.duration;
   }
 
-  /**
-   * Gets the duration servers are cached in millis.
-   *
-   * @return the duration servers are cached in millis
-   */
   public long getDurationMillis() {
     return this.unit.toMillis(this.duration);
   }
 
-  /**
-   * Gets the duration unit servers are cached.
-   *
-   * @return the duration unit servers are cached
-   */
   public TimeUnit getUnit() {
     return this.unit;
   }
 
-  /**
-   * Gets cached servers.
-   *
-   * @return cached servers
-   */
   public Collection<Server> getServers() {
     return Collections.unmodifiableCollection(this.servers.values());
   }
 
-  /**
-   * Gets valid cached servers.
-   *
-   * @return valid cached servers
-   */
   public Collection<Server> getValidServers() {
     return this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toUnmodifiableList());
   }
 
-  /**
-   * Gets invalid cached servers.
-   *
-   * @return invalid cached servers
-   */
   public Collection<Server> getInvalidServers() {
     return this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toUnmodifiableList());
   }
 
-  /**
-   * Caches a server and delegates the result to a callback.
-   *
-   * @param ip the ip of the server
-   * @param recache the state if the server should be re-cached anyways
-   * @param callback the callback that will contain the caching result
-   */
-  public void cacheServer(final @NotNull String ip, final boolean recache, final @NotNull Callback<Server> callback) {
+  public void cacheServer(final String ip, final boolean recache, final Callback<Server> callback) {
+    if(ip == null) {
+      throw new NullPointerException("Ip cannot be null");
+    }
+    if(callback == null) {
+      throw new NullPointerException("Callback cannot be null");
+    }
     final String finalIp = ip.toLowerCase();
     if(this.servers.containsKey(finalIp)) {
       final Server server = this.servers.get(finalIp);
@@ -182,19 +120,13 @@ public final class ServerRepository {
     });
   }
 
-  /**
-   * Gets if a server is valid (doesn't need to be re-cached).
-   *
-   * @param server the server to check
-   * @return {@code true} if the server is valid or {@code false} otherwise
-   */
-  public boolean isServerValid(final @NotNull Server server) {
+  public boolean isServerValid(final Server server) {
+    if(server == null) {
+      throw new NullPointerException("Server cannot be null");
+    }
     return System.currentTimeMillis() - server.getCacheTime() < this.getDurationMillis();
   }
 
-  /**
-   * Clears all cached servers.
-   */
   public void clearServers() {
     this.servers.clear();
   }

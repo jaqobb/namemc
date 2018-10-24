@@ -26,7 +26,6 @@ package co.jaqobb.napi.repository;
 import co.jaqobb.napi.data.Profile;
 import co.jaqobb.napi.helper.IOHelper;
 import co.jaqobb.napi.util.Callback;
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -41,58 +40,28 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-/**
- * A profile repository.
- */
 public final class ProfileRepository {
-  /**
-   * Creates a profile repository.
-   *
-   * @return the profile repository
-   */
   public static ProfileRepository of() {
     return new ProfileRepository(5L, TimeUnit.MINUTES);
   }
 
-  /**
-   * Creates a profile repository with duration and unit.
-   *
-   * @param duration the duration
-   * @param unit the duration unit
-   * @return the profile repository
-   * @throws IllegalArgumentException if the duration is less than 1
-   */
-  public static ProfileRepository of(final long duration, final @NotNull TimeUnit unit) {
+  public static ProfileRepository of(final long duration, final TimeUnit unit) {
     if(duration < 1) {
-      throw new IllegalArgumentException("duration < 1");
+      throw new IllegalArgumentException("Duration cannot be lower than 1");
+    }
+    if(unit == null) {
+      throw new NullPointerException("Unit cannot be null");
     }
     return new ProfileRepository(duration, unit);
   }
 
-  /**
-   * The profile's friends url.
-   */
   private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
-  /**
-   * The profile query executor thread counter.
-   */
+
   private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  /**
-   * The profile query executor.
-   */
   private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  /**
-   * The duration.
-   */
   private final long duration;
-  /**
-   * The duration unit.
-   */
   private final TimeUnit unit;
-  /**
-   * The cached profiles.
-   */
   private final Map<UUID, Profile> profiles = Collections.synchronizedMap(new WeakHashMap<>(100, 0.85F));
 
   private ProfileRepository(final long duration, final TimeUnit unit) {
@@ -100,68 +69,37 @@ public final class ProfileRepository {
     this.unit = unit;
   }
 
-  /**
-   * Gets the duration profiles are cached.
-   *
-   * @return the duration profiles are cached
-   */
   public long getDuration() {
     return this.duration;
   }
 
-  /**
-   * Gets the duration profiles are cached in millis.
-   *
-   * @return the duration profiles are cached in millis
-   */
   public long getDurationMillis() {
     return this.unit.toMillis(this.duration);
   }
 
-  /**
-   * Gets the duration unit profiles are cached.
-   *
-   * @return the duration unit profiles are cached
-   */
   public TimeUnit getUnit() {
     return this.unit;
   }
 
-  /**
-   * Gets cached profiles.
-   *
-   * @return cached profiles
-   */
   public Collection<Profile> getProfiles() {
     return Collections.unmodifiableCollection(this.profiles.values());
   }
 
-  /**
-   * Gets valid cached profiles.
-   *
-   * @return valid cached profiles
-   */
   public Collection<Profile> getValidProfiles() {
     return this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toUnmodifiableList());
   }
 
-  /**
-   * Gets invalid cached profiles.
-   *
-   * @return invalid cached profiles
-   */
   public Collection<Profile> getInvalidProfiles() {
     return this.profiles.values().stream().filter(profile -> !this.isProfileValid(profile)).collect(Collectors.toUnmodifiableList());
   }
 
-  /**
-   * Caches a profile and delegates the result to a callback.
-   *
-   * @param uniqueId the unique id of the profile
-   * @param recache the state if the profile should be re-cached anyways
-   * @param callback the callback that will contain the caching result
-   */
-  public void cacheProfile(final @NotNull UUID uniqueId, final boolean recache, final @NotNull Callback<Profile> callback) {
+  public void cacheProfile(final UUID uniqueId, final boolean recache, final Callback<Profile> callback) {
+    if(uniqueId == null) {
+      throw new NullPointerException("Unique id cannot be null");
+    }
+    if(callback == null) {
+      throw new NullPointerException("Callback cannot be null");
+    }
     if(this.profiles.containsKey(uniqueId)) {
       final Profile profile = this.profiles.get(uniqueId);
       if(this.isProfileValid(profile) && !recache) {
@@ -182,19 +120,13 @@ public final class ProfileRepository {
     });
   }
 
-  /**
-   * Gets if a profile is valid (doesn't need to be re-cached).
-   *
-   * @param profile the profile to check
-   * @return {@code true} if the profile is valid or {@code false} otherwise
-   */
-  public boolean isProfileValid(final @NotNull Profile profile) {
+  public boolean isProfileValid(final Profile profile) {
+    if(profile == null) {
+      throw new NullPointerException("Profile cannot be null");
+    }
     return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationMillis();
   }
 
-  /**
-   * Clears all cached profiles.
-   */
   public void clearProfiles() {
     this.profiles.clear();
   }

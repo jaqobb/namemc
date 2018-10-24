@@ -23,8 +23,6 @@
  */
 package co.jaqobb.napi.data;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -33,82 +31,52 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * A server.
- */
 public final class Server {
-  /**
-   * Creates a server with ip and array.
-   *
-   * @param ip the server ip
-   * @param array the server array (likes)
-   * @return the server
-   */
-  public static Server of(final @NotNull String ip, final @NotNull JSONArray array) {
-    return new Server(ip, array);
+  public static Server of(final String ip, final JSONArray jsonArray) {
+    if(ip == null) {
+      throw new NullPointerException("Ip cannot be null");
+    }
+    if(jsonArray == null) {
+      throw new NullPointerException("Json array cannot be null");
+    }
+    final Collection<UUID> likes = new ArrayList<>(jsonArray.length());
+    for(int index = 0; index < jsonArray.length(); index++) {
+      likes.add(UUID.fromString(jsonArray.getString(index)));
+    }
+    return new Server(ip, likes);
   }
 
-  /**
-   * The ip.
-   */
   private final String ip;
-  /**
-   * The likes.
-   */
   private final Collection<UUID> likes;
-  /**
-   * The cache time.
-   */
   private final long cacheTime;
 
-  private Server(final String ip, final JSONArray array) {
+  private Server(final String ip, final Collection<UUID> likes) {
     this.ip = ip;
-    this.likes = new ArrayList<>(array.length());
-    for(int index = 0; index < array.length(); index++) {
-      this.likes.add(UUID.fromString(array.getString(index)));
-    }
+    this.likes = likes;
     this.cacheTime = System.currentTimeMillis();
   }
 
-  /**
-   * Gets the server ip.
-   *
-   * @return the server ip.
-   */
   public String getIp() {
     return this.ip;
   }
 
-  /**
-   * Gets the server likes.
-   *
-   * @return the server likes
-   */
   public Collection<UUID> getLikes() {
     return Collections.unmodifiableCollection(this.likes);
   }
 
-  /**
-   * Gets if a unique id has liked the server.
-   *
-   * @param uniqueId the unique id to check
-   * @return {@code true} if the unique id has liked the server or {@code false} otherwise
-   */
-  public boolean hasLiked(final @NotNull UUID uniqueId) {
+  public boolean hasLiked(final UUID uniqueId) {
+    if(uniqueId == null) {
+      throw new NullPointerException("Unique id cannot be null");
+    }
     return this.likes.contains(uniqueId);
   }
 
-  /**
-   * Gets the server cache time.
-   *
-   * @return the server cache time.
-   */
   public long getCacheTime() {
     return this.cacheTime;
   }
 
   @Override
-  public boolean equals(final @Nullable Object object) {
+  public boolean equals(final Object object) {
     if(this == object) {
       return true;
     }

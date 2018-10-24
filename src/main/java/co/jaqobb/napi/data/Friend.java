@@ -23,38 +23,22 @@
  */
 package co.jaqobb.napi.data;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * A friend.
- */
 public final class Friend {
-  /**
-   * Creates a friend with unique id and nick.
-   *
-   * @param uniqueId the friend unique id
-   * @param nick the friend nick
-   * @return the friend
-   */
-  public static Friend of(final @NotNull UUID uniqueId, final @NotNull String nick) {
+  public static Friend of(final UUID uniqueId, final String nick) {
+    if(uniqueId == null) {
+      throw new NullPointerException("Unique id cannot be null");
+    }
+    if(nick == null) {
+      throw new NullPointerException("Nick cannot be null");
+    }
     return new Friend(uniqueId, nick);
   }
 
-  /**
-   * The unique id.
-   */
   private final UUID uniqueId;
-  /**
-   * The nick.
-   */
   private final String nick;
-  /**
-   * The cache time.
-   */
   private final long cacheTime;
 
   private Friend(final UUID uniqueId, final String nick) {
@@ -63,69 +47,41 @@ public final class Friend {
     this.cacheTime = System.currentTimeMillis();
   }
 
-  /**
-   * Gets the friend unique id.
-   *
-   * @return the friend unique id
-   */
   public UUID getUniqueId() {
     return this.uniqueId;
   }
 
-  /**
-   * Gets the friend nick.
-   *
-   * @return the friend nick
-   */
   public String getNick() {
     return this.nick;
   }
 
-  /**
-   * Gets the friend cache time.
-   *
-   * @return the friend cache time
-   */
   public long getCacheTime() {
     return this.cacheTime;
   }
 
-  /**
-   * Gets if the friend is a friend with a profile
-   *
-   * @param profile the profile to check
-   * @return {@code true} if the friend is a friend with the profile or {@code false} otherwise
-   */
-  public boolean isFriendOf(final @NotNull Profile profile) {
+  public boolean isFriendOf(final Profile profile) {
     return this.isFriendOf(profile, true);
   }
 
-  /**
-   * Gets if the friend is a friend with a profile
-   *
-   * @param profile the profile to check
-   * @param caseSensitive the state if the case sensitivity in the profile's nick should be checked
-   * @return {@code true} if the friend is a friend with the profile or {@code false} otherwise
-   */
-  public boolean isFriendOf(final @NotNull Profile profile, final boolean caseSensitive) {
+  public boolean isFriendOf(final Profile profile, final boolean caseSensitive) {
+    if(profile == null) {
+      throw new NullPointerException("Profile cannot be null");
+    }
     if(profile.getFriend(this.uniqueId) != null) {
       return true;
     }
     return profile.getFriend(this.nick, caseSensitive) != null;
   }
 
-  /**
-   * Gets if the friend has liked a server
-   *
-   * @param server the server to check
-   * @return {@code true} if the friend has liked the server or {@code false} otherwise
-   */
-  public boolean hasLikedServer(final @NotNull Server server) {
+  public boolean hasLikedServer(final Server server) {
+    if(server == null) {
+      throw new NullPointerException("Server cannot be null");
+    }
     return server.hasLiked(this.uniqueId);
   }
 
   @Override
-  public boolean equals(final @Nullable Object object) {
+  public boolean equals(final Object object) {
     if(this == object) {
       return true;
     }

@@ -23,8 +23,6 @@
  */
 package co.jaqobb.napi.data;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -34,114 +32,71 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * A profile.
- */
 public final class Profile {
-  /**
-   * Creates a friend with unique id and array.
-   *
-   * @param uniqueId the profile unique id
-   * @param array the profile array (friends)
-   * @return the profile
-   */
-  public static Profile of(final @NotNull UUID uniqueId, final @NotNull JSONArray array) {
-    return new Profile(uniqueId, array);
+  public static Profile of(final UUID uniqueId, final JSONArray jsonArray) {
+    if(uniqueId == null) {
+      throw new NullPointerException("Unique id cannot be null");
+    }
+    if(jsonArray == null) {
+      throw new NullPointerException("Json array cannot be null");
+    }
+    final Collection<Friend> friends = new ArrayList<>(jsonArray.length());
+    for(int index = 0; index < jsonArray.length(); index++) {
+      final JSONObject jsonObject = jsonArray.getJSONObject(index);
+      friends.add(Friend.of(UUID.fromString(jsonObject.getString("uuid")), jsonObject.getString("name")));
+    }
+    return new Profile(uniqueId, friends);
   }
 
-  /**
-   * The unique id.
-   */
   private final UUID uniqueId;
-  /**
-   * The friends.
-   */
   private final Collection<Friend> friends;
-  /**
-   * The cache time.
-   */
   private final long cacheTime;
 
-  private Profile(final UUID uniqueId, final JSONArray array) {
+  private Profile(final UUID uniqueId, final Collection<Friend> friends) {
     this.uniqueId = uniqueId;
-    this.friends = new ArrayList<>(array.length());
-    for(int index = 0; index < array.length(); index++) {
-      final JSONObject object = array.getJSONObject(index);
-      this.friends.add(Friend.of(UUID.fromString(object.getString("uuid")), object.getString("name")));
-    }
+    this.friends = friends;
     this.cacheTime = System.currentTimeMillis();
   }
 
-  /**
-   * Gets the profile unique id.
-   *
-   * @return the profile unique id
-   */
   public UUID getUniqueId() {
     return this.uniqueId;
   }
 
-  /**
-   * Gets the profile friends.
-   *
-   * @return the profile friends
-   */
   public Collection<Friend> getFriends() {
     return Collections.unmodifiableCollection(this.friends);
   }
 
-  /**
-   * Gets a friend by a unique id.
-   *
-   * @param uniqueId the unique id of the friend to find
-   * @return the friend or {@code null} otherwise
-   */
-  public Friend getFriend(final @NotNull UUID uniqueId) {
+  public Friend getFriend(final UUID uniqueId) {
+    if(uniqueId == null) {
+      throw new NullPointerException("Unique id cannot be null");
+    }
     return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
   }
 
-  /**
-   * Gets a friend by a nick
-   *
-   * @param nick the nick of the friend to find
-   * @return the friend or {@code null} otherwise
-   */
-  public Friend getFriend(final @NotNull String nick) {
+  public Friend getFriend(final String nick) {
     return this.getFriend(nick, true);
   }
 
-  /**
-   * Gets a friend by a nick
-   *
-   * @param nick the nick of the friend to find
-   * @param caseSensitive the state if the case sensitivity in the friend's nick should be checked
-   * @return the friend or {@code null} otherwise
-   */
-  public Friend getFriend(final @NotNull String nick, final boolean caseSensitive) {
+  public Friend getFriend(final String nick, final boolean caseSensitive) {
+    if(nick == null) {
+      throw new NullPointerException("Nick cannot be null");
+    }
     return this.friends.stream().filter(friend -> caseSensitive ? friend.getNick().equals(nick) : friend.getNick().equalsIgnoreCase(nick)).findFirst().orElse(null);
   }
 
-  /**
-   * Gets the profile cache time.
-   *
-   * @return the profile cache time
-   */
   public long getCacheTime() {
     return this.cacheTime;
   }
 
-  /**
-   * Gets if the profile has liked a server
-   *
-   * @param server the server to check
-   * @return {@code true} if the profile has liked the server or {@code false} otherwise
-   */
-  public boolean hasLikedServer(final @NotNull Server server) {
+  public boolean hasLikedServer(final Server server) {
+    if(server == null) {
+      throw new NullPointerException("Server cannot be null");
+    }
     return server.hasLiked(this.uniqueId);
   }
 
   @Override
-  public boolean equals(final @Nullable Object object) {
+  public boolean equals(final Object object) {
     if(this == object) {
       return true;
     }
