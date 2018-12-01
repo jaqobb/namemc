@@ -41,8 +41,8 @@ public final class NameMC {
     return new NameMC(profileRepository, serverRepository);
   }
 
-  private ProfileRepository profileRepository;
-  private ServerRepository serverRepository;
+  private final ProfileRepository profileRepository;
+  private final ServerRepository serverRepository;
 
   private NameMC(ProfileRepository profileRepository, ServerRepository serverRepository) {
     this.profileRepository = profileRepository;

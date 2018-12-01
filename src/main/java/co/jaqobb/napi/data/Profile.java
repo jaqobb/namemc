@@ -48,9 +48,9 @@ public final class Profile {
     return new Profile(uuid, friends);
   }
 
-  private UUID uuid;
-  private Collection<Friend> friends;
-  private long cacheTime;
+  private final UUID uuid;
+  private final Collection<Friend> friends;
+  private final long cacheTime;
 
   private Profile(UUID uuid, Collection<Friend> friends) {
     this.uuid = uuid;

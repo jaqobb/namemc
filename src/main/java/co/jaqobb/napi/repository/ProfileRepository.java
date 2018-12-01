@@ -55,14 +55,14 @@ public final class ProfileRepository {
     return new ProfileRepository(duration, unit);
   }
 
-  private static String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
+  private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
 
-  private static AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+  private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
+  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  private long duration;
-  private TimeUnit unit;
-  private Map<UUID, Profile> profiles;
+  private final long duration;
+  private final TimeUnit unit;
+  private final Map<UUID, Profile> profiles;
 
   private ProfileRepository(long duration, TimeUnit unit) {
     this.duration = duration;

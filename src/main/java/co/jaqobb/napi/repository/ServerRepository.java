@@ -54,14 +54,14 @@ public final class ServerRepository {
     return new ServerRepository(duration, unit);
   }
 
-  private static String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
+  private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
 
-  private static AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+  private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
+  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  private long duration;
-  private TimeUnit unit;
-  private Map<String, Server> servers;
+  private final long duration;
+  private final TimeUnit unit;
+  private final Map<String, Server> servers;
 
   private ServerRepository(long duration, TimeUnit unit) {
     this.duration = duration;

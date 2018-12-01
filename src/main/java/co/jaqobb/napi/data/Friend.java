@@ -37,9 +37,9 @@ public final class Friend {
     return new Friend(uuid, name);
   }
 
-  private UUID uuid;
-  private String name;
-  private long cacheTime;
+  private final UUID uuid;
+  private final String name;
+  private final long cacheTime;
 
   private Friend(UUID uuid, String name) {
     this.uuid = uuid;

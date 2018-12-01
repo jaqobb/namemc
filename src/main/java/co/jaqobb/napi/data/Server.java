@@ -46,9 +46,9 @@ public final class Server {
     return new Server(address, likes);
   }
 
-  private String address;
-  private Collection<UUID> likes;
-  private long cacheTime;
+  private final String address;
+  private final Collection<UUID> likes;
+  private final long cacheTime;
 
   private Server(String address, Collection<UUID> likes) {
     this.address = address;
