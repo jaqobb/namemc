@@ -31,7 +31,7 @@ public final class NameMC {
     return new NameMC(ProfileRepository.of(), ServerRepository.of());
   }
 
-  public static NameMC of(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
+  public static NameMC of(ProfileRepository profileRepository, ServerRepository serverRepository) {
     if(profileRepository == null) {
       throw new NullPointerException("Profile repository cannot be null");
     }
@@ -41,10 +41,10 @@ public final class NameMC {
     return new NameMC(profileRepository, serverRepository);
   }
 
-  private final ProfileRepository profileRepository;
-  private final ServerRepository serverRepository;
+  private ProfileRepository profileRepository;
+  private ServerRepository serverRepository;
 
-  private NameMC(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
+  private NameMC(ProfileRepository profileRepository, ServerRepository serverRepository) {
     this.profileRepository = profileRepository;
     this.serverRepository = serverRepository;
   }
