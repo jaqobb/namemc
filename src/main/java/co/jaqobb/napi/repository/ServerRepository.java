@@ -44,7 +44,7 @@ public final class ServerRepository {
     return new ServerRepository(10L, TimeUnit.MINUTES);
   }
 
-  public static ServerRepository of(final long duration, final TimeUnit unit) {
+  public static ServerRepository of(long duration, TimeUnit unit) {
     if(duration < 1) {
       throw new IllegalArgumentException("Duration cannot be lower than 1");
     }
@@ -54,18 +54,19 @@ public final class ServerRepository {
     return new ServerRepository(duration, unit);
   }
 
-  private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
+  private static String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
 
-  private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+  private static AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
+  private static Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  private final long duration;
-  private final TimeUnit unit;
-  private final Map<String, Server> servers = Collections.synchronizedMap(new WeakHashMap<>(1, 1.0F));
+  private long duration;
+  private TimeUnit unit;
+  private Map<String, Server> servers;
 
-  private ServerRepository(final long duration, final TimeUnit unit) {
+  private ServerRepository(long duration, TimeUnit unit) {
     this.duration = duration;
     this.unit = unit;
+    this.servers = Collections.synchronizedMap(new WeakHashMap<>(1, 1.0F));
   }
 
   public long getDuration() {
@@ -85,42 +86,40 @@ public final class ServerRepository {
   }
 
   public Collection<Server> getValidServers() {
-    return this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toUnmodifiableList());
+    return Collections.unmodifiableCollection(this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toList()));
   }
 
   public Collection<Server> getInvalidServers() {
-    return this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toUnmodifiableList());
+    return Collections.unmodifiableCollection(this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toList()));
   }
 
-  public void cacheServer(final String ip, final boolean recache, final Callback<Server> callback) {
-    if(ip == null) {
-      throw new NullPointerException("Ip cannot be null");
+  public void cacheServer(String address, boolean recache, Callback<Server> callback) {
+    if(address == null) {
+      throw new NullPointerException("Address cannot be null");
     }
     if(callback == null) {
       throw new NullPointerException("Callback cannot be null");
     }
-    final String finalIp = ip.toLowerCase();
-    if(this.servers.containsKey(finalIp)) {
-      final Server server = this.servers.get(finalIp);
+    if(this.servers.containsKey(address.toLowerCase())) {
+      Server server = this.servers.get(address.toLowerCase());
       if(this.isServerValid(server) && !recache) {
         callback.done(server, null);
         return;
       }
     }
     EXECUTOR.execute(() -> {
-      final String url = String.format(SERVER_VOTES_URL, finalIp);
+      String url = String.format(SERVER_VOTES_URL, address.toLowerCase());
       try {
-        final JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
-        final Server server = Server.of(finalIp, array);
-        this.servers.put(finalIp, server);
+        Server server = Server.of(address.toLowerCase(), new JSONArray(IOHelper.getWebsiteContent(url)));
+        this.servers.put(address.toLowerCase(), server);
         callback.done(server, null);
-      } catch(final IOException exception) {
+      } catch(IOException exception) {
         callback.done(null, exception);
       }
     });
   }
 
-  public boolean isServerValid(final Server server) {
+  public boolean isServerValid(Server server) {
     if(server == null) {
       throw new NullPointerException("Server cannot be null");
     }

@@ -34,7 +34,7 @@ public final class IOHelper {
   private IOHelper() {
   }
 
-  public static String getReaderContent(final BufferedReader reader) throws IOException {
+  public static String getReaderContent(BufferedReader reader) throws IOException {
     String content = "";
     String line;
     while((line = reader.readLine()) != null) {
@@ -44,8 +44,8 @@ public final class IOHelper {
     return content;
   }
 
-  public static String getWebsiteContent(final String website) throws IOException {
-    try(final InputStream inputStream = new URL(website).openStream(); final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+  public static String getWebsiteContent(String website) throws IOException {
+    try(InputStream inputStream = new URL(website).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
       return getReaderContent(reader);
     }
   }

@@ -33,82 +33,82 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class Profile {
-  public static Profile of(final UUID uniqueId, final JSONArray jsonArray) {
-    if(uniqueId == null) {
-      throw new NullPointerException("Unique id cannot be null");
+  public static Profile of(UUID uuid, JSONArray array) {
+    if(uuid == null) {
+      throw new NullPointerException("UUID cannot be null");
     }
-    if(jsonArray == null) {
-      throw new NullPointerException("Json array cannot be null");
+    if(array == null) {
+      throw new NullPointerException("Array cannot be null");
     }
-    final Collection<Friend> friends = new ArrayList<>(jsonArray.length());
-    for(int index = 0; index < jsonArray.length(); index++) {
-      final JSONObject jsonObject = jsonArray.getJSONObject(index);
-      friends.add(Friend.of(UUID.fromString(jsonObject.getString("uuid")), jsonObject.getString("name")));
+    Collection<Friend> friends = new ArrayList<>(array.length());
+    for(int index = 0; index < array.length(); index++) {
+      JSONObject object = array.getJSONObject(index);
+      friends.add(Friend.of(UUID.fromString(object.getString("uuid")), object.getString("name")));
     }
-    return new Profile(uniqueId, friends);
+    return new Profile(uuid, friends);
   }
 
-  private final UUID uniqueId;
-  private final Collection<Friend> friends;
-  private final long cacheTime;
+  private UUID uuid;
+  private Collection<Friend> friends;
+  private long cacheTime;
 
-  private Profile(final UUID uniqueId, final Collection<Friend> friends) {
-    this.uniqueId = uniqueId;
+  private Profile(UUID uuid, Collection<Friend> friends) {
+    this.uuid = uuid;
     this.friends = friends;
     this.cacheTime = System.currentTimeMillis();
   }
 
-  public UUID getUniqueId() {
-    return this.uniqueId;
+  public UUID getUUID() {
+    return this.uuid;
   }
 
   public Collection<Friend> getFriends() {
     return Collections.unmodifiableCollection(this.friends);
   }
 
-  public Friend getFriend(final UUID uniqueId) {
-    if(uniqueId == null) {
-      throw new NullPointerException("Unique id cannot be null");
+  public Friend getFriend(UUID uuid) {
+    if(uuid == null) {
+      throw new NullPointerException("UUID cannot be null");
     }
-    return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
+    return this.friends.stream().filter(friend -> friend.getUUID().equals(uuid)).findFirst().orElse(null);
   }
 
-  public Friend getFriend(final String nick) {
-    return this.getFriend(nick, true);
+  public Friend getFriend(String name) {
+    return this.getFriend(name, true);
   }
 
-  public Friend getFriend(final String nick, final boolean caseSensitive) {
-    if(nick == null) {
-      throw new NullPointerException("Nick cannot be null");
+  public Friend getFriend(String name, boolean caseSensitive) {
+    if(name == null) {
+      throw new NullPointerException("Name cannot be null");
     }
-    return this.friends.stream().filter(friend -> caseSensitive ? friend.getNick().equals(nick) : friend.getNick().equalsIgnoreCase(nick)).findFirst().orElse(null);
+    return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
   }
 
   public long getCacheTime() {
     return this.cacheTime;
   }
 
-  public boolean hasLikedServer(final Server server) {
+  public boolean hasLikedServer(Server server) {
     if(server == null) {
       throw new NullPointerException("Server cannot be null");
     }
-    return server.hasLiked(this.uniqueId);
+    return server.hasLiked(this.uuid);
   }
 
   @Override
-  public boolean equals(final Object object) {
+  public boolean equals(Object object) {
     if(this == object) {
       return true;
     }
     if(object == null || this.getClass() != object.getClass()) {
       return false;
     }
-    final Profile profile = (Profile) object;
-    return this.cacheTime == profile.cacheTime && Objects.equals(this.uniqueId, profile.uniqueId) && Objects.equals(this.friends, profile.friends);
+    Profile that = (Profile) object;
+    return this.cacheTime == that.cacheTime && Objects.equals(this.uuid, that.uuid) && Objects.equals(this.friends, that.friends);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(this.uniqueId, this.friends, this.cacheTime);
+    return Objects.hash(this.uuid, this.friends, this.cacheTime);
   }
 }
