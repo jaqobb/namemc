@@ -47,10 +47,10 @@ public final class ProfileRepository {
 
   public static ProfileRepository of(long duration, TimeUnit unit) {
     if(duration < 1) {
-      throw new IllegalArgumentException("Duration cannot be lower than 1");
+      throw new IllegalArgumentException("duration cannot be lower than 1");
     }
     if(unit == null) {
-      throw new NullPointerException("Unit cannot be null");
+      throw new NullPointerException("unit cannot be null");
     }
     return new ProfileRepository(duration, unit);
   }
@@ -96,10 +96,10 @@ public final class ProfileRepository {
 
   public void cacheProfile(UUID uuid, boolean recache, Callback<Profile> callback) {
     if(uuid == null) {
-      throw new NullPointerException("UUID cannot be null");
+      throw new NullPointerException("uuid cannot be null");
     }
     if(callback == null) {
-      throw new NullPointerException("Callback cannot be null");
+      throw new NullPointerException("callback cannot be null");
     }
     if(this.profiles.containsKey(uuid)) {
       Profile profile = this.profiles.get(uuid);
@@ -122,7 +122,7 @@ public final class ProfileRepository {
 
   public boolean isProfileValid(Profile profile) {
     if(profile == null) {
-      throw new NullPointerException("Profile cannot be null");
+      throw new NullPointerException("profile cannot be null");
     }
     return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationMillis();
   }

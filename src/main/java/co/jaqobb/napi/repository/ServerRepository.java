@@ -46,10 +46,10 @@ public final class ServerRepository {
 
   public static ServerRepository of(long duration, TimeUnit unit) {
     if(duration < 1) {
-      throw new IllegalArgumentException("Duration cannot be lower than 1");
+      throw new IllegalArgumentException("duration cannot be lower than 1");
     }
     if(unit == null) {
-      throw new NullPointerException("Unit cannot be null");
+      throw new NullPointerException("unit cannot be null");
     }
     return new ServerRepository(duration, unit);
   }
@@ -95,10 +95,10 @@ public final class ServerRepository {
 
   public void cacheServer(String address, boolean recache, Callback<Server> callback) {
     if(address == null) {
-      throw new NullPointerException("Address cannot be null");
+      throw new NullPointerException("address cannot be null");
     }
     if(callback == null) {
-      throw new NullPointerException("Callback cannot be null");
+      throw new NullPointerException("callback cannot be null");
     }
     if(this.servers.containsKey(address.toLowerCase())) {
       Server server = this.servers.get(address.toLowerCase());
@@ -121,7 +121,7 @@ public final class ServerRepository {
 
   public boolean isServerValid(Server server) {
     if(server == null) {
-      throw new NullPointerException("Server cannot be null");
+      throw new NullPointerException("server cannot be null");
     }
     return System.currentTimeMillis() - server.getCacheTime() < this.getDurationMillis();
   }

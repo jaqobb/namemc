@@ -35,10 +35,10 @@ import java.util.UUID;
 public final class Profile {
   public static Profile of(UUID uuid, JSONArray array) {
     if(uuid == null) {
-      throw new NullPointerException("UUID cannot be null");
+      throw new NullPointerException("uuid cannot be null");
     }
     if(array == null) {
-      throw new NullPointerException("Array cannot be null");
+      throw new NullPointerException("array cannot be null");
     }
     Collection<Friend> friends = new ArrayList<>(array.length());
     for(int index = 0; index < array.length(); index++) {
@@ -68,7 +68,7 @@ public final class Profile {
 
   public Friend getFriend(UUID uuid) {
     if(uuid == null) {
-      throw new NullPointerException("UUID cannot be null");
+      throw new NullPointerException("uuid cannot be null");
     }
     return this.friends.stream().filter(friend -> friend.getUUID().equals(uuid)).findFirst().orElse(null);
   }
@@ -79,7 +79,7 @@ public final class Profile {
 
   public Friend getFriend(String name, boolean caseSensitive) {
     if(name == null) {
-      throw new NullPointerException("Name cannot be null");
+      throw new NullPointerException("name cannot be null");
     }
     return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
   }
@@ -90,7 +90,7 @@ public final class Profile {
 
   public boolean hasLikedServer(Server server) {
     if(server == null) {
-      throw new NullPointerException("Server cannot be null");
+      throw new NullPointerException("server cannot be null");
     }
     return server.hasLiked(this.uuid);
   }

@@ -33,10 +33,10 @@ public final class NameMC {
 
   public static NameMC of(ProfileRepository profileRepository, ServerRepository serverRepository) {
     if(profileRepository == null) {
-      throw new NullPointerException("Profile repository cannot be null");
+      throw new NullPointerException("profileRepository cannot be null");
     }
     if(serverRepository == null) {
-      throw new NullPointerException("Server repository cannot be null");
+      throw new NullPointerException("serverRepository cannot be null");
     }
     return new NameMC(profileRepository, serverRepository);
   }

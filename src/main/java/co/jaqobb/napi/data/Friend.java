@@ -29,10 +29,10 @@ import java.util.UUID;
 public final class Friend {
   public static Friend of(UUID uuid, String name) {
     if(uuid == null) {
-      throw new NullPointerException("UUID cannot be null");
+      throw new NullPointerException("uuid cannot be null");
     }
     if(name == null) {
-      throw new NullPointerException("Name cannot be null");
+      throw new NullPointerException("name cannot be null");
     }
     return new Friend(uuid, name);
   }
@@ -65,7 +65,7 @@ public final class Friend {
 
   public boolean isFriendOf(Profile profile, boolean caseSensitive) {
     if(profile == null) {
-      throw new NullPointerException("Profile cannot be null");
+      throw new NullPointerException("profile cannot be null");
     }
     if(profile.getFriend(this.uuid) != null) {
       return true;
@@ -75,7 +75,7 @@ public final class Friend {
 
   public boolean hasLikedServer(Server server) {
     if(server == null) {
-      throw new NullPointerException("Server cannot be null");
+      throw new NullPointerException("server cannot be null");
     }
     return server.hasLiked(this.uuid);
   }

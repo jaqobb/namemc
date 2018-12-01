@@ -34,10 +34,10 @@ import java.util.UUID;
 public final class Server {
   public static Server of(String address, JSONArray array) {
     if(address == null) {
-      throw new NullPointerException("Address cannot be null");
+      throw new NullPointerException("address cannot be null");
     }
     if(array == null) {
-      throw new NullPointerException("Array cannot be null");
+      throw new NullPointerException("array cannot be null");
     }
     Collection<UUID> likes = new ArrayList<>(array.length());
     for(int index = 0; index < array.length(); index++) {
@@ -66,7 +66,7 @@ public final class Server {
 
   public boolean hasLiked(UUID uuid) {
     if(uuid == null) {
-      throw new NullPointerException("UUID cannot be null");
+      throw new NullPointerException("uuid cannot be null");
     }
     return this.likes.contains(uuid);
   }
