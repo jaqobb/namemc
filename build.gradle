@@ -3,11 +3,6 @@ plugins {
   id "net.minecrell.licenser" version "0.4.1"
 }
 
-group "co.jaqobb"
-version "2.0.1"
-
-description "A https://namemc.com Java wrapper"
-
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
