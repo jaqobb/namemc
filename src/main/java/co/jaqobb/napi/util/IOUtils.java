@@ -23,7 +23,30 @@
  */
 package co.jaqobb.napi.util;
 
-@FunctionalInterface
-public interface Callback<T> {
-  void done(T object, Throwable exception);
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
+public final class IOUtils {
+  private IOUtils() {
+  }
+
+  public static String getReaderContent(BufferedReader reader) throws IOException {
+    String content = "";
+    String line;
+    while((line = reader.readLine()) != null) {
+      content += line;
+      content += System.lineSeparator();
+    }
+    return content;
+  }
+
+  public static String getWebsiteContent(String website) throws IOException {
+    try(InputStream inputStream = new URL(website).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+      return IOUtils.getReaderContent(reader);
+    }
+  }
 }

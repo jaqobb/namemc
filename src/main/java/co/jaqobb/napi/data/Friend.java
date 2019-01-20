@@ -26,74 +26,81 @@ package co.jaqobb.napi.data;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class Friend {
-  public static Friend of(UUID uuid, String name) {
-    if(uuid == null) {
-      throw new NullPointerException("uuid cannot be null");
-    }
-    if(name == null) {
-      throw new NullPointerException("name cannot be null");
-    }
-    return new Friend(uuid, name);
-  }
+public class Friend {
+	private final UUID uniqueId;
+	private final String name;
+	private final long cacheTime;
 
-  private final UUID uuid;
-  private final String name;
-  private final long cacheTime;
+	public Friend(UUID uniqueId, String name) {
+		if (uniqueId == null) {
+			throw new NullPointerException("uniqueId cannot be null");
+		}
+		if (name == null) {
+			throw new NullPointerException("name cannot be null");
+		}
+		this.uniqueId = uniqueId;
+		this.name = name;
+		this.cacheTime = System.currentTimeMillis();
+	}
 
-  private Friend(UUID uuid, String name) {
-    this.uuid = uuid;
-    this.name = name;
-    this.cacheTime = System.currentTimeMillis();
-  }
+	public UUID getUniqueId() {
+		return this.uniqueId;
+	}
 
-  public UUID getUUID() {
-    return this.uuid;
-  }
+	public String getName() {
+		return this.name;
+	}
 
-  public String getName() {
-    return this.name;
-  }
+	public long getCacheTime() {
+		return this.cacheTime;
+	}
 
-  public long getCacheTime() {
-    return this.cacheTime;
-  }
+	public boolean isFriendOf(Profile profile) {
+		return this.isFriendOf(profile, true);
+	}
 
-  public boolean isFriendOf(Profile profile) {
-    return this.isFriendOf(profile, true);
-  }
+	public boolean isFriendOf(Profile profile, boolean caseSensitive) {
+		if (profile == null) {
+			throw new NullPointerException("profile cannot be null");
+		}
+		if (profile.getFriend(this.uniqueId) != null) {
+			return true;
+		}
+		return profile.getFriend(this.name, caseSensitive).isPresent();
+	}
 
-  public boolean isFriendOf(Profile profile, boolean caseSensitive) {
-    if(profile == null) {
-      throw new NullPointerException("profile cannot be null");
-    }
-    if(profile.getFriend(this.uuid) != null) {
-      return true;
-    }
-    return profile.getFriend(this.name, caseSensitive) != null;
-  }
+	public boolean hasLikedServer(Server server) {
+		if (server == null) {
+			throw new NullPointerException("server cannot be null");
+		}
+		return server.hasLiked(this.uniqueId);
+	}
 
-  public boolean hasLikedServer(Server server) {
-    if(server == null) {
-      throw new NullPointerException("server cannot be null");
-    }
-    return server.hasLiked(this.uuid);
-  }
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (object == null || this.getClass() != object.getClass()) {
+			return false;
+		}
+		Friend friend = (Friend) object;
+		return this.cacheTime == friend.cacheTime &&
+			Objects.equals(this.uniqueId, friend.uniqueId) &&
+			Objects.equals(this.name, friend.name);
+	}
 
-  @Override
-  public boolean equals(Object object) {
-    if(this == object) {
-      return true;
-    }
-    if(object == null || this.getClass() != object.getClass()) {
-      return false;
-    }
-    Friend that = (Friend) object;
-    return this.cacheTime == that.cacheTime && Objects.equals(this.uuid, that.uuid) && Objects.equals(this.name, that.name);
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.uniqueId, this.name, this.cacheTime);
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.uuid, this.name, this.cacheTime);
-  }
+	@Override
+	public String toString() {
+		return "Friend{" +
+			"uniqueId=" + this.uniqueId +
+			", name='" + this.name + "'" +
+			", cacheTime=" + this.cacheTime +
+			"}";
+	}
 }

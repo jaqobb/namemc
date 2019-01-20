@@ -24,110 +24,106 @@
 package co.jaqobb.napi.repository;
 
 import co.jaqobb.napi.data.Profile;
-import co.jaqobb.napi.helper.IOHelper;
-import co.jaqobb.napi.util.Callback;
+import co.jaqobb.napi.util.IOUtils;
 import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public final class ProfileRepository {
-  public static ProfileRepository of() {
-    return new ProfileRepository(5L, TimeUnit.MINUTES);
-  }
+	private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
 
-  public static ProfileRepository of(long duration, TimeUnit unit) {
-    if(duration < 1) {
-      throw new IllegalArgumentException("duration cannot be lower than 1");
-    }
-    if(unit == null) {
-      throw new NullPointerException("unit cannot be null");
-    }
-    return new ProfileRepository(duration, unit);
-  }
+	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
+	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Profile Query #" + ProfileRepository.EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
+	private final long duration;
+	private final TimeUnit unit;
+	private final Map<UUID, Profile> profiles;
 
-  private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	public ProfileRepository() {
+		this(5L, TimeUnit.MINUTES);
+	}
 
-  private final long duration;
-  private final TimeUnit unit;
-  private final Map<UUID, Profile> profiles;
+	public ProfileRepository(long duration, TimeUnit unit) {
+		if (duration < 1) {
+			throw new IllegalArgumentException("duration cannot be lower than 1");
+		}
+		if (unit == null) {
+			throw new NullPointerException("unit cannot be null");
+		}
+		this.duration = duration;
+		this.unit = unit;
+		this.profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
+	}
 
-  private ProfileRepository(long duration, TimeUnit unit) {
-    this.duration = duration;
-    this.unit = unit;
-    this.profiles = Collections.synchronizedMap(new WeakHashMap<>(100, 0.85F));
-  }
+	public long getDuration() {
+		return this.duration;
+	}
 
-  public long getDuration() {
-    return this.duration;
-  }
+	public long getDurationInMillis() {
+		return this.unit.toMillis(this.duration);
+	}
 
-  public long getDurationMillis() {
-    return this.unit.toMillis(this.duration);
-  }
+	public TimeUnit getUnit() {
+		return this.unit;
+	}
 
-  public TimeUnit getUnit() {
-    return this.unit;
-  }
+	public Collection<Profile> getProfiles() {
+		return Collections.unmodifiableCollection(this.profiles.values());
+	}
 
-  public Collection<Profile> getProfiles() {
-    return Collections.unmodifiableCollection(this.profiles.values());
-  }
+	public Collection<Profile> getValidProfiles() {
+		return this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toUnmodifiableList());
+	}
 
-  public Collection<Profile> getValidProfiles() {
-    return Collections.unmodifiableCollection(this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toList()));
-  }
+	public Collection<Profile> getInvalidProfiles() {
+		return this.profiles.values().stream().filter(profile -> !this.isProfileValid(profile)).collect(Collectors.toUnmodifiableList());
+	}
 
-  public Collection<Profile> getInvalidProfiles() {
-    return Collections.unmodifiableCollection(this.profiles.values().stream().filter(profile -> !this.isProfileValid(profile)).collect(Collectors.toList()));
-  }
+	public void cacheProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Throwable> callback) {
+		if (uniqueId == null) {
+			throw new NullPointerException("uniqueId cannot be null");
+		}
+		if (callback == null) {
+			throw new NullPointerException("callback cannot be null");
+		}
+		if (this.profiles.containsKey(uniqueId)) {
+			Profile profile = this.profiles.get(uniqueId);
+			if (this.isProfileValid(profile) && !recache) {
+				callback.accept(profile, null);
+				return;
+			}
+		}
+		ProfileRepository.EXECUTOR.execute(() -> {
+			String url = String.format(ProfileRepository.PROFILE_FRIENDS_URL, uniqueId.toString());
+			try {
+				Profile profile = new Profile(uniqueId, new JSONArray(IOUtils.getWebsiteContent(url)));
+				this.profiles.put(uniqueId, profile);
+				callback.accept(profile, null);
+			} catch (IOException exception) {
+				callback.accept(null, exception);
+			}
+		});
+	}
 
-  public void cacheProfile(UUID uuid, boolean recache, Callback<Profile> callback) {
-    if(uuid == null) {
-      throw new NullPointerException("uuid cannot be null");
-    }
-    if(callback == null) {
-      throw new NullPointerException("callback cannot be null");
-    }
-    if(this.profiles.containsKey(uuid)) {
-      Profile profile = this.profiles.get(uuid);
-      if(this.isProfileValid(profile) && !recache) {
-        callback.done(profile, null);
-        return;
-      }
-    }
-    EXECUTOR.execute(() -> {
-      String url = String.format(PROFILE_FRIENDS_URL, uuid.toString());
-      try {
-        Profile profile = Profile.of(uuid, new JSONArray(IOHelper.getWebsiteContent(url)));
-        this.profiles.put(uuid, profile);
-        callback.done(profile, null);
-      } catch(IOException exception) {
-        callback.done(null, exception);
-      }
-    });
-  }
+	public boolean isProfileValid(Profile profile) {
+		if (profile == null) {
+			throw new NullPointerException("profile cannot be null");
+		}
+		return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationInMillis();
+	}
 
-  public boolean isProfileValid(Profile profile) {
-    if(profile == null) {
-      throw new NullPointerException("profile cannot be null");
-    }
-    return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationMillis();
-  }
-
-  public void clearProfiles() {
-    this.profiles.clear();
-  }
+	public void clearProfiles() {
+		this.profiles.clear();
+	}
 }

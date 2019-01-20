@@ -24,109 +24,105 @@
 package co.jaqobb.napi.repository;
 
 import co.jaqobb.napi.data.Server;
-import co.jaqobb.napi.helper.IOHelper;
-import co.jaqobb.napi.util.Callback;
+import co.jaqobb.napi.util.IOUtils;
 import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public final class ServerRepository {
-  public static ServerRepository of() {
-    return new ServerRepository(10L, TimeUnit.MINUTES);
-  }
+	private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
 
-  public static ServerRepository of(long duration, TimeUnit unit) {
-    if(duration < 1) {
-      throw new IllegalArgumentException("duration cannot be lower than 1");
-    }
-    if(unit == null) {
-      throw new NullPointerException("unit cannot be null");
-    }
-    return new ServerRepository(duration, unit);
-  }
+	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
+	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Server Query #" + ServerRepository.EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
+	private final long duration;
+	private final TimeUnit unit;
+	private final Map<String, Server> servers;
 
-  private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	public ServerRepository() {
+		this(10L, TimeUnit.SECONDS);
+	}
 
-  private final long duration;
-  private final TimeUnit unit;
-  private final Map<String, Server> servers;
+	public ServerRepository(long duration, TimeUnit unit) {
+		if (duration < 1) {
+			throw new IllegalArgumentException("duration cannot be lower than 1");
+		}
+		if (unit == null) {
+			throw new NullPointerException("unit cannot be null");
+		}
+		this.duration = duration;
+		this.unit = unit;
+		this.servers = Collections.synchronizedMap(new HashMap<>(1, 1.0F));
+	}
 
-  private ServerRepository(long duration, TimeUnit unit) {
-    this.duration = duration;
-    this.unit = unit;
-    this.servers = Collections.synchronizedMap(new WeakHashMap<>(1, 1.0F));
-  }
+	public long getDuration() {
+		return this.duration;
+	}
 
-  public long getDuration() {
-    return this.duration;
-  }
+	public long getDurationInMillis() {
+		return this.unit.toMillis(this.duration);
+	}
 
-  public long getDurationMillis() {
-    return this.unit.toMillis(this.duration);
-  }
+	public TimeUnit getUnit() {
+		return this.unit;
+	}
 
-  public TimeUnit getUnit() {
-    return this.unit;
-  }
+	public Collection<Server> getServers() {
+		return Collections.unmodifiableCollection(this.servers.values());
+	}
 
-  public Collection<Server> getServers() {
-    return Collections.unmodifiableCollection(this.servers.values());
-  }
+	public Collection<Server> getValidServers() {
+		return this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toUnmodifiableList());
+	}
 
-  public Collection<Server> getValidServers() {
-    return Collections.unmodifiableCollection(this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toList()));
-  }
+	public Collection<Server> getInvalidServers() {
+		return this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toUnmodifiableList());
+	}
 
-  public Collection<Server> getInvalidServers() {
-    return Collections.unmodifiableCollection(this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toList()));
-  }
+	public void cacheServer(String address, boolean recache, BiConsumer<Server, Throwable> callback) {
+		if (address == null) {
+			throw new NullPointerException("address cannot be null");
+		}
+		if (callback == null) {
+			throw new NullPointerException("callback cannot be null");
+		}
+		if (this.servers.containsKey(address.toLowerCase())) {
+			Server server = this.servers.get(address.toLowerCase());
+			if (this.isServerValid(server) && !recache) {
+				callback.accept(server, null);
+				return;
+			}
+		}
+		ServerRepository.EXECUTOR.execute(() -> {
+			String url = String.format(ServerRepository.SERVER_VOTES_URL, address.toLowerCase());
+			try {
+				Server server = new Server(address.toLowerCase(), new JSONArray(IOUtils.getWebsiteContent(url)));
+				this.servers.put(address.toLowerCase(), server);
+				callback.accept(server, null);
+			} catch (IOException exception) {
+				callback.accept(null, exception);
+			}
+		});
+	}
 
-  public void cacheServer(String address, boolean recache, Callback<Server> callback) {
-    if(address == null) {
-      throw new NullPointerException("address cannot be null");
-    }
-    if(callback == null) {
-      throw new NullPointerException("callback cannot be null");
-    }
-    if(this.servers.containsKey(address.toLowerCase())) {
-      Server server = this.servers.get(address.toLowerCase());
-      if(this.isServerValid(server) && !recache) {
-        callback.done(server, null);
-        return;
-      }
-    }
-    EXECUTOR.execute(() -> {
-      String url = String.format(SERVER_VOTES_URL, address.toLowerCase());
-      try {
-        Server server = Server.of(address.toLowerCase(), new JSONArray(IOHelper.getWebsiteContent(url)));
-        this.servers.put(address.toLowerCase(), server);
-        callback.done(server, null);
-      } catch(IOException exception) {
-        callback.done(null, exception);
-      }
-    });
-  }
+	public boolean isServerValid(Server server) {
+		if (server == null) {
+			throw new NullPointerException("server cannot be null");
+		}
+		return System.currentTimeMillis() - server.getCacheTime() < this.getDurationInMillis();
+	}
 
-  public boolean isServerValid(Server server) {
-    if(server == null) {
-      throw new NullPointerException("server cannot be null");
-    }
-    return System.currentTimeMillis() - server.getCacheTime() < this.getDurationMillis();
-  }
-
-  public void clearServers() {
-    this.servers.clear();
-  }
+	public void clearServers() {
+		this.servers.clear();
+	}
 }

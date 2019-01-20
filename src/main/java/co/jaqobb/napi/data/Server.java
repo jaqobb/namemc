@@ -25,70 +25,74 @@ package co.jaqobb.napi.data;
 
 import org.json.JSONArray;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-public final class Server {
-  public static Server of(String address, JSONArray array) {
-    if(address == null) {
-      throw new NullPointerException("address cannot be null");
-    }
-    if(array == null) {
-      throw new NullPointerException("array cannot be null");
-    }
-    Collection<UUID> likes = new ArrayList<>(array.length());
-    for(int index = 0; index < array.length(); index++) {
-      likes.add(UUID.fromString(array.getString(index)));
-    }
-    return new Server(address, likes);
-  }
+public class Server {
+	private final String address;
+	private final Collection<UUID> likes;
+	private final long cacheTime;
 
-  private final String address;
-  private final Collection<UUID> likes;
-  private final long cacheTime;
+	public Server(String address, JSONArray array) {
+		if (address == null) {
+			throw new NullPointerException("address cannot be null");
+		}
+		if (array == null) {
+			throw new NullPointerException("array cannot be null");
+		}
+		this.address = address;
+		this.likes = IntStream.range(0, array.length()).boxed().map(index -> UUID.fromString(array.getString(index))).collect(Collectors.toUnmodifiableList());
+		this.cacheTime = System.currentTimeMillis();
+	}
 
-  private Server(String address, Collection<UUID> likes) {
-    this.address = address;
-    this.likes = likes;
-    this.cacheTime = System.currentTimeMillis();
-  }
+	public String getAddress() {
+		return this.address;
+	}
 
-  public String getAddress() {
-    return this.address;
-  }
+	public Collection<UUID> getLikes() {
+		return Collections.unmodifiableCollection(this.likes);
+	}
 
-  public Collection<UUID> getLikes() {
-    return Collections.unmodifiableCollection(this.likes);
-  }
+	public boolean hasLiked(UUID uniqueId) {
+		if (uniqueId == null) {
+			throw new NullPointerException("uniqueId cannot be null");
+		}
+		return this.likes.contains(uniqueId);
+	}
 
-  public boolean hasLiked(UUID uuid) {
-    if(uuid == null) {
-      throw new NullPointerException("uuid cannot be null");
-    }
-    return this.likes.contains(uuid);
-  }
+	public long getCacheTime() {
+		return this.cacheTime;
+	}
 
-  public long getCacheTime() {
-    return this.cacheTime;
-  }
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) {
+			return true;
+		}
+		if (object == null || this.getClass() != object.getClass()) {
+			return false;
+		}
+		Server server = (Server) object;
+		return this.cacheTime == server.cacheTime &&
+			Objects.equals(this.address, server.address) &&
+			Objects.equals(this.likes, server.likes);
+	}
 
-  @Override
-  public boolean equals(Object object) {
-    if(this == object) {
-      return true;
-    }
-    if(object == null || this.getClass() != object.getClass()) {
-      return false;
-    }
-    Server that = (Server) object;
-    return this.cacheTime == that.cacheTime && Objects.equals(this.address, that.address) && Objects.equals(this.likes, that.likes);
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.address, this.likes, this.cacheTime);
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.address, this.likes, this.cacheTime);
-  }
+	@Override
+	public String toString() {
+		return "Server{" +
+			"address='" + this.address + "'" +
+			", likes=" + this.likes +
+			", cacheTime=" + this.cacheTime +
+			"}";
+	}
 }

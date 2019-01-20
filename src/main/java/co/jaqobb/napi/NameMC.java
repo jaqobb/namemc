@@ -27,33 +27,29 @@ import co.jaqobb.napi.repository.ProfileRepository;
 import co.jaqobb.napi.repository.ServerRepository;
 
 public final class NameMC {
-  public static NameMC of() {
-    return new NameMC(ProfileRepository.of(), ServerRepository.of());
-  }
+	private final ProfileRepository profileRepository;
+	private final ServerRepository serverRepository;
 
-  public static NameMC of(ProfileRepository profileRepository, ServerRepository serverRepository) {
-    if(profileRepository == null) {
-      throw new NullPointerException("profileRepository cannot be null");
-    }
-    if(serverRepository == null) {
-      throw new NullPointerException("serverRepository cannot be null");
-    }
-    return new NameMC(profileRepository, serverRepository);
-  }
+	public NameMC() {
+		this(new ProfileRepository(), new ServerRepository());
+	}
 
-  private final ProfileRepository profileRepository;
-  private final ServerRepository serverRepository;
+	public NameMC(ProfileRepository profileRepository, ServerRepository serverRepository) {
+		if (profileRepository == null) {
+			throw new NullPointerException("profileRepository cannot be null");
+		}
+		if (serverRepository == null) {
+			throw new NullPointerException("serverRepository cannot be null");
+		}
+		this.profileRepository = profileRepository;
+		this.serverRepository = serverRepository;
+	}
 
-  private NameMC(ProfileRepository profileRepository, ServerRepository serverRepository) {
-    this.profileRepository = profileRepository;
-    this.serverRepository = serverRepository;
-  }
+	public ProfileRepository getProfileRepository() {
+		return this.profileRepository;
+	}
 
-  public ProfileRepository getProfileRepository() {
-    return this.profileRepository;
-  }
-
-  public ServerRepository getServerRepository() {
-    return this.serverRepository;
-  }
+	public ServerRepository getServerRepository() {
+		return this.serverRepository;
+	}
 }
