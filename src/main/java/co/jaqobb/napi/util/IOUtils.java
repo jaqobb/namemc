@@ -31,22 +31,22 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public final class IOUtils {
-  private IOUtils() {
-  }
+	private IOUtils() {
+	}
 
-  public static String getReaderContent(BufferedReader reader) throws IOException {
-    String content = "";
-    String line;
-    while((line = reader.readLine()) != null) {
-      content += line;
-      content += System.lineSeparator();
-    }
-    return content;
-  }
+	public static String getReaderContent(BufferedReader reader) throws IOException {
+		String content = "";
+		String line;
+		while ((line = reader.readLine()) != null) {
+			content += line;
+			content += System.lineSeparator();
+		}
+		return content;
+	}
 
-  public static String getWebsiteContent(String website) throws IOException {
-    try(InputStream inputStream = new URL(website).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-      return IOUtils.getReaderContent(reader);
-    }
-  }
+	public static String getWebsiteContent(String website) throws IOException {
+		try (InputStream inputStream = new URL(website).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+			return IOUtils.getReaderContent(reader);
+		}
+	}
 }

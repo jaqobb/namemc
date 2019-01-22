@@ -99,10 +99,10 @@ public class Profile {
 		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
-		Profile profile = (Profile) object;
-		return this.cacheTime == profile.cacheTime &&
-			Objects.equals(this.uniqueId, profile.uniqueId) &&
-			Objects.equals(this.friends, profile.friends);
+		Profile that = (Profile) object;
+		return this.cacheTime == that.cacheTime &&
+			Objects.equals(this.uniqueId, that.uniqueId) &&
+			Objects.equals(this.friends, that.friends);
 	}
 
 	@Override

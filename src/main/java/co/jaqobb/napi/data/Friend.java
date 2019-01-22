@@ -84,10 +84,10 @@ public class Friend {
 		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
-		Friend friend = (Friend) object;
-		return this.cacheTime == friend.cacheTime &&
-			Objects.equals(this.uniqueId, friend.uniqueId) &&
-			Objects.equals(this.name, friend.name);
+		Friend that = (Friend) object;
+		return this.cacheTime == that.cacheTime &&
+			Objects.equals(this.uniqueId, that.uniqueId) &&
+			Objects.equals(this.name, that.name);
 	}
 
 	@Override

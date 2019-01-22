@@ -76,10 +76,10 @@ public class Server {
 		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
-		Server server = (Server) object;
-		return this.cacheTime == server.cacheTime &&
-			Objects.equals(this.address, server.address) &&
-			Objects.equals(this.likes, server.likes);
+		Server that = (Server) object;
+		return this.cacheTime == that.cacheTime &&
+			Objects.equals(this.address, that.address) &&
+			Objects.equals(this.likes, that.likes);
 	}
 
 	@Override
