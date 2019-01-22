@@ -62,11 +62,11 @@ public class Profile {
 		return Collections.unmodifiableCollection(this.friends);
 	}
 
-	public Friend getFriend(UUID uniqueId) {
+	public Optional<Friend> getFriend(UUID uniqueId) {
 		if (uniqueId == null) {
 			throw new NullPointerException("uniqueId cannot be null");
 		}
-		return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst().orElse(null);
+		return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst();
 	}
 
 	public Optional<Friend> getFriend(String name) {
