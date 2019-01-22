@@ -63,7 +63,7 @@ public class Friend {
 		if (profile == null) {
 			throw new NullPointerException("profile cannot be null");
 		}
-		if (profile.getFriend(this.uniqueId) != null) {
+		if (profile.getFriend(this.uniqueId).isPresent()) {
 			return true;
 		}
 		return profile.getFriend(this.name, caseSensitive).isPresent();
