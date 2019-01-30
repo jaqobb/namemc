@@ -1,12 +1,13 @@
 plugins {
 	id "java"
 	id "net.minecrell.licenser" version "0.4.1"
+	id "com.github.johnrengelman.shadow" version "4.0.3"
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
-defaultTasks "clean", "build"
+defaultTasks "clean", "build", "shadowJar"
 
 license {
 	header project.file("header.txt")
