@@ -1,5 +1,5 @@
 /*
- * This file is a part of napi, licensed under the MIT License.
+ * This file is a part of namemc-api, licensed under the MIT License.
  *
  * Copyright (c) Jakub Zagórski (jaqobb)
  *
@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.napi.data;
+package co.jaqobb.namemc_api.data;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

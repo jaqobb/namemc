@@ -1,5 +1,5 @@
 /*
- * This file is a part of napi, licensed under the MIT License.
+ * This file is a part of namemc-api, licensed under the MIT License.
  *
  * Copyright (c) Jakub Zagórski (jaqobb)
  *
@@ -21,51 +21,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.napi.data;
+package co.jaqobb.namemc_api.data;
 
-import org.json.JSONArray;
-
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class Server {
-	private final String address;
-	private final Collection<UUID> likes;
+public class Friend {
+	private final UUID uniqueId;
+	private final String name;
 	private final long cacheTime;
 
-	public Server(String address, JSONArray array) {
-		if (address == null) {
-			throw new NullPointerException("address cannot be null");
-		}
-		if (array == null) {
-			throw new NullPointerException("array cannot be null");
-		}
-		this.address = address;
-		this.likes = IntStream.range(0, array.length()).boxed().map(index -> UUID.fromString(array.getString(index))).collect(Collectors.toUnmodifiableList());
-		this.cacheTime = System.currentTimeMillis();
-	}
-
-	public String getAddress() {
-		return this.address;
-	}
-
-	public Collection<UUID> getLikes() {
-		return Collections.unmodifiableCollection(this.likes);
-	}
-
-	public boolean hasLiked(UUID uniqueId) {
+	public Friend(UUID uniqueId, String name) {
 		if (uniqueId == null) {
 			throw new NullPointerException("uniqueId cannot be null");
 		}
-		return this.likes.contains(uniqueId);
+		if (name == null) {
+			throw new NullPointerException("name cannot be null");
+		}
+		this.uniqueId = uniqueId;
+		this.name = name;
+		this.cacheTime = System.currentTimeMillis();
+	}
+
+	public UUID getUniqueId() {
+		return this.uniqueId;
+	}
+
+	public String getName() {
+		return this.name;
 	}
 
 	public long getCacheTime() {
 		return this.cacheTime;
+	}
+
+	public boolean isFriendOf(Profile profile) {
+		return this.isFriendOf(profile, true);
+	}
+
+	public boolean isFriendOf(Profile profile, boolean caseSensitive) {
+		if (profile == null) {
+			throw new NullPointerException("profile cannot be null");
+		}
+		if (profile.getFriend(this.uniqueId).isPresent()) {
+			return true;
+		}
+		return profile.getFriend(this.name, caseSensitive).isPresent();
+	}
+
+	public boolean hasLikedServer(Server server) {
+		if (server == null) {
+			throw new NullPointerException("server cannot be null");
+		}
+		return server.hasLiked(this.uniqueId);
 	}
 
 	@Override
@@ -76,22 +84,22 @@ public class Server {
 		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
-		Server that = (Server) object;
+		Friend that = (Friend) object;
 		return this.cacheTime == that.cacheTime &&
-			Objects.equals(this.address, that.address) &&
-			Objects.equals(this.likes, that.likes);
+			Objects.equals(this.uniqueId, that.uniqueId) &&
+			Objects.equals(this.name, that.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.address, this.likes, this.cacheTime);
+		return Objects.hash(this.uniqueId, this.name, this.cacheTime);
 	}
 
 	@Override
 	public String toString() {
-		return "Server{" +
-			"address='" + this.address + "'" +
-			", likes=" + this.likes +
+		return "Friend{" +
+			"uniqueId=" + this.uniqueId +
+			", name='" + this.name + "'" +
 			", cacheTime=" + this.cacheTime +
 			"}";
 	}

@@ -1,5 +1,5 @@
 /*
- * This file is a part of napi, licensed under the MIT License.
+ * This file is a part of namemc-api, licensed under the MIT License.
  *
  * Copyright (c) Jakub Zagórski (jaqobb)
  *
@@ -21,35 +21,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.napi;
+package co.jaqobb.namemc_api.util;
 
-import co.jaqobb.napi.repository.ProfileRepository;
-import co.jaqobb.napi.repository.ServerRepository;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
-public final class NameMC {
-	private final ProfileRepository profileRepository;
-	private final ServerRepository serverRepository;
-
-	public NameMC() {
-		this(new ProfileRepository(), new ServerRepository());
+public final class IOUtils {
+	private IOUtils() {
 	}
 
-	public NameMC(ProfileRepository profileRepository, ServerRepository serverRepository) {
-		if (profileRepository == null) {
-			throw new NullPointerException("profileRepository cannot be null");
+	public static String getReaderContent(BufferedReader reader) throws IOException {
+		String content = "";
+		String line;
+		while ((line = reader.readLine()) != null) {
+			content += line;
+			content += System.lineSeparator();
 		}
-		if (serverRepository == null) {
-			throw new NullPointerException("serverRepository cannot be null");
+		return content;
+	}
+
+	public static String getWebsiteContent(String website) throws IOException {
+		try (InputStream inputStream = new URL(website).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+			return IOUtils.getReaderContent(reader);
 		}
-		this.profileRepository = profileRepository;
-		this.serverRepository = serverRepository;
-	}
-
-	public ProfileRepository getProfileRepository() {
-		return this.profileRepository;
-	}
-
-	public ServerRepository getServerRepository() {
-		return this.serverRepository;
 	}
 }

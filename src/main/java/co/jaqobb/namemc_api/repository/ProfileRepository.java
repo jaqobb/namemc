@@ -1,5 +1,5 @@
 /*
- * This file is a part of napi, licensed under the MIT License.
+ * This file is a part of namemc-api, licensed under the MIT License.
  *
  * Copyright (c) Jakub Zagórski (jaqobb)
  *
@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.napi.repository;
+package co.jaqobb.namemc_api.repository;
 
-import co.jaqobb.napi.data.Server;
-import co.jaqobb.napi.util.IOUtils;
+import co.jaqobb.namemc_api.data.Profile;
+import co.jaqobb.namemc_api.util.IOUtils;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -39,21 +40,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-public class ServerRepository {
-	private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
+public class ProfileRepository {
+	private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
 
 	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NAPI Server Query #" + ServerRepository.EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + ProfileRepository.EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	private final long duration;
 	private final TimeUnit unit;
-	private final Map<String, Server> servers;
+	private final Map<UUID, Profile> profiles;
 
-	public ServerRepository() {
-		this(10L, TimeUnit.SECONDS);
+	public ProfileRepository() {
+		this(5L, TimeUnit.MINUTES);
 	}
 
-	public ServerRepository(long duration, TimeUnit unit) {
+	public ProfileRepository(long duration, TimeUnit unit) {
 		if (duration < 1) {
 			throw new IllegalArgumentException("duration cannot be lower than 1");
 		}
@@ -62,7 +63,7 @@ public class ServerRepository {
 		}
 		this.duration = duration;
 		this.unit = unit;
-		this.servers = Collections.synchronizedMap(new HashMap<>(1, 1.0F));
+		this.profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
 	}
 
 	public long getDuration() {
@@ -77,52 +78,52 @@ public class ServerRepository {
 		return this.unit;
 	}
 
-	public Collection<Server> getServers() {
-		return Collections.unmodifiableCollection(this.servers.values());
+	public Collection<Profile> getProfiles() {
+		return Collections.unmodifiableCollection(this.profiles.values());
 	}
 
-	public Collection<Server> getValidServers() {
-		return this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toUnmodifiableList());
+	public Collection<Profile> getValidProfiles() {
+		return this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toUnmodifiableList());
 	}
 
-	public Collection<Server> getInvalidServers() {
-		return this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toUnmodifiableList());
+	public Collection<Profile> getInvalidProfiles() {
+		return this.profiles.values().stream().filter(profile -> !this.isProfileValid(profile)).collect(Collectors.toUnmodifiableList());
 	}
 
-	public void cacheServer(String address, boolean recache, BiConsumer<Server, Throwable> callback) {
-		if (address == null) {
-			throw new NullPointerException("address cannot be null");
+	public void cacheProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Throwable> callback) {
+		if (uniqueId == null) {
+			throw new NullPointerException("uniqueId cannot be null");
 		}
 		if (callback == null) {
 			throw new NullPointerException("callback cannot be null");
 		}
-		if (this.servers.containsKey(address.toLowerCase())) {
-			Server server = this.servers.get(address.toLowerCase());
-			if (this.isServerValid(server) && !recache) {
-				callback.accept(server, null);
+		if (this.profiles.containsKey(uniqueId)) {
+			Profile profile = this.profiles.get(uniqueId);
+			if (this.isProfileValid(profile) && !recache) {
+				callback.accept(profile, null);
 				return;
 			}
 		}
-		ServerRepository.EXECUTOR.execute(() -> {
-			String url = String.format(ServerRepository.SERVER_VOTES_URL, address.toLowerCase());
+		ProfileRepository.EXECUTOR.execute(() -> {
+			String url = String.format(ProfileRepository.PROFILE_FRIENDS_URL, uniqueId.toString());
 			try {
-				Server server = new Server(address.toLowerCase(), new JSONArray(IOUtils.getWebsiteContent(url)));
-				this.servers.put(address.toLowerCase(), server);
-				callback.accept(server, null);
+				Profile profile = new Profile(uniqueId, new JSONArray(IOUtils.getWebsiteContent(url)));
+				this.profiles.put(uniqueId, profile);
+				callback.accept(profile, null);
 			} catch (IOException exception) {
 				callback.accept(null, exception);
 			}
 		});
 	}
 
-	public boolean isServerValid(Server server) {
-		if (server == null) {
-			throw new NullPointerException("server cannot be null");
+	public boolean isProfileValid(Profile profile) {
+		if (profile == null) {
+			throw new NullPointerException("profile cannot be null");
 		}
-		return System.currentTimeMillis() - server.getCacheTime() < this.getDurationInMillis();
+		return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationInMillis();
 	}
 
-	public void clearServers() {
-		this.servers.clear();
+	public void clearProfiles() {
+		this.profiles.clear();
 	}
 }

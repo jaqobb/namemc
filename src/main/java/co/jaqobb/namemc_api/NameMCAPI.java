@@ -1,5 +1,5 @@
 /*
- * This file is a part of napi, licensed under the MIT License.
+ * This file is a part of namemc-api, licensed under the MIT License.
  *
  * Copyright (c) Jakub Zagórski (jaqobb)
  *
@@ -21,32 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.napi.util;
+package co.jaqobb.namemc_api;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import co.jaqobb.namemc_api.repository.ProfileRepository;
+import co.jaqobb.namemc_api.repository.ServerRepository;
 
-public final class IOUtils {
-	private IOUtils() {
+public final class NameMCAPI {
+	private static ProfileRepository profileRepository;
+	private static ServerRepository serverRepository;
+
+	static {
+		NameMCAPI.profileRepository = new ProfileRepository();
+		NameMCAPI.serverRepository = new ServerRepository();
 	}
 
-	public static String getReaderContent(BufferedReader reader) throws IOException {
-		String content = "";
-		String line;
-		while ((line = reader.readLine()) != null) {
-			content += line;
-			content += System.lineSeparator();
-		}
-		return content;
+	private NameMCAPI() {
 	}
 
-	public static String getWebsiteContent(String website) throws IOException {
-		try (InputStream inputStream = new URL(website).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-			return IOUtils.getReaderContent(reader);
-		}
+	public static ProfileRepository getProfileRepository() {
+		return NameMCAPI.profileRepository;
+	}
+
+	public static void setProfileRepository(ProfileRepository profileRepository) {
+		NameMCAPI.profileRepository = profileRepository;
+	}
+
+	public static ServerRepository getServerRepository() {
+		return NameMCAPI.serverRepository;
+	}
+
+	public static void setServerRepository(ServerRepository serverRepository) {
+		NameMCAPI.serverRepository = serverRepository;
 	}
 }
