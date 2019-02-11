@@ -70,7 +70,7 @@ public class ProfileRepository {
 		return this.duration;
 	}
 
-	public long getDurationInMillis() {
+	public long getDurationMillis() {
 		return this.unit.toMillis(this.duration);
 	}
 
@@ -120,7 +120,7 @@ public class ProfileRepository {
 		if (profile == null) {
 			throw new NullPointerException("profile cannot be null");
 		}
-		return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationInMillis();
+		return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationMillis();
 	}
 
 	public void clearProfiles() {

@@ -69,7 +69,7 @@ public class ServerRepository {
 		return this.duration;
 	}
 
-	public long getDurationInMillis() {
+	public long getDurationMillis() {
 		return this.unit.toMillis(this.duration);
 	}
 
@@ -119,7 +119,7 @@ public class ServerRepository {
 		if (server == null) {
 			throw new NullPointerException("server cannot be null");
 		}
-		return System.currentTimeMillis() - server.getCacheTime() < this.getDurationInMillis();
+		return System.currentTimeMillis() - server.getCacheTime() < this.getDurationMillis();
 	}
 
 	public void clearServers() {
