@@ -34,7 +34,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Profile {
+public final class Profile {
 	private final UUID uniqueId;
 	private final Collection<Friend> friends;
 	private final long cacheTime;

@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-public class ServerRepository {
+public final class ServerRepository {
 	private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
 
 	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();

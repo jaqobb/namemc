@@ -32,7 +32,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Server {
+public final class Server {
 	private final String address;
 	private final Collection<UUID> likes;
 	private final long cacheTime;

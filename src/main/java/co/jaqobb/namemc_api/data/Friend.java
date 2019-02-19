@@ -26,7 +26,7 @@ package co.jaqobb.namemc_api.data;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Friend {
+public final class Friend {
 	private final UUID uniqueId;
 	private final String name;
 	private final long cacheTime;

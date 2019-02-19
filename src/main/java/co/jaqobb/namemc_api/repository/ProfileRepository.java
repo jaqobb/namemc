@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-public class ProfileRepository {
+public final class ProfileRepository {
 	private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
 
 	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
