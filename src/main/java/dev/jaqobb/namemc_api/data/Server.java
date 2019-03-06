@@ -23,6 +23,7 @@
  */
 package dev.jaqobb.namemc_api.data;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -42,7 +43,7 @@ public final class Server {
 		}
 		this.address = address;
 		this.likes = likes;
-		this.cacheTime = System.currentTimeMillis();
+		this.cacheTime = Instant.now().toEpochMilli();
 	}
 
 	public String getAddress() {

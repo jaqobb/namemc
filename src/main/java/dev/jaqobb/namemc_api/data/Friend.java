@@ -23,6 +23,7 @@
  */
 package dev.jaqobb.namemc_api.data;
 
+import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -40,7 +41,7 @@ public final class Friend {
 		}
 		this.uniqueId = uniqueId;
 		this.name = name;
-		this.cacheTime = System.currentTimeMillis();
+		this.cacheTime = Instant.now().toEpochMilli();
 	}
 
 	public UUID getUniqueId() {

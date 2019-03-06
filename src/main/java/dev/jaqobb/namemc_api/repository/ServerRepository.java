@@ -28,6 +28,7 @@ import dev.jaqobb.namemc_api.util.IOs;
 import org.json.JSONArray;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -139,7 +140,7 @@ public final class ServerRepository {
 		if (server == null) {
 			throw new NullPointerException("server cannot be null");
 		}
-		return System.currentTimeMillis() - server.getCacheTime() < this.getDurationMillis();
+		return Instant.now().toEpochMilli() - server.getCacheTime() < this.getDurationMillis();
 	}
 
 	public void clear() {

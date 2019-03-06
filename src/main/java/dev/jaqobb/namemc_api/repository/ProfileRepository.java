@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -144,7 +145,7 @@ public final class ProfileRepository {
 		if (profile == null) {
 			throw new NullPointerException("profile cannot be null");
 		}
-		return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationMillis();
+		return Instant.now().toEpochMilli() - profile.getCacheTime() < this.getDurationMillis();
 	}
 
 	public void clear() {

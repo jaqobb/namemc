@@ -23,6 +23,7 @@
  */
 package dev.jaqobb.namemc_api.data;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -43,7 +44,7 @@ public final class Profile {
 		}
 		this.uniqueId = uniqueId;
 		this.friends = friends;
-		this.cacheTime = System.currentTimeMillis();
+		this.cacheTime = Instant.now().toEpochMilli();
 	}
 
 	public UUID getUniqueId() {
