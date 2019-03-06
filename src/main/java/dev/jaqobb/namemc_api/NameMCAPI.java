@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.namemc_api;
+package dev.jaqobb.namemc_api;
 
-import co.jaqobb.namemc_api.repository.ProfileRepository;
-import co.jaqobb.namemc_api.repository.ServerRepository;
+import dev.jaqobb.namemc_api.repository.ProfileRepository;
+import dev.jaqobb.namemc_api.repository.ServerRepository;
 
 public final class NameMCAPI {
 	private static ProfileRepository profileRepository;

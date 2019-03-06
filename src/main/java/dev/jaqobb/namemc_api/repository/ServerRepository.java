@@ -21,10 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.namemc_api.repository;
+package dev.jaqobb.namemc_api.repository;
 
-import co.jaqobb.namemc_api.data.Server;
-import co.jaqobb.namemc_api.util.IOUtils;
+import dev.jaqobb.namemc_api.data.Server;
+import dev.jaqobb.namemc_api.util.IOs;
 import org.json.JSONArray;
 
 import java.io.IOException;
@@ -32,12 +32,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class ServerRepository {
 	private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
@@ -77,19 +79,35 @@ public final class ServerRepository {
 		return this.unit;
 	}
 
-	public Collection<Server> getServers() {
+	public Collection<Server> getAll() {
 		return Collections.unmodifiableCollection(this.servers.values());
 	}
 
-	public Collection<Server> getValidServers() {
-		return this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toUnmodifiableList());
+	public Collection<Server> getAllValid() {
+		return this.servers.values().stream().filter(this::isValid).collect(Collectors.toUnmodifiableList());
 	}
 
-	public Collection<Server> getInvalidServers() {
-		return this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toUnmodifiableList());
+	public Collection<Server> getAllInvalid() {
+		return this.servers.values().stream().filter(server -> !this.isValid(server)).collect(Collectors.toUnmodifiableList());
 	}
 
-	public void cacheServer(String address, boolean recache, BiConsumer<Server, Throwable> callback) {
+	public void add(Server server) {
+		if (server == null) {
+			throw new NullPointerException("server cannot be null");
+		}
+		if (!this.servers.containsKey(server.getAddress().toLowerCase())) {
+			this.servers.put(server.getAddress().toLowerCase(), server);
+		}
+	}
+
+	public void remove(Server server) {
+		if (server == null) {
+			throw new NullPointerException("server cannot be null");
+		}
+		this.servers.remove(server.getAddress().toLowerCase());
+	}
+
+	public void cache(String address, boolean recache, BiConsumer<Server, Throwable> callback) {
 		if (address == null) {
 			throw new NullPointerException("address cannot be null");
 		}
@@ -98,7 +116,7 @@ public final class ServerRepository {
 		}
 		if (this.servers.containsKey(address.toLowerCase())) {
 			Server server = this.servers.get(address.toLowerCase());
-			if (this.isServerValid(server) && !recache) {
+			if (this.isValid(server) && !recache) {
 				callback.accept(server, null);
 				return;
 			}
@@ -106,7 +124,9 @@ public final class ServerRepository {
 		ServerRepository.EXECUTOR.execute(() -> {
 			String url = String.format(ServerRepository.SERVER_VOTES_URL, address.toLowerCase());
 			try {
-				Server server = new Server(address.toLowerCase(), new JSONArray(IOUtils.getWebsiteContent(url)));
+				JSONArray array = new JSONArray(IOs.getWebsiteContent(url));
+				Collection<UUID> likes = IntStream.range(0, array.length()).boxed().map(index -> UUID.fromString(array.getString(index))).collect(Collectors.toUnmodifiableList());
+				Server server = new Server(address.toLowerCase(), likes);
 				this.servers.put(address.toLowerCase(), server);
 				callback.accept(server, null);
 			} catch (IOException exception) {
@@ -115,14 +135,14 @@ public final class ServerRepository {
 		});
 	}
 
-	public boolean isServerValid(Server server) {
+	public boolean isValid(Server server) {
 		if (server == null) {
 			throw new NullPointerException("server cannot be null");
 		}
 		return System.currentTimeMillis() - server.getCacheTime() < this.getDurationMillis();
 	}
 
-	public void clearServers() {
+	public void clear() {
 		this.servers.clear();
 	}
 }

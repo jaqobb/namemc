@@ -21,59 +21,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.namemc_api.data;
+package dev.jaqobb.namemc_api.data;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class Friend {
-	private final UUID uniqueId;
-	private final String name;
+public final class Server {
+	private final String address;
+	private final Collection<UUID> likes;
 	private final long cacheTime;
 
-	public Friend(UUID uniqueId, String name) {
-		if (uniqueId == null) {
-			throw new NullPointerException("uniqueId cannot be null");
+	public Server(String address, Collection<UUID> likes) {
+		if (address == null) {
+			throw new NullPointerException("address cannot be null");
 		}
-		if (name == null) {
-			throw new NullPointerException("name cannot be null");
+		if (likes == null) {
+			throw new NullPointerException("likes cannot be null");
 		}
-		this.uniqueId = uniqueId;
-		this.name = name;
+		this.address = address;
+		this.likes = likes;
 		this.cacheTime = System.currentTimeMillis();
 	}
 
-	public UUID getUniqueId() {
-		return this.uniqueId;
+	public String getAddress() {
+		return this.address;
 	}
 
-	public String getName() {
-		return this.name;
+	public Collection<UUID> getLikes() {
+		return Collections.unmodifiableCollection(this.likes);
+	}
+
+	public boolean hasLiked(UUID uniqueId) {
+		if (uniqueId == null) {
+			throw new NullPointerException("uniqueId cannot be null");
+		}
+		return this.likes.contains(uniqueId);
 	}
 
 	public long getCacheTime() {
 		return this.cacheTime;
-	}
-
-	public boolean isFriendOf(Profile profile) {
-		return this.isFriendOf(profile, true);
-	}
-
-	public boolean isFriendOf(Profile profile, boolean caseSensitive) {
-		if (profile == null) {
-			throw new NullPointerException("profile cannot be null");
-		}
-		if (profile.getFriend(this.uniqueId).isPresent()) {
-			return true;
-		}
-		return profile.getFriend(this.name, caseSensitive).isPresent();
-	}
-
-	public boolean hasLikedServer(Server server) {
-		if (server == null) {
-			throw new NullPointerException("server cannot be null");
-		}
-		return server.hasLiked(this.uniqueId);
 	}
 
 	@Override
@@ -84,22 +72,22 @@ public final class Friend {
 		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
-		Friend that = (Friend) object;
+		Server that = (Server) object;
 		return this.cacheTime == that.cacheTime &&
-			Objects.equals(this.uniqueId, that.uniqueId) &&
-			Objects.equals(this.name, that.name);
+			Objects.equals(this.address, that.address) &&
+			Objects.equals(this.likes, that.likes);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.uniqueId, this.name, this.cacheTime);
+		return Objects.hash(this.address, this.likes, this.cacheTime);
 	}
 
 	@Override
 	public String toString() {
-		return "Friend{" +
-			"uniqueId=" + this.uniqueId +
-			", name='" + this.name + "'" +
+		return "Server{" +
+			"address='" + this.address + "'" +
+			", likes=" + this.likes +
 			", cacheTime=" + this.cacheTime +
 			"}";
 	}

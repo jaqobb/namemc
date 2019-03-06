@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.namemc_api.util;
+package dev.jaqobb.namemc_api.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,8 +30,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public final class IOUtils {
-	private IOUtils() {
+public final class IOs {
+	private IOs() {
 	}
 
 	public static String getReaderContent(BufferedReader reader) throws IOException {
@@ -46,7 +46,7 @@ public final class IOUtils {
 
 	public static String getWebsiteContent(String website) throws IOException {
 		try (InputStream inputStream = new URL(website).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-			return IOUtils.getReaderContent(reader);
+			return IOs.getReaderContent(reader);
 		}
 	}
 }

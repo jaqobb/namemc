@@ -21,11 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package co.jaqobb.namemc_api.repository;
+package dev.jaqobb.namemc_api.repository;
 
-import co.jaqobb.namemc_api.data.Profile;
-import co.jaqobb.namemc_api.util.IOUtils;
+import dev.jaqobb.namemc_api.data.Friend;
+import dev.jaqobb.namemc_api.data.Profile;
+import dev.jaqobb.namemc_api.util.IOs;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -39,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public final class ProfileRepository {
 	private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
@@ -78,19 +81,35 @@ public final class ProfileRepository {
 		return this.unit;
 	}
 
-	public Collection<Profile> getProfiles() {
+	public Collection<Profile> getAll() {
 		return Collections.unmodifiableCollection(this.profiles.values());
 	}
 
-	public Collection<Profile> getValidProfiles() {
-		return this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toUnmodifiableList());
+	public Collection<Profile> getAllValid() {
+		return this.profiles.values().stream().filter(this::isValid).collect(Collectors.toUnmodifiableList());
 	}
 
-	public Collection<Profile> getInvalidProfiles() {
-		return this.profiles.values().stream().filter(profile -> !this.isProfileValid(profile)).collect(Collectors.toUnmodifiableList());
+	public Collection<Profile> getAllInvalid() {
+		return this.profiles.values().stream().filter(profile -> !this.isValid(profile)).collect(Collectors.toUnmodifiableList());
 	}
 
-	public void cacheProfile(UUID uniqueId, boolean recache, BiConsumer<Profile, Throwable> callback) {
+	public void add(Profile profile) {
+		if (profile == null) {
+			throw new NullPointerException("profile cannot be null");
+		}
+		if (!this.profiles.containsKey(profile.getUniqueId())) {
+			this.profiles.put(profile.getUniqueId(), profile);
+		}
+	}
+
+	public void remove(Profile profile) {
+		if (profile == null) {
+			throw new NullPointerException("profile cannot be null");
+		}
+		this.profiles.remove(profile.getUniqueId());
+	}
+
+	public void cache(UUID uniqueId, boolean recache, BiConsumer<Profile, Throwable> callback) {
 		if (uniqueId == null) {
 			throw new NullPointerException("uniqueId cannot be null");
 		}
@@ -99,7 +118,7 @@ public final class ProfileRepository {
 		}
 		if (this.profiles.containsKey(uniqueId)) {
 			Profile profile = this.profiles.get(uniqueId);
-			if (this.isProfileValid(profile) && !recache) {
+			if (this.isValid(profile) && !recache) {
 				callback.accept(profile, null);
 				return;
 			}
@@ -107,7 +126,12 @@ public final class ProfileRepository {
 		ProfileRepository.EXECUTOR.execute(() -> {
 			String url = String.format(ProfileRepository.PROFILE_FRIENDS_URL, uniqueId.toString());
 			try {
-				Profile profile = new Profile(uniqueId, new JSONArray(IOUtils.getWebsiteContent(url)));
+				JSONArray array = new JSONArray(IOs.getWebsiteContent(url));
+				Collection<Friend> friends = IntStream.range(0, array.length()).boxed().map(index -> {
+					JSONObject object = array.getJSONObject(index);
+					return new Friend(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
+				}).collect(Collectors.toUnmodifiableList());
+				Profile profile = new Profile(uniqueId, friends);
 				this.profiles.put(uniqueId, profile);
 				callback.accept(profile, null);
 			} catch (IOException exception) {
@@ -116,14 +140,14 @@ public final class ProfileRepository {
 		});
 	}
 
-	public boolean isProfileValid(Profile profile) {
+	public boolean isValid(Profile profile) {
 		if (profile == null) {
 			throw new NullPointerException("profile cannot be null");
 		}
 		return System.currentTimeMillis() - profile.getCacheTime() < this.getDurationMillis();
 	}
 
-	public void clearProfiles() {
+	public void clear() {
 		this.profiles.clear();
 	}
 }
