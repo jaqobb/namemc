@@ -30,23 +30,32 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public final class IOs {
-	private IOs() {
-	}
+public final class IOHelper {
+  private IOHelper() {
+  }
 
-	public static String getReaderContent(BufferedReader reader) throws IOException {
-		String content = "";
-		String line;
-		while ((line = reader.readLine()) != null) {
-			content += line;
-			content += System.lineSeparator();
-		}
-		return content;
-	}
+  public static String getReaderContent(final BufferedReader reader) throws IOException {
+    if(reader == null) {
+      throw new NullPointerException("reader cannot be null");
+    }
+    String content = "";
+    String line;
+    while((line = reader.readLine()) != null) {
+      content += line;
+      content += System.lineSeparator();
+    }
+    return content;
+  }
 
-	public static String getWebsiteContent(String website) throws IOException {
-		try (InputStream inputStream = new URL(website).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-			return IOs.getReaderContent(reader);
-		}
-	}
+  public static String getWebsiteContent(final String website) throws IOException {
+    if(website == null) {
+      throw new NullPointerException("website cannot be null");
+    }
+    if(website.isBlank()) {
+      throw new IllegalArgumentException("website cannot be blank");
+    }
+    try(final InputStream inputStream = new URL(website).openStream(); final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+      return IOHelper.getReaderContent(reader);
+    }
+  }
 }

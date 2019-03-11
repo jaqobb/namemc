@@ -25,7 +25,7 @@ package dev.jaqobb.namemc_api.repository;
 
 import dev.jaqobb.namemc_api.data.Friend;
 import dev.jaqobb.namemc_api.data.Profile;
-import dev.jaqobb.namemc_api.util.IOs;
+import dev.jaqobb.namemc_api.util.IOHelper;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,110 +45,114 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public final class ProfileRepository {
-	private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
+  public static ProfileRepository of() {
+    return ProfileRepository.of(5L, TimeUnit.MINUTES);
+  }
 
-	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + ProfileRepository.EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+  public static ProfileRepository of(final long duration, final TimeUnit unit) {
+    if(duration < 1) {
+      throw new IllegalArgumentException("duration cannot be lower than 1");
+    }
+    if(unit == null) {
+      throw new NullPointerException("unit cannot be null");
+    }
+    return new ProfileRepository(duration, unit);
+  }
 
-	private final long duration;
-	private final TimeUnit unit;
-	private final Map<UUID, Profile> profiles;
+  private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
 
-	public ProfileRepository() {
-		this(5L, TimeUnit.MINUTES);
-	}
+  private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
+  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + ProfileRepository.EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-	public ProfileRepository(long duration, TimeUnit unit) {
-		if (duration < 1) {
-			throw new IllegalArgumentException("duration cannot be lower than 1");
-		}
-		if (unit == null) {
-			throw new NullPointerException("unit cannot be null");
-		}
-		this.duration = duration;
-		this.unit = unit;
-		this.profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
-	}
+  private final long duration;
+  private final TimeUnit unit;
+  private final Map<UUID, Profile> profiles;
 
-	public long getDuration() {
-		return this.duration;
-	}
+  protected ProfileRepository(final long duration, final TimeUnit unit) {
+    this.duration = duration;
+    this.unit = unit;
+    this.profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
+  }
 
-	public long getDurationMillis() {
-		return this.unit.toMillis(this.duration);
-	}
+  public long getDuration() {
+    return this.duration;
+  }
 
-	public TimeUnit getUnit() {
-		return this.unit;
-	}
+  public long getDurationMillis() {
+    return this.unit.toMillis(this.duration);
+  }
 
-	public Collection<Profile> getAll() {
-		return Collections.unmodifiableCollection(this.profiles.values());
-	}
+  public TimeUnit getUnit() {
+    return this.unit;
+  }
 
-	public Collection<Profile> getAllValid() {
-		return this.profiles.values().stream().filter(this::isValid).collect(Collectors.toUnmodifiableList());
-	}
+  public Collection<Profile> getAll() {
+    return Collections.unmodifiableCollection(this.profiles.values());
+  }
 
-	public Collection<Profile> getAllInvalid() {
-		return this.profiles.values().stream().filter(profile -> !this.isValid(profile)).collect(Collectors.toUnmodifiableList());
-	}
+  public Collection<Profile> getAllValid() {
+    return this.profiles.values().stream().filter(this::isValid).collect(Collectors.toUnmodifiableList());
+  }
 
-	public void add(Profile profile) {
-		if (profile == null) {
-			throw new NullPointerException("profile cannot be null");
-		}
-		if (!this.profiles.containsKey(profile.getUniqueId())) {
-			this.profiles.put(profile.getUniqueId(), profile);
-		}
-	}
+  public Collection<Profile> getAllInvalid() {
+    return this.profiles.values().stream().filter(profile -> !this.isValid(profile)).collect(Collectors.toUnmodifiableList());
+  }
 
-	public void remove(Profile profile) {
-		if (profile == null) {
-			throw new NullPointerException("profile cannot be null");
-		}
-		this.profiles.remove(profile.getUniqueId());
-	}
+  public void add(final Profile profile) {
+    if(profile == null) {
+      throw new NullPointerException("profile cannot be null");
+    }
+    if(!this.profiles.containsKey(profile.getUniqueId())) {
+      this.profiles.put(profile.getUniqueId(), profile);
+    }
+  }
 
-	public void cache(UUID uniqueId, boolean recache, BiConsumer<Profile, Throwable> callback) {
-		if (uniqueId == null) {
-			throw new NullPointerException("uniqueId cannot be null");
-		}
-		if (callback == null) {
-			throw new NullPointerException("callback cannot be null");
-		}
-		if (this.profiles.containsKey(uniqueId)) {
-			Profile profile = this.profiles.get(uniqueId);
-			if (this.isValid(profile) && !recache) {
-				callback.accept(profile, null);
-				return;
-			}
-		}
-		ProfileRepository.EXECUTOR.execute(() -> {
-			String url = String.format(ProfileRepository.PROFILE_FRIENDS_URL, uniqueId.toString());
-			try {
-				JSONArray array = new JSONArray(IOs.getWebsiteContent(url));
-				Collection<Friend> friends = IntStream.range(0, array.length()).boxed().map(index -> {
-					JSONObject object = array.getJSONObject(index);
-					return new Friend(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
-				}).collect(Collectors.toUnmodifiableList());
-				Profile profile = new Profile(uniqueId, friends);
-				this.profiles.put(uniqueId, profile);
-				callback.accept(profile, null);
-			} catch (IOException exception) {
-				callback.accept(null, exception);
-			}
-		});
-	}
+  public void remove(final Profile profile) {
+    if(profile == null) {
+      throw new NullPointerException("profile cannot be null");
+    }
+    this.profiles.remove(profile.getUniqueId());
+  }
 
-	public boolean isValid(Profile profile) {
-		if (profile == null) {
-			throw new NullPointerException("profile cannot be null");
-		}
-		return Instant.now().toEpochMilli() - profile.getCacheTime() < this.getDurationMillis();
-	}
+  public void cache(final UUID uniqueId, final boolean recache, final BiConsumer<Profile, Throwable> callback) {
+    if(uniqueId == null) {
+      throw new NullPointerException("uniqueId cannot be null");
+    }
+    if(callback == null) {
+      throw new NullPointerException("callback cannot be null");
+    }
+    if(this.profiles.containsKey(uniqueId)) {
+      final Profile profile = this.profiles.get(uniqueId);
+      if(this.isValid(profile) && !recache) {
+        callback.accept(profile, null);
+        return;
+      }
+    }
+    ProfileRepository.EXECUTOR.execute(() -> {
+      final String url = String.format(ProfileRepository.PROFILE_FRIENDS_URL, uniqueId.toString());
+      try {
+        final JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
+        final Collection<Friend> friends = IntStream.range(0, array.length()).boxed().map(index -> {
+          JSONObject object = array.getJSONObject(index);
+          return new Friend(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
+        }).collect(Collectors.toUnmodifiableList());
+        final Profile profile = new Profile(uniqueId, friends);
+        this.profiles.put(uniqueId, profile);
+        callback.accept(profile, null);
+      } catch(final IOException exception) {
+        callback.accept(null, exception);
+      }
+    });
+  }
 
-	public void clear() {
-		this.profiles.clear();
-	}
+  public boolean isValid(final Profile profile) {
+    if(profile == null) {
+      throw new NullPointerException("profile cannot be null");
+    }
+    return Instant.now().toEpochMilli() - profile.getCacheTime() < this.getDurationMillis();
+  }
+
+  public void clear() {
+    this.profiles.clear();
+  }
 }

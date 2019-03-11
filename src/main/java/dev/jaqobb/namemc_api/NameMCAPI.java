@@ -27,30 +27,33 @@ import dev.jaqobb.namemc_api.repository.ProfileRepository;
 import dev.jaqobb.namemc_api.repository.ServerRepository;
 
 public final class NameMCAPI {
-	private static ProfileRepository profileRepository;
-	private static ServerRepository serverRepository;
+  public static NameMCAPI of() {
+    return NameMCAPI.of(ProfileRepository.of(), ServerRepository.of());
+  }
 
-	static {
-		NameMCAPI.profileRepository = new ProfileRepository();
-		NameMCAPI.serverRepository = new ServerRepository();
-	}
+  public static NameMCAPI of(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
+    if(profileRepository == null) {
+      throw new NullPointerException("profileRepository cannot be null");
+    }
+    if(serverRepository == null) {
+      throw new NullPointerException("serverRepository cannot be null");
+    }
+    return new NameMCAPI(profileRepository, serverRepository);
+  }
 
-	private NameMCAPI() {
-	}
+  private final ProfileRepository profileRepository;
+  private final ServerRepository serverRepository;
 
-	public static ProfileRepository getProfileRepository() {
-		return NameMCAPI.profileRepository;
-	}
+  protected NameMCAPI(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
+    this.profileRepository = profileRepository;
+    this.serverRepository = serverRepository;
+  }
 
-	public static void setProfileRepository(ProfileRepository profileRepository) {
-		NameMCAPI.profileRepository = profileRepository;
-	}
+  public ProfileRepository getProfileRepository() {
+    return this.profileRepository;
+  }
 
-	public static ServerRepository getServerRepository() {
-		return NameMCAPI.serverRepository;
-	}
-
-	public static void setServerRepository(ServerRepository serverRepository) {
-		NameMCAPI.serverRepository = serverRepository;
-	}
+  public ServerRepository getServerRepository() {
+    return this.serverRepository;
+  }
 }
