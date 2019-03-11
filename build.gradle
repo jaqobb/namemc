@@ -32,6 +32,6 @@ task sourcesJar(type: Jar) {
 }
 
 artifacts {
-	archives sourcesJar
 	archives shadowJar
+	archives sourcesJar
 }
