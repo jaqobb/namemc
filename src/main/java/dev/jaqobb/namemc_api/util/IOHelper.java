@@ -55,7 +55,7 @@ public final class IOHelper {
       throw new IllegalArgumentException("website cannot be blank");
     }
     try(final InputStream inputStream = new URL(website).openStream(); final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-      return IOHelper.getReaderContent(reader);
+      return getReaderContent(reader);
     }
   }
 }

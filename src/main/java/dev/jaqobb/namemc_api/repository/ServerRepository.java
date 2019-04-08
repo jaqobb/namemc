@@ -44,7 +44,7 @@ import java.util.stream.IntStream;
 
 public final class ServerRepository {
   public static ServerRepository of() {
-    return ServerRepository.of(10L, TimeUnit.MINUTES);
+    return of(10L, TimeUnit.MINUTES);
   }
 
   public static ServerRepository of(final long duration, final TimeUnit unit) {
@@ -60,7 +60,7 @@ public final class ServerRepository {
   private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
 
   private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Server Query #" + ServerRepository.EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
   private final long duration;
   private final TimeUnit unit;
@@ -126,12 +126,12 @@ public final class ServerRepository {
         return;
       }
     }
-    ServerRepository.EXECUTOR.execute(() -> {
-      final String url = String.format(ServerRepository.SERVER_VOTES_URL, address.toLowerCase());
+    EXECUTOR.execute(() -> {
+      final String url = String.format(SERVER_VOTES_URL, address.toLowerCase());
       try {
         final JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
         final Collection<UUID> likes = IntStream.range(0, array.length()).boxed().map(index -> UUID.fromString(array.getString(index))).collect(Collectors.toUnmodifiableList());
-        final Server server = new Server(address.toLowerCase(), likes);
+        final Server server = Server.of(address.toLowerCase(), likes);
         this.servers.put(address.toLowerCase(), server);
         callback.accept(server, null);
       } catch(final IOException exception) {

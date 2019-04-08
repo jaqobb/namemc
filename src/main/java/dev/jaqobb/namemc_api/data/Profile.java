@@ -31,17 +31,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class Profile {
-  private final UUID uniqueId;
-  private final Collection<Friend> friends;
-  private final long cacheTime;
-
-  public Profile(final UUID uniqueId, final Collection<Friend> friends) {
+  public static Profile of(final UUID uniqueId, final Collection<Friend> friends) {
     if(uniqueId == null) {
       throw new NullPointerException("uniqueId cannot be null");
     }
     if(friends == null) {
       throw new NullPointerException("friends cannot be null");
     }
+    return new Profile(uniqueId, friends);
+  }
+
+  private final UUID uniqueId;
+  private final Collection<Friend> friends;
+  private final long cacheTime;
+
+  protected Profile(final UUID uniqueId, final Collection<Friend> friends) {
     this.uniqueId = uniqueId;
     this.friends = friends;
     this.cacheTime = Instant.now().toEpochMilli();

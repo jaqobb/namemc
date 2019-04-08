@@ -28,7 +28,7 @@ import dev.jaqobb.namemc_api.repository.ServerRepository;
 
 public final class NameMCAPI {
   public static NameMCAPI of() {
-    return NameMCAPI.of(ProfileRepository.of(), ServerRepository.of());
+    return of(ProfileRepository.of(), ServerRepository.of());
   }
 
   public static NameMCAPI of(final ProfileRepository profileRepository, final ServerRepository serverRepository) {

@@ -28,17 +28,21 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class Friend {
-  private final UUID uniqueId;
-  private final String name;
-  private final long cacheTime;
-
-  public Friend(final UUID uniqueId, final String name) {
+  public static Friend of(final UUID uniqueId, final String name) {
     if(uniqueId == null) {
       throw new NullPointerException("uniqueId cannot be null");
     }
     if(name == null) {
       throw new NullPointerException("name cannot be null");
     }
+    return new Friend(uniqueId, name);
+  }
+
+  private final UUID uniqueId;
+  private final String name;
+  private final long cacheTime;
+
+  protected Friend(final UUID uniqueId, final String name) {
     this.uniqueId = uniqueId;
     this.name = name;
     this.cacheTime = Instant.now().toEpochMilli();

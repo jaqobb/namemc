@@ -30,18 +30,22 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class Server {
-  private final String address;
-  private final Collection<UUID> likes;
-  private final long cacheTime;
-
-  public Server(final String address, final Collection<UUID> likes) {
+  public static Server of(final String address, final Collection<UUID> likes) {
     if(address == null) {
       throw new NullPointerException("address cannot be null");
     }
     if(likes == null) {
       throw new NullPointerException("likes cannot be null");
     }
-    this.address = address;
+    return new Server(address, likes);
+  }
+
+  private final String address;
+  private final Collection<UUID> likes;
+  private final long cacheTime;
+
+  protected Server(final String address, final Collection<UUID> likes) {
+    this.address = address.toLowerCase();
     this.likes = likes;
     this.cacheTime = Instant.now().toEpochMilli();
   }

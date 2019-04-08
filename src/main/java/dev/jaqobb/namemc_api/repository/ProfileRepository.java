@@ -46,7 +46,7 @@ import java.util.stream.IntStream;
 
 public final class ProfileRepository {
   public static ProfileRepository of() {
-    return ProfileRepository.of(5L, TimeUnit.MINUTES);
+    return of(5L, TimeUnit.MINUTES);
   }
 
   public static ProfileRepository of(final long duration, final TimeUnit unit) {
@@ -62,7 +62,7 @@ public final class ProfileRepository {
   private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
 
   private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + ProfileRepository.EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
   private final long duration;
   private final TimeUnit unit;
@@ -128,15 +128,15 @@ public final class ProfileRepository {
         return;
       }
     }
-    ProfileRepository.EXECUTOR.execute(() -> {
-      final String url = String.format(ProfileRepository.PROFILE_FRIENDS_URL, uniqueId.toString());
+    EXECUTOR.execute(() -> {
+      final String url = String.format(PROFILE_FRIENDS_URL, uniqueId.toString());
       try {
         final JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
         final Collection<Friend> friends = IntStream.range(0, array.length()).boxed().map(index -> {
           JSONObject object = array.getJSONObject(index);
-          return new Friend(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
+          return Friend.of(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
         }).collect(Collectors.toUnmodifiableList());
-        final Profile profile = new Profile(uniqueId, friends);
+        final Profile profile = Profile.of(uniqueId, friends);
         this.profiles.put(uniqueId, profile);
         callback.accept(profile, null);
       } catch(final IOException exception) {
