@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'net.minecrell.licenser' version '0.4.1'
-	id 'com.github.johnrengelman.shadow' version '5.0.0'
+  id 'java'
+  id 'net.minecrell.licenser' version '0.4.1'
+  id 'com.github.johnrengelman.shadow' version '5.0.0'
 }
 
 group = 'dev.jaqobb'
@@ -13,24 +13,24 @@ targetCompatibility = JavaVersion.VERSION_11
 defaultTasks 'clean', 'build'
 
 license {
-	header project.file('header.txt')
-	newLine false
-	include '**/*.java'
+  header project.file('header.txt')
+  newLine false
+  include '**/*.java'
 }
 
 test {
-	useJUnitPlatform()
+  useJUnitPlatform()
 }
 
 repositories {
-	mavenCentral()
+  mavenCentral()
 }
 
 dependencies {
-	implementation 'org.json:json:20180813'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.1'
+  implementation 'org.json:json:20180813'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.1'
 }
 
 artifacts {
-	archives shadowJar
+  archives shadowJar
 }
