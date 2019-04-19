@@ -1,5 +1,5 @@
 /*
- * This file is a part of namemc-api, licensed under the MIT License.
+ * MIT License
  *
  * Copyright (c) Jakub Zagórski (jaqobb)
  *
