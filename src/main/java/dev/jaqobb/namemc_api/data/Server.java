@@ -32,10 +32,15 @@ import java.util.UUID;
 public final class Server {
   public static Server of(final String address, final Collection<UUID> likes) {
     if(address == null) {
-      throw new NullPointerException("address cannot be null");
+      throw new NullPointerException("address");
     }
     if(likes == null) {
-      throw new NullPointerException("likes cannot be null");
+      throw new NullPointerException("likes");
+    }
+    for(final UUID like : likes) {
+      if(like == null) {
+        throw new NullPointerException("like");
+      }
     }
     return new Server(address, likes);
   }
@@ -60,7 +65,7 @@ public final class Server {
 
   public boolean hasLiked(final UUID uniqueId) {
     if(uniqueId == null) {
-      throw new NullPointerException("uniqueId cannot be null");
+      throw new NullPointerException("uniqueId");
     }
     return this.likes.contains(uniqueId);
   }

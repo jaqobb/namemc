@@ -27,6 +27,7 @@ import dev.jaqobb.namemc_api.data.Friend;
 import dev.jaqobb.namemc_api.data.Profile;
 import dev.jaqobb.namemc_api.util.IOHelper;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -51,10 +52,10 @@ public final class ProfileRepository {
 
   public static ProfileRepository of(final long duration, final TimeUnit unit) {
     if(duration < 1) {
-      throw new IllegalArgumentException("duration cannot be lower than 1");
+      throw new IllegalArgumentException("duration < 1");
     }
     if(unit == null) {
-      throw new NullPointerException("unit cannot be null");
+      throw new NullPointerException("unit");
     }
     return new ProfileRepository(duration, unit);
   }
@@ -100,7 +101,7 @@ public final class ProfileRepository {
 
   public void add(final Profile profile) {
     if(profile == null) {
-      throw new NullPointerException("profile cannot be null");
+      throw new NullPointerException("profile");
     }
     if(!this.profiles.containsKey(profile.getUniqueId())) {
       this.profiles.put(profile.getUniqueId(), profile);
@@ -109,17 +110,17 @@ public final class ProfileRepository {
 
   public void remove(final Profile profile) {
     if(profile == null) {
-      throw new NullPointerException("profile cannot be null");
+      throw new NullPointerException("profile");
     }
     this.profiles.remove(profile.getUniqueId());
   }
 
   public void cache(final UUID uniqueId, final boolean recache, final BiConsumer<Profile, Throwable> callback) {
     if(uniqueId == null) {
-      throw new NullPointerException("uniqueId cannot be null");
+      throw new NullPointerException("uniqueId");
     }
     if(callback == null) {
-      throw new NullPointerException("callback cannot be null");
+      throw new NullPointerException("callback");
     }
     if(this.profiles.containsKey(uniqueId)) {
       final Profile profile = this.profiles.get(uniqueId);
@@ -139,7 +140,7 @@ public final class ProfileRepository {
         final Profile profile = Profile.of(uniqueId, friends);
         this.profiles.put(uniqueId, profile);
         callback.accept(profile, null);
-      } catch(final IOException exception) {
+      } catch(final IOException | JSONException exception) {
         callback.accept(null, exception);
       }
     });
@@ -147,7 +148,7 @@ public final class ProfileRepository {
 
   public boolean isValid(final Profile profile) {
     if(profile == null) {
-      throw new NullPointerException("profile cannot be null");
+      throw new NullPointerException("profile");
     }
     return Instant.now().toEpochMilli() - profile.getCacheTime() < this.getDurationMillis();
   }

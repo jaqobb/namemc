@@ -33,10 +33,15 @@ import java.util.UUID;
 public final class Profile {
   public static Profile of(final UUID uniqueId, final Collection<Friend> friends) {
     if(uniqueId == null) {
-      throw new NullPointerException("uniqueId cannot be null");
+      throw new NullPointerException("uniqueId");
     }
     if(friends == null) {
-      throw new NullPointerException("friends cannot be null");
+      throw new NullPointerException("friends");
+    }
+    for(final Friend friend : friends) {
+      if(friend == null) {
+        throw new NullPointerException("friend");
+      }
     }
     return new Profile(uniqueId, friends);
   }
@@ -61,7 +66,7 @@ public final class Profile {
 
   public Optional<Friend> getFriend(final UUID uniqueId) {
     if(uniqueId == null) {
-      throw new NullPointerException("uniqueId cannot be null");
+      throw new NullPointerException("uniqueId");
     }
     return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst();
   }
@@ -72,7 +77,7 @@ public final class Profile {
 
   public Optional<Friend> getFriend(final String name, final boolean caseSensitive) {
     if(name == null) {
-      throw new NullPointerException("name cannot be null");
+      throw new NullPointerException("name");
     }
     return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst();
   }
@@ -83,7 +88,7 @@ public final class Profile {
 
   public boolean hasLikedServer(final Server server) {
     if(server == null) {
-      throw new NullPointerException("server cannot be null");
+      throw new NullPointerException("server");
     }
     return server.hasLiked(this.uniqueId);
   }

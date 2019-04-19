@@ -33,10 +33,10 @@ public final class NameMCAPI {
 
   public static NameMCAPI of(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
     if(profileRepository == null) {
-      throw new NullPointerException("profileRepository cannot be null");
+      throw new NullPointerException("profileRepository");
     }
     if(serverRepository == null) {
-      throw new NullPointerException("serverRepository cannot be null");
+      throw new NullPointerException("serverRepository");
     }
     return new NameMCAPI(profileRepository, serverRepository);
   }

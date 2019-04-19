@@ -36,7 +36,7 @@ public final class IOHelper {
 
   public static String getReaderContent(final BufferedReader reader) throws IOException {
     if(reader == null) {
-      throw new NullPointerException("reader cannot be null");
+      throw new NullPointerException("reader");
     }
     String content = "";
     String line;
@@ -49,7 +49,7 @@ public final class IOHelper {
 
   public static String getWebsiteContent(final String website) throws IOException {
     if(website == null) {
-      throw new NullPointerException("website cannot be null");
+      throw new NullPointerException("website");
     }
     if(website.isBlank()) {
       throw new IllegalArgumentException("website cannot be blank");
