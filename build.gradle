@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
   implementation 'org.json:json:20180813'
-  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.1'
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.4.2'
 }
 
 artifacts {
