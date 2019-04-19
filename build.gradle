@@ -18,6 +18,10 @@ license {
   include '**/*.java'
 }
 
+test {
+  useJUnitPlatform()
+}
+
 repositories {
   mavenCentral()
 }
