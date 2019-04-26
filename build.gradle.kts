@@ -19,9 +19,6 @@ tasks {
       this.includeEngines("junit-jupiter")
     }
   }
-  shadowJar {
-    this.minimize()
-  }
 }
 
 task<Jar>("sourcesJar") {
