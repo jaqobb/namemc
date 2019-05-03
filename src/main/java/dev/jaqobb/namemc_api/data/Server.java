@@ -30,29 +30,18 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class Server {
-  public static Server of(final String address, final Collection<UUID> likes) {
-    if(address == null) {
-      throw new NullPointerException("address");
-    }
-    if(likes == null) {
-      throw new NullPointerException("likes");
-    }
-    for(final UUID like : likes) {
-      if(like == null) {
-        throw new NullPointerException("like");
-      }
-    }
-    return new Server(address, likes);
-  }
-
   private final String address;
   private final Collection<UUID> likes;
-  private final long cacheTime;
+  private final Instant cacheTime;
 
-  protected Server(final String address, final Collection<UUID> likes) {
-    this.address = address.toLowerCase();
+  public Server(final String address, final Collection<UUID> likes) {
+    this.address = Objects.requireNonNull(address, "address").toLowerCase();
+    Objects.requireNonNull(likes, "likes");
+    for(final UUID like : likes) {
+      Objects.requireNonNull(like, "like");
+    }
     this.likes = likes;
-    this.cacheTime = Instant.now().toEpochMilli();
+    this.cacheTime = Instant.now();
   }
 
   public String getAddress() {
@@ -64,13 +53,11 @@ public final class Server {
   }
 
   public boolean hasLiked(final UUID uniqueId) {
-    if(uniqueId == null) {
-      throw new NullPointerException("uniqueId");
-    }
+    Objects.requireNonNull(uniqueId, "uniqueId");
     return this.likes.contains(uniqueId);
   }
 
-  public long getCacheTime() {
+  public Instant getCacheTime() {
     return this.cacheTime;
   }
 
@@ -83,9 +70,9 @@ public final class Server {
       return false;
     }
     final Server that = (Server) object;
-    return this.cacheTime == that.cacheTime &&
-      Objects.equals(this.address, that.address) &&
-      Objects.equals(this.likes, that.likes);
+    return Objects.equals(this.address, that.address) &&
+      Objects.equals(this.likes, that.likes) &&
+      Objects.equals(this.cacheTime, that.cacheTime);
   }
 
   @Override

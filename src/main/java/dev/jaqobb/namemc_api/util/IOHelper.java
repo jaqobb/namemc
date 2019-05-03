@@ -29,15 +29,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public final class IOHelper {
   private IOHelper() {
   }
 
   public static String getReaderContent(final BufferedReader reader) throws IOException {
-    if(reader == null) {
-      throw new NullPointerException("reader");
-    }
+    Objects.requireNonNull(reader, "reader");
     String content = "";
     String line;
     while((line = reader.readLine()) != null) {
@@ -48,9 +47,7 @@ public final class IOHelper {
   }
 
   public static String getWebsiteContent(final String website) throws IOException {
-    if(website == null) {
-      throw new NullPointerException("website");
-    }
+    Objects.requireNonNull(website, "website");
     if(website.isBlank()) {
       throw new IllegalArgumentException("website cannot be blank");
     }

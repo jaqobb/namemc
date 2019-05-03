@@ -31,100 +31,77 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public final class ProfileRepository {
-  public static ProfileRepository of() {
-    return of(5L, TimeUnit.MINUTES);
-  }
-
-  public static ProfileRepository of(final long duration, final TimeUnit unit) {
-    if(duration < 1) {
-      throw new IllegalArgumentException("duration < 1");
-    }
-    if(unit == null) {
-      throw new NullPointerException("unit");
-    }
-    return new ProfileRepository(duration, unit);
-  }
-
   private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
 
   private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
   private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  private final long duration;
-  private final TimeUnit unit;
+  private final Duration cacheDuration;
   private final Map<UUID, Profile> profiles;
 
-  protected ProfileRepository(final long duration, final TimeUnit unit) {
-    this.duration = duration;
-    this.unit = unit;
+  public ProfileRepository() {
+    this(5, ChronoUnit.MINUTES);
+  }
+
+  public ProfileRepository(final long duration, final TemporalUnit unit) {
+    if(duration < 1) {
+      throw new IllegalArgumentException("duration cannot be smaller than 1");
+    }
+    Objects.requireNonNull(unit, "unit");
+    this.cacheDuration = Duration.of(duration, unit);
     this.profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
   }
 
-  public long getDuration() {
-    return this.duration;
+  public Duration getCacheDuration() {
+    return this.cacheDuration;
   }
 
-  public long getDurationMillis() {
-    return this.unit.toMillis(this.duration);
-  }
-
-  public TimeUnit getUnit() {
-    return this.unit;
-  }
-
-  public Collection<Profile> getAll() {
+  public Collection<Profile> getProfiles() {
     return Collections.unmodifiableCollection(this.profiles.values());
   }
 
-  public Collection<Profile> getAllValid() {
-    return this.profiles.values().stream().filter(this::isValid).collect(Collectors.toUnmodifiableList());
+  public Collection<Profile> getValidProfiles() {
+    return this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toUnmodifiableList());
   }
 
-  public Collection<Profile> getAllInvalid() {
-    return this.profiles.values().stream().filter(profile -> !this.isValid(profile)).collect(Collectors.toUnmodifiableList());
+  public Collection<Profile> getInvalidProfiles() {
+    return this.profiles.values().stream().filter(profile -> !this.isProfileValid(profile)).collect(Collectors.toUnmodifiableList());
   }
 
-  public void add(final Profile profile) {
-    if(profile == null) {
-      throw new NullPointerException("profile");
-    }
-    if(!this.profiles.containsKey(profile.getUniqueId())) {
-      this.profiles.put(profile.getUniqueId(), profile);
-    }
+  public void addProfile(final Profile profile) {
+    Objects.requireNonNull(profile, "profile");
+    this.profiles.putIfAbsent(profile.getUniqueId(), profile);
   }
 
-  public void remove(final Profile profile) {
-    if(profile == null) {
-      throw new NullPointerException("profile");
-    }
+  public void removeProfile(final Profile profile) {
+    Objects.requireNonNull(profile, "profile");
     this.profiles.remove(profile.getUniqueId());
   }
 
-  public void cache(final UUID uniqueId, final boolean recache, final BiConsumer<Profile, Throwable> callback) {
-    if(uniqueId == null) {
-      throw new NullPointerException("uniqueId");
-    }
-    if(callback == null) {
-      throw new NullPointerException("callback");
-    }
+  public void cacheProfile(final UUID uniqueId, final boolean recache, final BiConsumer<Profile, Throwable> callback) {
+    Objects.requireNonNull(uniqueId, "uniqueId");
+    Objects.requireNonNull(callback, "callback");
     if(this.profiles.containsKey(uniqueId)) {
       final Profile profile = this.profiles.get(uniqueId);
-      if(this.isValid(profile) && !recache) {
+      if(this.isProfileValid(profile) && !recache) {
         callback.accept(profile, null);
         return;
       }
@@ -133,11 +110,14 @@ public final class ProfileRepository {
       final String url = String.format(PROFILE_FRIENDS_URL, uniqueId.toString());
       try {
         final JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
-        final Collection<Friend> friends = IntStream.range(0, array.length()).boxed().map(index -> {
-          JSONObject object = array.getJSONObject(index);
-          return Friend.of(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
-        }).collect(Collectors.toUnmodifiableList());
-        final Profile profile = Profile.of(uniqueId, friends);
+        final Collection<Friend> friends = IntStream.range(0, array.length())
+          .boxed()
+          .map(index -> {
+            JSONObject object = array.getJSONObject(index);
+            return new Friend(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
+          })
+          .collect(Collectors.toUnmodifiableList());
+        final Profile profile = new Profile(uniqueId, friends);
         this.profiles.put(uniqueId, profile);
         callback.accept(profile, null);
       } catch(final IOException | JSONException exception) {
@@ -146,14 +126,12 @@ public final class ProfileRepository {
     });
   }
 
-  public boolean isValid(final Profile profile) {
-    if(profile == null) {
-      throw new NullPointerException("profile");
-    }
-    return Instant.now().toEpochMilli() - profile.getCacheTime() < this.getDurationMillis();
+  public boolean isProfileValid(final Profile profile) {
+    Objects.requireNonNull(profile, "profile");
+    return Duration.between(profile.getCacheTime(), Instant.now()).compareTo(this.cacheDuration) < 0;
   }
 
-  public void clear() {
+  public void clearProfiles() {
     this.profiles.clear();
   }
 }

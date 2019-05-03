@@ -31,29 +31,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class Profile {
-  public static Profile of(final UUID uniqueId, final Collection<Friend> friends) {
-    if(uniqueId == null) {
-      throw new NullPointerException("uniqueId");
-    }
-    if(friends == null) {
-      throw new NullPointerException("friends");
-    }
-    for(final Friend friend : friends) {
-      if(friend == null) {
-        throw new NullPointerException("friend");
-      }
-    }
-    return new Profile(uniqueId, friends);
-  }
-
   private final UUID uniqueId;
   private final Collection<Friend> friends;
-  private final long cacheTime;
+  private final Instant cacheTime;
 
-  protected Profile(final UUID uniqueId, final Collection<Friend> friends) {
-    this.uniqueId = uniqueId;
+  public Profile(final UUID uniqueId, final Collection<Friend> friends) {
+    this.uniqueId = Objects.requireNonNull(uniqueId, "uniqueId");
+    Objects.requireNonNull(friends, "friends");
+    for(final Friend friend : friends) {
+      Objects.requireNonNull(friend, "friend");
+    }
     this.friends = friends;
-    this.cacheTime = Instant.now().toEpochMilli();
+    this.cacheTime = Instant.now();
   }
 
   public UUID getUniqueId() {
@@ -65,9 +54,7 @@ public final class Profile {
   }
 
   public Optional<Friend> getFriend(final UUID uniqueId) {
-    if(uniqueId == null) {
-      throw new NullPointerException("uniqueId");
-    }
+    Objects.requireNonNull(uniqueId, "uniqueId");
     return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst();
   }
 
@@ -76,20 +63,16 @@ public final class Profile {
   }
 
   public Optional<Friend> getFriend(final String name, final boolean caseSensitive) {
-    if(name == null) {
-      throw new NullPointerException("name");
-    }
+    Objects.requireNonNull(name, "name");
     return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst();
   }
 
-  public long getCacheTime() {
+  public Instant getCacheTime() {
     return this.cacheTime;
   }
 
   public boolean hasLikedServer(final Server server) {
-    if(server == null) {
-      throw new NullPointerException("server");
-    }
+    Objects.requireNonNull(server, "server");
     return server.hasLiked(this.uniqueId);
   }
 
@@ -102,9 +85,9 @@ public final class Profile {
       return false;
     }
     final Profile that = (Profile) object;
-    return this.cacheTime == that.cacheTime &&
-      Objects.equals(this.uniqueId, that.uniqueId) &&
-      Objects.equals(this.friends, that.friends);
+    return Objects.equals(this.uniqueId, that.uniqueId) &&
+      Objects.equals(this.friends, that.friends) &&
+      Objects.equals(this.cacheTime, that.cacheTime);
   }
 
   @Override

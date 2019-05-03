@@ -26,27 +26,19 @@ package dev.jaqobb.namemc_api;
 import dev.jaqobb.namemc_api.repository.ProfileRepository;
 import dev.jaqobb.namemc_api.repository.ServerRepository;
 
+import java.util.Objects;
+
 public final class NameMCAPI {
-  public static NameMCAPI of() {
-    return of(ProfileRepository.of(), ServerRepository.of());
-  }
-
-  public static NameMCAPI of(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
-    if(profileRepository == null) {
-      throw new NullPointerException("profileRepository");
-    }
-    if(serverRepository == null) {
-      throw new NullPointerException("serverRepository");
-    }
-    return new NameMCAPI(profileRepository, serverRepository);
-  }
-
   private final ProfileRepository profileRepository;
   private final ServerRepository serverRepository;
 
-  protected NameMCAPI(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
-    this.profileRepository = profileRepository;
-    this.serverRepository = serverRepository;
+  public NameMCAPI() {
+    this(new ProfileRepository(), new ServerRepository());
+  }
+
+  public NameMCAPI(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
+    this.profileRepository = Objects.requireNonNull(profileRepository, "profileRepository");
+    this.serverRepository = Objects.requireNonNull(serverRepository, "serverRepository");
   }
 
   public ProfileRepository getProfileRepository() {

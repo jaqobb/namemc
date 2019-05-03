@@ -29,100 +29,77 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public final class ServerRepository {
-  public static ServerRepository of() {
-    return of(10L, TimeUnit.MINUTES);
-  }
-
-  public static ServerRepository of(final long duration, final TimeUnit unit) {
-    if(duration < 1) {
-      throw new IllegalArgumentException("duration < 1");
-    }
-    if(unit == null) {
-      throw new NullPointerException("unit");
-    }
-    return new ServerRepository(duration, unit);
-  }
-
   private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
 
   private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
   private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  private final long duration;
-  private final TimeUnit unit;
+  private final Duration cacheDuration;
   private final Map<String, Server> servers;
 
-  protected ServerRepository(final long duration, final TimeUnit unit) {
-    this.duration = duration;
-    this.unit = unit;
+  public ServerRepository() {
+    this(10, ChronoUnit.MINUTES);
+  }
+
+  public ServerRepository(final long duration, final TemporalUnit unit) {
+    if(duration < 1) {
+      throw new IllegalArgumentException("duration cannot be smaller than 1");
+    }
+    Objects.requireNonNull(unit, "unit");
+    this.cacheDuration = Duration.of(duration, unit);
     this.servers = Collections.synchronizedMap(new HashMap<>(1, 1.0F));
   }
 
-  public long getDuration() {
-    return this.duration;
+  public Duration getCacheDuration() {
+    return this.cacheDuration;
   }
 
-  public long getDurationMillis() {
-    return this.unit.toMillis(this.duration);
-  }
-
-  public TimeUnit getUnit() {
-    return this.unit;
-  }
-
-  public Collection<Server> getAll() {
+  public Collection<Server> getServers() {
     return Collections.unmodifiableCollection(this.servers.values());
   }
 
-  public Collection<Server> getAllValid() {
-    return this.servers.values().stream().filter(this::isValid).collect(Collectors.toUnmodifiableList());
+  public Collection<Server> getValidServers() {
+    return this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toUnmodifiableList());
   }
 
-  public Collection<Server> getAllInvalid() {
-    return this.servers.values().stream().filter(server -> !this.isValid(server)).collect(Collectors.toUnmodifiableList());
+  public Collection<Server> getInvalidServers() {
+    return this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toUnmodifiableList());
   }
 
-  public void add(final Server server) {
-    if(server == null) {
-      throw new NullPointerException("server");
-    }
-    if(!this.servers.containsKey(server.getAddress().toLowerCase())) {
-      this.servers.put(server.getAddress().toLowerCase(), server);
-    }
+  public void addServer(final Server server) {
+    Objects.requireNonNull(server, "server");
+    this.servers.putIfAbsent(server.getAddress().toLowerCase(), server);
   }
 
-  public void remove(final Server server) {
-    if(server == null) {
-      throw new NullPointerException("server");
-    }
+  public void removeServer(final Server server) {
+    Objects.requireNonNull(server, "server");
     this.servers.remove(server.getAddress().toLowerCase());
   }
 
-  public void cache(final String address, final boolean recache, final BiConsumer<Server, Throwable> callback) {
-    if(address == null) {
-      throw new NullPointerException("address");
-    }
-    if(callback == null) {
-      throw new NullPointerException("callback");
-    }
+  public void cacheServer(final String address, final boolean recache, final BiConsumer<Server, Throwable> callback) {
+    Objects.requireNonNull(address, "address");
+    Objects.requireNonNull(callback, "callback");
     if(this.servers.containsKey(address.toLowerCase())) {
       final Server server = this.servers.get(address.toLowerCase());
-      if(this.isValid(server) && !recache) {
+      if(this.isServerValid(server) && !recache) {
         callback.accept(server, null);
         return;
       }
@@ -131,8 +108,11 @@ public final class ServerRepository {
       final String url = String.format(SERVER_VOTES_URL, address.toLowerCase());
       try {
         final JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
-        final Collection<UUID> likes = IntStream.range(0, array.length()).boxed().map(index -> UUID.fromString(array.getString(index))).collect(Collectors.toUnmodifiableList());
-        final Server server = Server.of(address.toLowerCase(), likes);
+        final Collection<UUID> likes = IntStream.range(0, array.length())
+          .boxed()
+          .map(index -> UUID.fromString(array.getString(index)))
+          .collect(Collectors.toUnmodifiableList());
+        final Server server = new Server(address.toLowerCase(), likes);
         this.servers.put(address.toLowerCase(), server);
         callback.accept(server, null);
       } catch(final IOException | JSONException exception) {
@@ -141,14 +121,12 @@ public final class ServerRepository {
     });
   }
 
-  public boolean isValid(final Server server) {
-    if(server == null) {
-      throw new NullPointerException("server");
-    }
-    return Instant.now().toEpochMilli() - server.getCacheTime() < this.getDurationMillis();
+  public boolean isServerValid(final Server server) {
+    Objects.requireNonNull(server, "server");
+    return Duration.between(server.getCacheTime(), Instant.now()).compareTo(this.cacheDuration) < 0;
   }
 
-  public void clear() {
+  public void clearServers() {
     this.servers.clear();
   }
 }
