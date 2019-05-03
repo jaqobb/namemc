@@ -63,7 +63,7 @@ public class ServerRepository {
 	}
 
 	public ServerRepository(long duration, @NotNull TemporalUnit unit) {
-		if(duration < 1) {
+		if (duration < 1) {
 			throw new IllegalArgumentException("duration cannot be smaller than 1");
 		}
 		cacheDuration = Duration.of(duration, unit);
@@ -102,9 +102,9 @@ public class ServerRepository {
 	}
 
 	public void cacheServer(@NotNull String address, boolean recache, @NotNull BiConsumer<Server, Throwable> callback) {
-		if(servers.containsKey(address.toLowerCase())) {
+		if (servers.containsKey(address.toLowerCase())) {
 			Server server = servers.get(address.toLowerCase());
-			if(isServerValid(server) && !recache) {
+			if (isServerValid(server) && !recache) {
 				callback.accept(server, null);
 				return;
 			}
@@ -120,7 +120,7 @@ public class ServerRepository {
 				Server server = new Server(address.toLowerCase(), likes);
 				servers.put(address.toLowerCase(), server);
 				callback.accept(server, null);
-			} catch(IOException | JSONException exception) {
+			} catch (IOException | JSONException exception) {
 				callback.accept(null, exception);
 			}
 		});

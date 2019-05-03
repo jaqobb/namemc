@@ -41,7 +41,7 @@ public final class IOHelper {
 	public static String getReaderContent(@NotNull BufferedReader reader) throws IOException {
 		String content = "";
 		String line;
-		while((line = reader.readLine()) != null) {
+		while ((line = reader.readLine()) != null) {
 			content += line;
 			content += System.lineSeparator();
 		}
@@ -49,10 +49,10 @@ public final class IOHelper {
 	}
 
 	public static String getWebsiteContent(@NotNull String websiteUrl) throws IOException {
-		if(websiteUrl.isBlank()) {
+		if (websiteUrl.isBlank()) {
 			throw new IllegalArgumentException("websiteUrl cannot be blank");
 		}
-		try(InputStream inputStream = new URL(websiteUrl).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+		try (InputStream inputStream = new URL(websiteUrl).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
 			return getReaderContent(reader);
 		}
 	}

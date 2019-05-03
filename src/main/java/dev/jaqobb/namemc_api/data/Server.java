@@ -68,10 +68,10 @@ public class Server {
 
 	@Override
 	public boolean equals(@Nullable Object object) {
-		if(this == object) {
+		if (this == object) {
 			return true;
 		}
-		if(object == null || getClass() != object.getClass()) {
+		if (object == null || getClass() != object.getClass()) {
 			return false;
 		}
 		Server that = (Server) object;

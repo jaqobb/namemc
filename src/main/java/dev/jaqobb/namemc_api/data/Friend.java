@@ -56,7 +56,7 @@ public class Friend {
 	}
 
 	public boolean isFriendOf(@NotNull Profile profile, boolean caseSensitive) {
-		if(profile.getFriend(uniqueId) != null) {
+		if (profile.getFriend(uniqueId) != null) {
 			return true;
 		}
 		return profile.getFriend(name, caseSensitive) != null;
@@ -68,10 +68,10 @@ public class Friend {
 
 	@Override
 	public boolean equals(@Nullable Object object) {
-		if(this == object) {
+		if (this == object) {
 			return true;
 		}
-		if(object == null || getClass() != object.getClass()) {
+		if (object == null || getClass() != object.getClass()) {
 			return false;
 		}
 		Friend that = (Friend) object;

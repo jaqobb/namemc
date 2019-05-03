@@ -65,7 +65,7 @@ public class ProfileRepository {
 	}
 
 	public ProfileRepository(long duration, @NotNull TemporalUnit unit) {
-		if(duration < 1) {
+		if (duration < 1) {
 			throw new IllegalArgumentException("duration cannot be smaller than 1");
 		}
 		cacheDuration = Duration.of(duration, unit);
@@ -104,9 +104,9 @@ public class ProfileRepository {
 	}
 
 	public void cacheProfile(@NotNull UUID uniqueId, boolean recache, @NotNull BiConsumer<Profile, Throwable> callback) {
-		if(profiles.containsKey(uniqueId)) {
+		if (profiles.containsKey(uniqueId)) {
 			Profile profile = profiles.get(uniqueId);
-			if(isProfileValid(profile) && !recache) {
+			if (isProfileValid(profile) && !recache) {
 				callback.accept(profile, null);
 				return;
 			}
@@ -125,7 +125,7 @@ public class ProfileRepository {
 				Profile profile = new Profile(uniqueId, friends);
 				profiles.put(uniqueId, profile);
 				callback.accept(profile, null);
-			} catch(IOException | JSONException exception) {
+			} catch (IOException | JSONException exception) {
 				callback.accept(null, exception);
 			}
 		});
