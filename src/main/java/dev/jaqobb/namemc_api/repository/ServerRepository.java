@@ -24,6 +24,8 @@
 
 package dev.jaqobb.namemc_api.repository;
 
+import dev.jaqobb.namemc_api.data.Server;
+import dev.jaqobb.namemc_api.util.IOHelper;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -40,8 +42,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import dev.jaqobb.namemc_api.data.Server;
-import dev.jaqobb.namemc_api.util.IOHelper;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
