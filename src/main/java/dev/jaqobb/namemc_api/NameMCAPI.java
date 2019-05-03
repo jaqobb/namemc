@@ -46,11 +46,11 @@ public class NameMCAPI {
 
 	@NotNull
 	public ProfileRepository getProfileRepository() {
-		return this.profileRepository;
+		return profileRepository;
 	}
 
 	@NotNull
 	public ServerRepository getServerRepository() {
-		return this.serverRepository;
+		return serverRepository;
 	}
 }

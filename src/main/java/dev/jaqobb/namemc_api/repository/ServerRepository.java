@@ -66,44 +66,44 @@ public class ServerRepository {
 		if(duration < 1) {
 			throw new IllegalArgumentException("duration cannot be smaller than 1");
 		}
-		this.cacheDuration = Duration.of(duration, unit);
+		cacheDuration = Duration.of(duration, unit);
 	}
 
 	@NotNull
 	public Duration getCacheDuration() {
-		return this.cacheDuration;
+		return cacheDuration;
 	}
 
 	@NotNull
 	public Collection<Server> getServers() {
-		return Collections.unmodifiableCollection(this.servers.values());
+		return Collections.unmodifiableCollection(servers.values());
 	}
 
 	@NotNull
 	public Collection<Server> getValidServers() {
-		return this.servers.values().stream()
+		return servers.values().stream()
 			.filter(this::isServerValid)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	@NotNull
 	public Collection<Server> getInvalidServers() {
-		return this.servers.values().stream()
+		return servers.values().stream()
 			.filter(server -> !isServerValid(server))
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	public void addServer(@NotNull Server server) {
-		this.servers.putIfAbsent(server.getAddress().toLowerCase(), server);
+		servers.putIfAbsent(server.getAddress().toLowerCase(), server);
 	}
 
 	public void removeServer(@NotNull Server server) {
-		this.servers.remove(server.getAddress().toLowerCase());
+		servers.remove(server.getAddress().toLowerCase());
 	}
 
 	public void cacheServer(@NotNull String address, boolean recache, @NotNull BiConsumer<Server, Throwable> callback) {
-		if(this.servers.containsKey(address.toLowerCase())) {
-			Server server = this.servers.get(address.toLowerCase());
+		if(servers.containsKey(address.toLowerCase())) {
+			Server server = servers.get(address.toLowerCase());
 			if(isServerValid(server) && !recache) {
 				callback.accept(server, null);
 				return;
@@ -118,7 +118,7 @@ public class ServerRepository {
 					.map(index -> UUID.fromString(array.getString(index)))
 					.collect(Collectors.toUnmodifiableList());
 				Server server = new Server(address.toLowerCase(), likes);
-				this.servers.put(address.toLowerCase(), server);
+				servers.put(address.toLowerCase(), server);
 				callback.accept(server, null);
 			} catch(IOException | JSONException exception) {
 				callback.accept(null, exception);
@@ -128,10 +128,10 @@ public class ServerRepository {
 
 	public boolean isServerValid(@NotNull Server server) {
 		Duration difference = Duration.between(server.getCacheTime(), Instant.now());
-		return difference.compareTo(this.cacheDuration) < 0;
+		return difference.compareTo(cacheDuration) < 0;
 	}
 
 	public void clearServers() {
-		this.servers.clear();
+		servers.clear();
 	}
 }

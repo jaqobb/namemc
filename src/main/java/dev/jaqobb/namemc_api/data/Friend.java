@@ -43,12 +43,12 @@ public class Friend {
 
 	@NotNull
 	public UUID getUniqueId() {
-		return this.uniqueId;
+		return uniqueId;
 	}
 
 	@NotNull
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public boolean isFriendOf(@NotNull Profile profile) {
@@ -56,14 +56,14 @@ public class Friend {
 	}
 
 	public boolean isFriendOf(@NotNull Profile profile, boolean caseSensitive) {
-		if(profile.getFriend(this.uniqueId) != null) {
+		if(profile.getFriend(uniqueId) != null) {
 			return true;
 		}
-		return profile.getFriend(this.name, caseSensitive) != null;
+		return profile.getFriend(name, caseSensitive) != null;
 	}
 
 	public boolean hasLikedServer(@NotNull Server server) {
-		return server.hasLiked(this.uniqueId);
+		return server.hasLiked(uniqueId);
 	}
 
 	@Override
@@ -75,16 +75,16 @@ public class Friend {
 			return false;
 		}
 		Friend that = (Friend) object;
-		return Objects.equals(this.uniqueId, that.uniqueId) && Objects.equals(this.name, that.name);
+		return Objects.equals(uniqueId, that.uniqueId) && Objects.equals(name, that.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.uniqueId, this.name);
+		return Objects.hash(uniqueId, name);
 	}
 
 	@Override
 	public String toString() {
-		return "Friend{" + "uniqueId=" + this.uniqueId + ", name='" + this.name + "'" + "}";
+		return "Friend{" + "uniqueId=" + uniqueId + ", name='" + name + "'" + "}";
 	}
 }

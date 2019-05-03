@@ -44,26 +44,26 @@ public class Server {
 	public Server(@NotNull String address, @NotNull Collection<UUID> likes) {
 		this.address = address.toLowerCase();
 		this.likes = likes;
-		this.cacheTime = Instant.now();
+		cacheTime = Instant.now();
 	}
 
 	@NotNull
 	public String getAddress() {
-		return this.address;
+		return address;
 	}
 
 	@NotNull
 	public Collection<UUID> getLikes() {
-		return Collections.unmodifiableCollection(this.likes);
+		return Collections.unmodifiableCollection(likes);
 	}
 
 	public boolean hasLiked(@NotNull UUID uniqueId) {
-		return this.likes.contains(uniqueId);
+		return likes.contains(uniqueId);
 	}
 
 	@NotNull
 	public Instant getCacheTime() {
-		return this.cacheTime;
+		return cacheTime;
 	}
 
 	@Override
@@ -71,26 +71,26 @@ public class Server {
 		if(this == object) {
 			return true;
 		}
-		if(object == null || this.getClass() != object.getClass()) {
+		if(object == null || getClass() != object.getClass()) {
 			return false;
 		}
 		Server that = (Server) object;
-		return Objects.equals(this.address, that.address) &&
-			Objects.equals(this.likes, that.likes) &&
-			Objects.equals(this.cacheTime, that.cacheTime);
+		return Objects.equals(address, that.address) &&
+			Objects.equals(likes, that.likes) &&
+			Objects.equals(cacheTime, that.cacheTime);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.address, this.likes, this.cacheTime);
+		return Objects.hash(address, likes, cacheTime);
 	}
 
 	@Override
 	public String toString() {
 		return "Server{" +
-			"address='" + this.address + "'" +
-			", likes=" + this.likes +
-			", cacheTime=" + this.cacheTime +
+			"address='" + address + "'" +
+			", likes=" + likes +
+			", cacheTime=" + cacheTime +
 			"}";
 	}
 }

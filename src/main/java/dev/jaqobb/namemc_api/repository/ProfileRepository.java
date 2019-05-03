@@ -68,44 +68,44 @@ public class ProfileRepository {
 		if(duration < 1) {
 			throw new IllegalArgumentException("duration cannot be smaller than 1");
 		}
-		this.cacheDuration = Duration.of(duration, unit);
+		cacheDuration = Duration.of(duration, unit);
 	}
 
 	@NotNull
 	public Duration getCacheDuration() {
-		return this.cacheDuration;
+		return cacheDuration;
 	}
 
 	@NotNull
 	public Collection<Profile> getProfiles() {
-		return Collections.unmodifiableCollection(this.profiles.values());
+		return Collections.unmodifiableCollection(profiles.values());
 	}
 
 	@NotNull
 	public Collection<Profile> getValidProfiles() {
-		return this.profiles.values().stream()
+		return profiles.values().stream()
 			.filter(this::isProfileValid)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	@NotNull
 	public Collection<Profile> getInvalidProfiles() {
-		return this.profiles.values().stream()
+		return profiles.values().stream()
 			.filter(profile -> !isProfileValid(profile))
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	public void addProfile(@NotNull Profile profile) {
-		this.profiles.putIfAbsent(profile.getUniqueId(), profile);
+		profiles.putIfAbsent(profile.getUniqueId(), profile);
 	}
 
 	public void removeProfile(@NotNull Profile profile) {
-		this.profiles.remove(profile.getUniqueId());
+		profiles.remove(profile.getUniqueId());
 	}
 
 	public void cacheProfile(@NotNull UUID uniqueId, boolean recache, @NotNull BiConsumer<Profile, Throwable> callback) {
-		if(this.profiles.containsKey(uniqueId)) {
-			Profile profile = this.profiles.get(uniqueId);
+		if(profiles.containsKey(uniqueId)) {
+			Profile profile = profiles.get(uniqueId);
 			if(isProfileValid(profile) && !recache) {
 				callback.accept(profile, null);
 				return;
@@ -123,7 +123,7 @@ public class ProfileRepository {
 					})
 					.collect(Collectors.toUnmodifiableList());
 				Profile profile = new Profile(uniqueId, friends);
-				this.profiles.put(uniqueId, profile);
+				profiles.put(uniqueId, profile);
 				callback.accept(profile, null);
 			} catch(IOException | JSONException exception) {
 				callback.accept(null, exception);
@@ -133,10 +133,10 @@ public class ProfileRepository {
 
 	public boolean isProfileValid(@NotNull Profile profile) {
 		Duration difference = Duration.between(profile.getCacheTime(), Instant.now());
-		return difference.compareTo(this.cacheDuration) < 0;
+		return difference.compareTo(cacheDuration) < 0;
 	}
 
 	public void clearProfiles() {
-		this.profiles.clear();
+		profiles.clear();
 	}
 }
