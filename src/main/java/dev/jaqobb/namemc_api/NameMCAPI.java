@@ -24,7 +24,6 @@
 
 package dev.jaqobb.namemc_api;
 
-import java.util.Objects;
 import dev.jaqobb.namemc_api.repository.ProfileRepository;
 import dev.jaqobb.namemc_api.repository.ServerRepository;
 import org.jetbrains.annotations.NotNull;
@@ -41,8 +40,8 @@ public class NameMCAPI {
 	}
 
 	public NameMCAPI(@NotNull ProfileRepository profileRepository, @NotNull ServerRepository serverRepository) {
-		this.profileRepository = Objects.requireNonNull(profileRepository, "profileRepository");
-		this.serverRepository = Objects.requireNonNull(serverRepository, "serverRepository");
+		this.profileRepository = profileRepository;
+		this.serverRepository = serverRepository;
 	}
 
 	@NotNull
