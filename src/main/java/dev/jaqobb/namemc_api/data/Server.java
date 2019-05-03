@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package dev.jaqobb.namemc_api.data;
 
 import java.time.Instant;
@@ -28,64 +29,68 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public final class Server {
-  private final String address;
-  private final Collection<UUID> likes;
-  private final Instant cacheTime;
+public class Server {
 
-  public Server(final String address, final Collection<UUID> likes) {
-    this.address = Objects.requireNonNull(address, "address").toLowerCase();
-    Objects.requireNonNull(likes, "likes");
-    for(final UUID like : likes) {
-      Objects.requireNonNull(like, "like");
-    }
-    this.likes = likes;
-    this.cacheTime = Instant.now();
-  }
+	@NotNull
+	private String address;
+	@NotNull
+	private Collection<UUID> likes;
+	@NotNull
+	private Instant cacheTime;
 
-  public String getAddress() {
-    return this.address;
-  }
+	public Server(@NotNull String address, @NotNull Collection<UUID> likes) {
+		this.address = address.toLowerCase();
+		this.likes = likes;
+		this.cacheTime = Instant.now();
+	}
 
-  public Collection<UUID> getLikes() {
-    return Collections.unmodifiableCollection(this.likes);
-  }
+	@NotNull
+	public String getAddress() {
+		return this.address;
+	}
 
-  public boolean hasLiked(final UUID uniqueId) {
-    Objects.requireNonNull(uniqueId, "uniqueId");
-    return this.likes.contains(uniqueId);
-  }
+	@NotNull
+	public Collection<UUID> getLikes() {
+		return Collections.unmodifiableCollection(this.likes);
+	}
 
-  public Instant getCacheTime() {
-    return this.cacheTime;
-  }
+	public boolean hasLiked(@NotNull UUID uniqueId) {
+		return this.likes.contains(uniqueId);
+	}
 
-  @Override
-  public boolean equals(final Object object) {
-    if(this == object) {
-      return true;
-    }
-    if(object == null || this.getClass() != object.getClass()) {
-      return false;
-    }
-    final Server that = (Server) object;
-    return Objects.equals(this.address, that.address) &&
-      Objects.equals(this.likes, that.likes) &&
-      Objects.equals(this.cacheTime, that.cacheTime);
-  }
+	@NotNull
+	public Instant getCacheTime() {
+		return this.cacheTime;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.address, this.likes, this.cacheTime);
-  }
+	@Override
+	public boolean equals(@Nullable Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object == null || this.getClass() != object.getClass()) {
+			return false;
+		}
+		Server that = (Server) object;
+		return Objects.equals(this.address, that.address) &&
+			Objects.equals(this.likes, that.likes) &&
+			Objects.equals(this.cacheTime, that.cacheTime);
+	}
 
-  @Override
-  public String toString() {
-    return "Server{" +
-      "address='" + this.address + "'" +
-      ", likes=" + this.likes +
-      ", cacheTime=" + this.cacheTime +
-      "}";
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.address, this.likes, this.cacheTime);
+	}
+
+	@Override
+	public String toString() {
+		return "Server{" +
+			"address='" + this.address + "'" +
+			", likes=" + this.likes +
+			", cacheTime=" + this.cacheTime +
+			"}";
+	}
 }

@@ -1,36 +1,37 @@
 plugins {
-  this.`java-library`
-  this.id("com.github.johnrengelman.shadow") version "5.0.0"
+	`java-library`
+	id("com.github.johnrengelman.shadow") version "5.0.0"
 }
 
 group = "dev.jaqobb"
 version = "2.0.5"
 
 java {
-  this.sourceCompatibility = JavaVersion.VERSION_11
-  this.targetCompatibility = JavaVersion.VERSION_11
+	sourceCompatibility = JavaVersion.VERSION_11
+	targetCompatibility = JavaVersion.VERSION_11
 }
 
 defaultTasks("clean", "build", "sourcesJar", "shadowJar")
 
 tasks {
-  test {
-    this.useJUnitPlatform {
-      this.includeEngines("junit-jupiter")
-    }
-  }
+	test {
+		useJUnitPlatform {
+			includeEngines("junit-jupiter")
+		}
+	}
 }
 
 task<Jar>("sourcesJar") {
-  this.from(sourceSets["main"].allSource)
-  this.archiveClassifier.set("sources")
+	from(sourceSets["main"].allSource)
+	archiveClassifier.set("sources")
 }
 
 repositories {
-  this.mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-  this.implementation("org.json:json:20180813")
-  this.testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
+	compileOnly("org.jetbrains:annotations:17.0.0")
+	implementation("org.json:json:20180813")
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
 }

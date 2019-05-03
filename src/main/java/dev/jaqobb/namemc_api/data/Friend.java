@@ -21,64 +21,70 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package dev.jaqobb.namemc_api.data;
 
 import java.util.Objects;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public final class Friend {
-  private final UUID uniqueId;
-  private final String name;
+public class Friend {
 
-  public Friend(final UUID uniqueId, final String name) {
-    this.uniqueId = Objects.requireNonNull(uniqueId, "uniqueId");
-    this.name = Objects.requireNonNull(name, "name");
-  }
+	@NotNull
+	private UUID uniqueId;
+	@NotNull
+	private String name;
 
-  public UUID getUniqueId() {
-    return this.uniqueId;
-  }
+	public Friend(@NotNull UUID uniqueId, @NotNull String name) {
+		this.uniqueId = uniqueId;
+		this.name = name;
+	}
 
-  public String getName() {
-    return this.name;
-  }
+	@NotNull
+	public UUID getUniqueId() {
+		return this.uniqueId;
+	}
 
-  public boolean isFriendOf(final Profile profile) {
-    return this.isFriendOf(profile, true);
-  }
+	@NotNull
+	public String getName() {
+		return this.name;
+	}
 
-  public boolean isFriendOf(final Profile profile, final boolean caseSensitive) {
-    Objects.requireNonNull(profile, "profile");
-    if(profile.getFriend(this.uniqueId).isPresent()) {
-      return true;
-    }
-    return profile.getFriend(this.name, caseSensitive).isPresent();
-  }
+	public boolean isFriendOf(@NotNull Profile profile) {
+		return isFriendOf(profile, true);
+	}
 
-  public boolean hasLikedServer(final Server server) {
-    Objects.requireNonNull(server, "server");
-    return server.hasLiked(this.uniqueId);
-  }
+	public boolean isFriendOf(@NotNull Profile profile, boolean caseSensitive) {
+		if(profile.getFriend(this.uniqueId) != null) {
+			return true;
+		}
+		return profile.getFriend(this.name, caseSensitive) != null;
+	}
 
-  @Override
-  public boolean equals(final Object object) {
-    if(this == object) {
-      return true;
-    }
-    if(object == null || this.getClass() != object.getClass()) {
-      return false;
-    }
-    final Friend that = (Friend) object;
-    return Objects.equals(this.uniqueId, that.uniqueId) && Objects.equals(this.name, that.name);
-  }
+	public boolean hasLikedServer(@NotNull Server server) {
+		return server.hasLiked(this.uniqueId);
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.uniqueId, this.name);
-  }
+	@Override
+	public boolean equals(@Nullable Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object == null || getClass() != object.getClass()) {
+			return false;
+		}
+		Friend that = (Friend) object;
+		return Objects.equals(this.uniqueId, that.uniqueId) && Objects.equals(this.name, that.name);
+	}
 
-  @Override
-  public String toString() {
-    return "Friend{" + "uniqueId=" + this.uniqueId + ", name='" + this.name + "'" + "}";
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.uniqueId, this.name);
+	}
+
+	@Override
+	public String toString() {
+		return "Friend{" + "uniqueId=" + this.uniqueId + ", name='" + this.name + "'" + "}";
+	}
 }

@@ -21,14 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package dev.jaqobb.namemc_api.repository;
 
-import dev.jaqobb.namemc_api.data.Friend;
-import dev.jaqobb.namemc_api.data.Profile;
-import dev.jaqobb.namemc_api.util.IOHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+package dev.jaqobb.namemc_api.repository;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -39,7 +33,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -47,91 +40,103 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import dev.jaqobb.namemc_api.data.Friend;
+import dev.jaqobb.namemc_api.data.Profile;
+import dev.jaqobb.namemc_api.util.IOHelper;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-public final class ProfileRepository {
-  private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
+public class ProfileRepository {
 
-  private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
 
-  private final Duration cacheDuration;
-  private final Map<UUID, Profile> profiles;
+	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
+	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  public ProfileRepository() {
-    this(5, ChronoUnit.MINUTES);
-  }
+	@NotNull
+	private Duration cacheDuration;
+	@NotNull
+	private Map<UUID, Profile> profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
 
-  public ProfileRepository(final long duration, final TemporalUnit unit) {
-    if(duration < 1) {
-      throw new IllegalArgumentException("duration cannot be smaller than 1");
-    }
-    Objects.requireNonNull(unit, "unit");
-    this.cacheDuration = Duration.of(duration, unit);
-    this.profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
-  }
+	public ProfileRepository() {
+		this(5, ChronoUnit.MINUTES);
+	}
 
-  public Duration getCacheDuration() {
-    return this.cacheDuration;
-  }
+	public ProfileRepository(long duration, @NotNull TemporalUnit unit) {
+		if(duration < 1) {
+			throw new IllegalArgumentException("duration cannot be smaller than 1");
+		}
+		this.cacheDuration = Duration.of(duration, unit);
+	}
 
-  public Collection<Profile> getProfiles() {
-    return Collections.unmodifiableCollection(this.profiles.values());
-  }
+	@NotNull
+	public Duration getCacheDuration() {
+		return this.cacheDuration;
+	}
 
-  public Collection<Profile> getValidProfiles() {
-    return this.profiles.values().stream().filter(this::isProfileValid).collect(Collectors.toUnmodifiableList());
-  }
+	@NotNull
+	public Collection<Profile> getProfiles() {
+		return Collections.unmodifiableCollection(this.profiles.values());
+	}
 
-  public Collection<Profile> getInvalidProfiles() {
-    return this.profiles.values().stream().filter(profile -> !this.isProfileValid(profile)).collect(Collectors.toUnmodifiableList());
-  }
+	@NotNull
+	public Collection<Profile> getValidProfiles() {
+		return this.profiles.values().stream()
+			.filter(this::isProfileValid)
+			.collect(Collectors.toUnmodifiableList());
+	}
 
-  public void addProfile(final Profile profile) {
-    Objects.requireNonNull(profile, "profile");
-    this.profiles.putIfAbsent(profile.getUniqueId(), profile);
-  }
+	@NotNull
+	public Collection<Profile> getInvalidProfiles() {
+		return this.profiles.values().stream()
+			.filter(profile -> !this.isProfileValid(profile))
+			.collect(Collectors.toUnmodifiableList());
+	}
 
-  public void removeProfile(final Profile profile) {
-    Objects.requireNonNull(profile, "profile");
-    this.profiles.remove(profile.getUniqueId());
-  }
+	public void addProfile(@NotNull Profile profile) {
+		this.profiles.putIfAbsent(profile.getUniqueId(), profile);
+	}
 
-  public void cacheProfile(final UUID uniqueId, final boolean recache, final BiConsumer<Profile, Throwable> callback) {
-    Objects.requireNonNull(uniqueId, "uniqueId");
-    Objects.requireNonNull(callback, "callback");
-    if(this.profiles.containsKey(uniqueId)) {
-      final Profile profile = this.profiles.get(uniqueId);
-      if(this.isProfileValid(profile) && !recache) {
-        callback.accept(profile, null);
-        return;
-      }
-    }
-    EXECUTOR.execute(() -> {
-      final String url = String.format(PROFILE_FRIENDS_URL, uniqueId.toString());
-      try {
-        final JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
-        final Collection<Friend> friends = IntStream.range(0, array.length())
-          .boxed()
-          .map(index -> {
-            JSONObject object = array.getJSONObject(index);
-            return new Friend(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
-          })
-          .collect(Collectors.toUnmodifiableList());
-        final Profile profile = new Profile(uniqueId, friends);
-        this.profiles.put(uniqueId, profile);
-        callback.accept(profile, null);
-      } catch(final IOException | JSONException exception) {
-        callback.accept(null, exception);
-      }
-    });
-  }
+	public void removeProfile(@NotNull Profile profile) {
+		this.profiles.remove(profile.getUniqueId());
+	}
 
-  public boolean isProfileValid(final Profile profile) {
-    Objects.requireNonNull(profile, "profile");
-    return Duration.between(profile.getCacheTime(), Instant.now()).compareTo(this.cacheDuration) < 0;
-  }
+	public void cacheProfile(@NotNull UUID uniqueId, boolean recache, @NotNull BiConsumer<Profile, Throwable> callback) {
+		if(this.profiles.containsKey(uniqueId)) {
+			Profile profile = this.profiles.get(uniqueId);
+			if(this.isProfileValid(profile) && !recache) {
+				callback.accept(profile, null);
+				return;
+			}
+		}
+		EXECUTOR.execute(() -> {
+			String url = String.format(PROFILE_FRIENDS_URL, uniqueId.toString());
+			try {
+				JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
+				Collection<Friend> friends = IntStream.range(0, array.length())
+					.boxed()
+					.map(index -> {
+						JSONObject object = array.getJSONObject(index);
+						return new Friend(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
+					})
+					.collect(Collectors.toUnmodifiableList());
+				Profile profile = new Profile(uniqueId, friends);
+				this.profiles.put(uniqueId, profile);
+				callback.accept(profile, null);
+			} catch(IOException | JSONException exception) {
+				callback.accept(null, exception);
+			}
+		});
+	}
 
-  public void clearProfiles() {
-    this.profiles.clear();
-  }
+	public boolean isProfileValid(@NotNull Profile profile) {
+		Duration difference = Duration.between(profile.getCacheTime(), Instant.now());
+		return difference.compareTo(this.cacheDuration) < 0;
+	}
+
+	public void clearProfiles() {
+		this.profiles.clear();
+	}
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package dev.jaqobb.namemc_api.util;
 
 import java.io.BufferedReader;
@@ -29,30 +30,30 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
+import org.jetbrains.annotations.NotNull;
 
 public final class IOHelper {
-  private IOHelper() {
-  }
 
-  public static String getReaderContent(final BufferedReader reader) throws IOException {
-    Objects.requireNonNull(reader, "reader");
-    String content = "";
-    String line;
-    while((line = reader.readLine()) != null) {
-      content += line;
-      content += System.lineSeparator();
-    }
-    return content;
-  }
+	private IOHelper() {
+		throw new UnsupportedOperationException("Cannot create instance of utility class");
+	}
 
-  public static String getWebsiteContent(final String website) throws IOException {
-    Objects.requireNonNull(website, "website");
-    if(website.isBlank()) {
-      throw new IllegalArgumentException("website cannot be blank");
-    }
-    try(final InputStream inputStream = new URL(website).openStream(); final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-      return getReaderContent(reader);
-    }
-  }
+	public static String getReaderContent(@NotNull BufferedReader reader) throws IOException {
+		String content = "";
+		String line;
+		while((line = reader.readLine()) != null) {
+			content += line;
+			content += System.lineSeparator();
+		}
+		return content;
+	}
+
+	public static String getWebsiteContent(@NotNull String websiteUrl) throws IOException {
+		if(websiteUrl.isBlank()) {
+			throw new IllegalArgumentException("websiteUrl cannot be blank");
+		}
+		try(InputStream inputStream = new URL(websiteUrl).openStream(); BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+			return getReaderContent(reader);
+		}
+	}
 }

@@ -21,86 +21,97 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package dev.jaqobb.namemc_api.data;
 
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public final class Profile {
-  private final UUID uniqueId;
-  private final Collection<Friend> friends;
-  private final Instant cacheTime;
+public class Profile {
 
-  public Profile(final UUID uniqueId, final Collection<Friend> friends) {
-    this.uniqueId = Objects.requireNonNull(uniqueId, "uniqueId");
-    Objects.requireNonNull(friends, "friends");
-    for(final Friend friend : friends) {
-      Objects.requireNonNull(friend, "friend");
-    }
-    this.friends = friends;
-    this.cacheTime = Instant.now();
-  }
+	@NotNull
+	private UUID uniqueId;
+	@NotNull
+	private Collection<Friend> friends;
+	@NotNull
+	private Instant cacheTime;
 
-  public UUID getUniqueId() {
-    return this.uniqueId;
-  }
+	public Profile(@NotNull UUID uniqueId, @NotNull Collection<Friend> friends) {
+		this.uniqueId = uniqueId;
+		this.friends = friends;
+		this.cacheTime = Instant.now();
+	}
 
-  public Collection<Friend> getFriends() {
-    return Collections.unmodifiableCollection(this.friends);
-  }
+	@NotNull
+	public UUID getUniqueId() {
+		return this.uniqueId;
+	}
 
-  public Optional<Friend> getFriend(final UUID uniqueId) {
-    Objects.requireNonNull(uniqueId, "uniqueId");
-    return this.friends.stream().filter(friend -> friend.getUniqueId().equals(uniqueId)).findFirst();
-  }
+	@NotNull
+	public Collection<Friend> getFriends() {
+		return Collections.unmodifiableCollection(this.friends);
+	}
 
-  public Optional<Friend> getFriend(final String name) {
-    return this.getFriend(name, true);
-  }
+	@Nullable
+	public Friend getFriend(@NotNull UUID uniqueId) {
+		return this.friends.stream()
+			.filter(friend -> friend.getUniqueId().equals(uniqueId))
+			.findFirst()
+			.orElse(null);
+	}
 
-  public Optional<Friend> getFriend(final String name, final boolean caseSensitive) {
-    Objects.requireNonNull(name, "name");
-    return this.friends.stream().filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name)).findFirst();
-  }
+	@Nullable
+	public Friend getFriend(@NotNull String name) {
+		return this.getFriend(name, true);
+	}
 
-  public Instant getCacheTime() {
-    return this.cacheTime;
-  }
+	@Nullable
+	public Friend getFriend(@NotNull String name, boolean caseSensitive) {
+		return this.friends.stream()
+			.filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name))
+			.findFirst()
+			.orElse(null);
+	}
 
-  public boolean hasLikedServer(final Server server) {
-    Objects.requireNonNull(server, "server");
-    return server.hasLiked(this.uniqueId);
-  }
+	@NotNull
+	public Instant getCacheTime() {
+		return this.cacheTime;
+	}
 
-  @Override
-  public boolean equals(final Object object) {
-    if(this == object) {
-      return true;
-    }
-    if(object == null || this.getClass() != object.getClass()) {
-      return false;
-    }
-    final Profile that = (Profile) object;
-    return Objects.equals(this.uniqueId, that.uniqueId) &&
-      Objects.equals(this.friends, that.friends) &&
-      Objects.equals(this.cacheTime, that.cacheTime);
-  }
+	public boolean hasLikedServer(@NotNull Server server) {
+		return server.hasLiked(this.uniqueId);
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.uniqueId, this.friends, this.cacheTime);
-  }
+	@Override
+	public boolean equals(@Nullable Object object) {
+		if(this == object) {
+			return true;
+		}
+		if(object == null || this.getClass() != object.getClass()) {
+			return false;
+		}
+		Profile that = (Profile) object;
+		return Objects.equals(this.uniqueId, that.uniqueId) &&
+			Objects.equals(this.friends, that.friends) &&
+			Objects.equals(this.cacheTime, that.cacheTime);
+	}
 
-  @Override
-  public String toString() {
-    return "Profile{" +
-      "uniqueId=" + this.uniqueId +
-      ", friends=" + this.friends +
-      ", cacheTime=" + this.cacheTime +
-      "}";
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.uniqueId, this.friends, this.cacheTime);
+	}
+
+	@Override
+	public String toString() {
+		return "Profile{" +
+			"uniqueId=" + this.uniqueId +
+			", friends=" + this.friends +
+			", cacheTime=" + this.cacheTime +
+			"}";
+	}
 }

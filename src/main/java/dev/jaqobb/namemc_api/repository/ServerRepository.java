@@ -21,12 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package dev.jaqobb.namemc_api.repository;
 
-import dev.jaqobb.namemc_api.data.Server;
-import dev.jaqobb.namemc_api.util.IOHelper;
-import org.json.JSONArray;
-import org.json.JSONException;
+package dev.jaqobb.namemc_api.repository;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -37,7 +33,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -45,88 +40,98 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import dev.jaqobb.namemc_api.data.Server;
+import dev.jaqobb.namemc_api.util.IOHelper;
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
 
-public final class ServerRepository {
-  private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
+public class ServerRepository {
 
-  private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-  private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	private static final String SERVER_VOTES_URL = "https://api.namemc.com/server/%s/votes";
 
-  private final Duration cacheDuration;
-  private final Map<String, Server> servers;
+	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
+	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
-  public ServerRepository() {
-    this(10, ChronoUnit.MINUTES);
-  }
+	@NotNull
+	private Duration cacheDuration;
+	@NotNull
+	private Map<String, Server> servers = Collections.synchronizedMap(new HashMap<>(1, 1.0F));
 
-  public ServerRepository(final long duration, final TemporalUnit unit) {
-    if(duration < 1) {
-      throw new IllegalArgumentException("duration cannot be smaller than 1");
-    }
-    Objects.requireNonNull(unit, "unit");
-    this.cacheDuration = Duration.of(duration, unit);
-    this.servers = Collections.synchronizedMap(new HashMap<>(1, 1.0F));
-  }
+	public ServerRepository() {
+		this(10, ChronoUnit.MINUTES);
+	}
 
-  public Duration getCacheDuration() {
-    return this.cacheDuration;
-  }
+	public ServerRepository(long duration, @NotNull TemporalUnit unit) {
+		if(duration < 1) {
+			throw new IllegalArgumentException("duration cannot be smaller than 1");
+		}
+		this.cacheDuration = Duration.of(duration, unit);
+	}
 
-  public Collection<Server> getServers() {
-    return Collections.unmodifiableCollection(this.servers.values());
-  }
+	@NotNull
+	public Duration getCacheDuration() {
+		return this.cacheDuration;
+	}
 
-  public Collection<Server> getValidServers() {
-    return this.servers.values().stream().filter(this::isServerValid).collect(Collectors.toUnmodifiableList());
-  }
+	@NotNull
+	public Collection<Server> getServers() {
+		return Collections.unmodifiableCollection(this.servers.values());
+	}
 
-  public Collection<Server> getInvalidServers() {
-    return this.servers.values().stream().filter(server -> !this.isServerValid(server)).collect(Collectors.toUnmodifiableList());
-  }
+	@NotNull
+	public Collection<Server> getValidServers() {
+		return this.servers.values().stream()
+			.filter(this::isServerValid)
+			.collect(Collectors.toUnmodifiableList());
+	}
 
-  public void addServer(final Server server) {
-    Objects.requireNonNull(server, "server");
-    this.servers.putIfAbsent(server.getAddress().toLowerCase(), server);
-  }
+	@NotNull
+	public Collection<Server> getInvalidServers() {
+		return this.servers.values().stream()
+			.filter(server -> !this.isServerValid(server))
+			.collect(Collectors.toUnmodifiableList());
+	}
 
-  public void removeServer(final Server server) {
-    Objects.requireNonNull(server, "server");
-    this.servers.remove(server.getAddress().toLowerCase());
-  }
+	public void addServer(@NotNull Server server) {
+		this.servers.putIfAbsent(server.getAddress().toLowerCase(), server);
+	}
 
-  public void cacheServer(final String address, final boolean recache, final BiConsumer<Server, Throwable> callback) {
-    Objects.requireNonNull(address, "address");
-    Objects.requireNonNull(callback, "callback");
-    if(this.servers.containsKey(address.toLowerCase())) {
-      final Server server = this.servers.get(address.toLowerCase());
-      if(this.isServerValid(server) && !recache) {
-        callback.accept(server, null);
-        return;
-      }
-    }
-    EXECUTOR.execute(() -> {
-      final String url = String.format(SERVER_VOTES_URL, address.toLowerCase());
-      try {
-        final JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
-        final Collection<UUID> likes = IntStream.range(0, array.length())
-          .boxed()
-          .map(index -> UUID.fromString(array.getString(index)))
-          .collect(Collectors.toUnmodifiableList());
-        final Server server = new Server(address.toLowerCase(), likes);
-        this.servers.put(address.toLowerCase(), server);
-        callback.accept(server, null);
-      } catch(final IOException | JSONException exception) {
-        callback.accept(null, exception);
-      }
-    });
-  }
+	public void removeServer(@NotNull Server server) {
+		this.servers.remove(server.getAddress().toLowerCase());
+	}
 
-  public boolean isServerValid(final Server server) {
-    Objects.requireNonNull(server, "server");
-    return Duration.between(server.getCacheTime(), Instant.now()).compareTo(this.cacheDuration) < 0;
-  }
+	public void cacheServer(@NotNull String address, boolean recache, @NotNull BiConsumer<Server, Throwable> callback) {
+		if(this.servers.containsKey(address.toLowerCase())) {
+			Server server = this.servers.get(address.toLowerCase());
+			if(this.isServerValid(server) && !recache) {
+				callback.accept(server, null);
+				return;
+			}
+		}
+		EXECUTOR.execute(() -> {
+			String url = String.format(SERVER_VOTES_URL, address.toLowerCase());
+			try {
+				JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
+				Collection<UUID> likes = IntStream.range(0, array.length())
+					.boxed()
+					.map(index -> UUID.fromString(array.getString(index)))
+					.collect(Collectors.toUnmodifiableList());
+				Server server = new Server(address.toLowerCase(), likes);
+				this.servers.put(address.toLowerCase(), server);
+				callback.accept(server, null);
+			} catch(IOException | JSONException exception) {
+				callback.accept(null, exception);
+			}
+		});
+	}
 
-  public void clearServers() {
-    this.servers.clear();
-  }
+	public boolean isServerValid(@NotNull Server server) {
+		Duration difference = Duration.between(server.getCacheTime(), Instant.now());
+		return difference.compareTo(this.cacheDuration) < 0;
+	}
+
+	public void clearServers() {
+		this.servers.clear();
+	}
 }

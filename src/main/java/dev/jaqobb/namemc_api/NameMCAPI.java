@@ -21,31 +21,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package dev.jaqobb.namemc_api;
 
+import java.util.Objects;
 import dev.jaqobb.namemc_api.repository.ProfileRepository;
 import dev.jaqobb.namemc_api.repository.ServerRepository;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+public class NameMCAPI {
 
-public final class NameMCAPI {
-  private final ProfileRepository profileRepository;
-  private final ServerRepository serverRepository;
+	@NotNull
+	private final ProfileRepository profileRepository;
+	@NotNull
+	private final ServerRepository serverRepository;
 
-  public NameMCAPI() {
-    this(new ProfileRepository(), new ServerRepository());
-  }
+	public NameMCAPI() {
+		this(new ProfileRepository(), new ServerRepository());
+	}
 
-  public NameMCAPI(final ProfileRepository profileRepository, final ServerRepository serverRepository) {
-    this.profileRepository = Objects.requireNonNull(profileRepository, "profileRepository");
-    this.serverRepository = Objects.requireNonNull(serverRepository, "serverRepository");
-  }
+	public NameMCAPI(@NotNull ProfileRepository profileRepository, @NotNull ServerRepository serverRepository) {
+		this.profileRepository = Objects.requireNonNull(profileRepository, "profileRepository");
+		this.serverRepository = Objects.requireNonNull(serverRepository, "serverRepository");
+	}
 
-  public ProfileRepository getProfileRepository() {
-    return this.profileRepository;
-  }
+	@NotNull
+	public ProfileRepository getProfileRepository() {
+		return this.profileRepository;
+	}
 
-  public ServerRepository getServerRepository() {
-    return this.serverRepository;
-  }
+	@NotNull
+	public ServerRepository getServerRepository() {
+		return this.serverRepository;
+	}
 }
