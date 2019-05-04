@@ -120,7 +120,7 @@ public class ServerRepository {
 				Server server = new Server(address.toLowerCase(), likes);
 				servers.put(address.toLowerCase(), server);
 				callback.accept(server, null);
-			} catch (IOException | JSONException exception) {
+			} catch (Exception exception) {
 				callback.accept(null, exception);
 			}
 		});

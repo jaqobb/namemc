@@ -27,7 +27,6 @@ package dev.jaqobb.namemc_api.repository;
 import dev.jaqobb.namemc_api.data.Friend;
 import dev.jaqobb.namemc_api.data.Profile;
 import dev.jaqobb.namemc_api.util.IOHelper;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -45,7 +44,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProfileRepository {
@@ -125,7 +123,7 @@ public class ProfileRepository {
 				Profile profile = new Profile(uniqueId, friends);
 				profiles.put(uniqueId, profile);
 				callback.accept(profile, null);
-			} catch (IOException | JSONException exception) {
+			} catch (Exception exception) {
 				callback.accept(null, exception);
 			}
 		});
