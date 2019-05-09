@@ -26,7 +26,6 @@ package dev.jaqobb.namemc_api.repository;
 
 import dev.jaqobb.namemc_api.data.Server;
 import dev.jaqobb.namemc_api.util.IOHelper;
-import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -44,7 +43,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONException;
 
 public class ServerRepository {
 
@@ -54,9 +52,9 @@ public class ServerRepository {
 	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	@NotNull
-	private Duration cacheDuration;
+	private Duration _cacheDuration;
 	@NotNull
-	private Map<String, Server> servers = Collections.synchronizedMap(new HashMap<>(1, 1.0F));
+	private Map<String, Server> _servers = Collections.synchronizedMap(new HashMap<>(1, 1.0F));
 
 	public ServerRepository() {
 		this(10, ChronoUnit.MINUTES);
@@ -66,44 +64,44 @@ public class ServerRepository {
 		if (duration < 1) {
 			throw new IllegalArgumentException("duration cannot be smaller than 1");
 		}
-		cacheDuration = Duration.of(duration, unit);
+		_cacheDuration = Duration.of(duration, unit);
 	}
 
 	@NotNull
 	public Duration getCacheDuration() {
-		return cacheDuration;
+		return _cacheDuration;
 	}
 
 	@NotNull
 	public Collection<Server> getServers() {
-		return Collections.unmodifiableCollection(servers.values());
+		return Collections.unmodifiableCollection(_servers.values());
 	}
 
 	@NotNull
 	public Collection<Server> getValidServers() {
-		return servers.values().stream()
+		return _servers.values().stream()
 			.filter(this::isServerValid)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	@NotNull
 	public Collection<Server> getInvalidServers() {
-		return servers.values().stream()
+		return _servers.values().stream()
 			.filter(server -> !isServerValid(server))
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	public void addServer(@NotNull Server server) {
-		servers.putIfAbsent(server.getAddress().toLowerCase(), server);
+		_servers.putIfAbsent(server.getAddress().toLowerCase(), server);
 	}
 
 	public void removeServer(@NotNull Server server) {
-		servers.remove(server.getAddress().toLowerCase());
+		_servers.remove(server.getAddress().toLowerCase());
 	}
 
 	public void cacheServer(@NotNull String address, boolean recache, @NotNull BiConsumer<Server, Throwable> callback) {
-		if (servers.containsKey(address.toLowerCase())) {
-			Server server = servers.get(address.toLowerCase());
+		if (_servers.containsKey(address.toLowerCase())) {
+			Server server = _servers.get(address.toLowerCase());
 			if (isServerValid(server) && !recache) {
 				callback.accept(server, null);
 				return;
@@ -118,7 +116,7 @@ public class ServerRepository {
 					.map(index -> UUID.fromString(array.getString(index)))
 					.collect(Collectors.toUnmodifiableList());
 				Server server = new Server(address.toLowerCase(), likes);
-				servers.put(address.toLowerCase(), server);
+				_servers.put(address.toLowerCase(), server);
 				callback.accept(server, null);
 			} catch (Exception exception) {
 				callback.accept(null, exception);
@@ -127,11 +125,10 @@ public class ServerRepository {
 	}
 
 	public boolean isServerValid(@NotNull Server server) {
-		Duration difference = Duration.between(server.getCacheTime(), Instant.now());
-		return difference.compareTo(cacheDuration) < 0;
+		return Duration.between(server.getCacheTime(), Instant.now()).compareTo(_cacheDuration) < 0;
 	}
 
 	public void clearServers() {
-		servers.clear();
+		_servers.clear();
 	}
 }

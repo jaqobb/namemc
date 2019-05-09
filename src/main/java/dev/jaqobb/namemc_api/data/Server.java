@@ -35,35 +35,35 @@ import org.jetbrains.annotations.Nullable;
 public class Server {
 
 	@NotNull
-	private String address;
+	private String _address;
 	@NotNull
-	private Collection<UUID> likes;
+	private Collection<UUID> _likes;
 	@NotNull
-	private Instant cacheTime;
+	private Instant _cacheTime;
 
 	public Server(@NotNull String address, @NotNull Collection<UUID> likes) {
-		this.address = address.toLowerCase();
-		this.likes = likes;
-		cacheTime = Instant.now();
+		_address = address.toLowerCase();
+		_likes = likes;
+		_cacheTime = Instant.now();
 	}
 
 	@NotNull
 	public String getAddress() {
-		return address;
+		return _address;
 	}
 
 	@NotNull
 	public Collection<UUID> getLikes() {
-		return Collections.unmodifiableCollection(likes);
+		return Collections.unmodifiableCollection(_likes);
 	}
 
 	public boolean hasLiked(@NotNull UUID uniqueId) {
-		return likes.contains(uniqueId);
+		return _likes.contains(uniqueId);
 	}
 
 	@NotNull
 	public Instant getCacheTime() {
-		return cacheTime;
+		return _cacheTime;
 	}
 
 	@Override
@@ -75,22 +75,13 @@ public class Server {
 			return false;
 		}
 		Server that = (Server) object;
-		return Objects.equals(address, that.address) &&
-			Objects.equals(likes, that.likes) &&
-			Objects.equals(cacheTime, that.cacheTime);
+		return Objects.equals(_address, that._address) &&
+			Objects.equals(_likes, that._likes) &&
+			Objects.equals(_cacheTime, that._cacheTime);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(address, likes, cacheTime);
-	}
-
-	@Override
-	public String toString() {
-		return "Server{" +
-			"address='" + address + "'" +
-			", likes=" + likes +
-			", cacheTime=" + cacheTime +
-			"}";
+		return Objects.hash(_address, _likes, _cacheTime);
 	}
 }

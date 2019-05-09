@@ -54,9 +54,9 @@ public class ProfileRepository {
 	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	@NotNull
-	private Duration cacheDuration;
+	private Duration _cacheDuration;
 	@NotNull
-	private Map<UUID, Profile> profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
+	private Map<UUID, Profile> _profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
 
 	public ProfileRepository() {
 		this(5, ChronoUnit.MINUTES);
@@ -66,44 +66,44 @@ public class ProfileRepository {
 		if (duration < 1) {
 			throw new IllegalArgumentException("duration cannot be smaller than 1");
 		}
-		cacheDuration = Duration.of(duration, unit);
+		_cacheDuration = Duration.of(duration, unit);
 	}
 
 	@NotNull
 	public Duration getCacheDuration() {
-		return cacheDuration;
+		return _cacheDuration;
 	}
 
 	@NotNull
 	public Collection<Profile> getProfiles() {
-		return Collections.unmodifiableCollection(profiles.values());
+		return Collections.unmodifiableCollection(_profiles.values());
 	}
 
 	@NotNull
 	public Collection<Profile> getValidProfiles() {
-		return profiles.values().stream()
+		return _profiles.values().stream()
 			.filter(this::isProfileValid)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	@NotNull
 	public Collection<Profile> getInvalidProfiles() {
-		return profiles.values().stream()
+		return _profiles.values().stream()
 			.filter(profile -> !isProfileValid(profile))
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	public void addProfile(@NotNull Profile profile) {
-		profiles.putIfAbsent(profile.getUniqueId(), profile);
+		_profiles.putIfAbsent(profile.getUniqueId(), profile);
 	}
 
 	public void removeProfile(@NotNull Profile profile) {
-		profiles.remove(profile.getUniqueId());
+		_profiles.remove(profile.getUniqueId());
 	}
 
 	public void cacheProfile(@NotNull UUID uniqueId, boolean recache, @NotNull BiConsumer<Profile, Throwable> callback) {
-		if (profiles.containsKey(uniqueId)) {
-			Profile profile = profiles.get(uniqueId);
+		if (_profiles.containsKey(uniqueId)) {
+			Profile profile = _profiles.get(uniqueId);
 			if (isProfileValid(profile) && !recache) {
 				callback.accept(profile, null);
 				return;
@@ -121,7 +121,7 @@ public class ProfileRepository {
 					})
 					.collect(Collectors.toUnmodifiableList());
 				Profile profile = new Profile(uniqueId, friends);
-				profiles.put(uniqueId, profile);
+				_profiles.put(uniqueId, profile);
 				callback.accept(profile, null);
 			} catch (Exception exception) {
 				callback.accept(null, exception);
@@ -130,11 +130,10 @@ public class ProfileRepository {
 	}
 
 	public boolean isProfileValid(@NotNull Profile profile) {
-		Duration difference = Duration.between(profile.getCacheTime(), Instant.now());
-		return difference.compareTo(cacheDuration) < 0;
+		return Duration.between(profile.getCacheTime(), Instant.now()).compareTo(_cacheDuration) < 0;
 	}
 
 	public void clearProfiles() {
-		profiles.clear();
+		_profiles.clear();
 	}
 }

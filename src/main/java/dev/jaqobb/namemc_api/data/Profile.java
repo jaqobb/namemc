@@ -35,31 +35,31 @@ import org.jetbrains.annotations.Nullable;
 public class Profile {
 
 	@NotNull
-	private UUID uniqueId;
+	private UUID _uniqueId;
 	@NotNull
-	private Collection<Friend> friends;
+	private Collection<Friend> _friends;
 	@NotNull
-	private Instant cacheTime;
+	private Instant _cacheTime;
 
 	public Profile(@NotNull UUID uniqueId, @NotNull Collection<Friend> friends) {
-		this.uniqueId = uniqueId;
-		this.friends = friends;
-		cacheTime = Instant.now();
+		_uniqueId = uniqueId;
+		_friends = friends;
+		_cacheTime = Instant.now();
 	}
 
 	@NotNull
 	public UUID getUniqueId() {
-		return uniqueId;
+		return _uniqueId;
 	}
 
 	@NotNull
 	public Collection<Friend> getFriends() {
-		return Collections.unmodifiableCollection(friends);
+		return Collections.unmodifiableCollection(_friends);
 	}
 
 	@Nullable
 	public Friend getFriend(@NotNull UUID uniqueId) {
-		return friends.stream()
+		return _friends.stream()
 			.filter(friend -> friend.getUniqueId().equals(uniqueId))
 			.findFirst()
 			.orElse(null);
@@ -72,7 +72,7 @@ public class Profile {
 
 	@Nullable
 	public Friend getFriend(@NotNull String name, boolean caseSensitive) {
-		return friends.stream()
+		return _friends.stream()
 			.filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name))
 			.findFirst()
 			.orElse(null);
@@ -80,11 +80,11 @@ public class Profile {
 
 	@NotNull
 	public Instant getCacheTime() {
-		return cacheTime;
+		return _cacheTime;
 	}
 
 	public boolean hasLikedServer(@NotNull Server server) {
-		return server.hasLiked(uniqueId);
+		return server.hasLiked(_uniqueId);
 	}
 
 	@Override
@@ -96,22 +96,13 @@ public class Profile {
 			return false;
 		}
 		Profile that = (Profile) object;
-		return Objects.equals(uniqueId, that.uniqueId) &&
-			Objects.equals(friends, that.friends) &&
-			Objects.equals(cacheTime, that.cacheTime);
+		return Objects.equals(_uniqueId, that._uniqueId) &&
+			Objects.equals(_friends, that._friends) &&
+			Objects.equals(_cacheTime, that._cacheTime);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(uniqueId, friends, cacheTime);
-	}
-
-	@Override
-	public String toString() {
-		return "Profile{" +
-			"uniqueId=" + uniqueId +
-			", friends=" + friends +
-			", cacheTime=" + cacheTime +
-			"}";
+		return Objects.hash(_uniqueId, _friends, _cacheTime);
 	}
 }
