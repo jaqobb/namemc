@@ -32,23 +32,23 @@ import org.jetbrains.annotations.Nullable;
 public class Friend {
 
 	@NotNull
-	private UUID _uniqueId;
+	private UUID uniqueId;
 	@NotNull
-	private String _name;
+	private String name;
 
 	public Friend(@NotNull UUID uniqueId, @NotNull String name) {
-		_uniqueId = uniqueId;
-		_name = name;
+		this.uniqueId = uniqueId;
+		this.name = name;
 	}
 
 	@NotNull
 	public UUID getUniqueId() {
-		return _uniqueId;
+		return this.uniqueId;
 	}
 
 	@NotNull
 	public String getName() {
-		return _name;
+		return this.name;
 	}
 
 	public boolean isFriendOf(@NotNull Profile profile) {
@@ -56,14 +56,14 @@ public class Friend {
 	}
 
 	public boolean isFriendOf(@NotNull Profile profile, boolean caseSensitive) {
-		if (profile.getFriend(_uniqueId) != null) {
+		if (profile.getFriend(this.uniqueId) != null) {
 			return true;
 		}
-		return profile.getFriend(_name, caseSensitive) != null;
+		return profile.getFriend(this.name, caseSensitive) != null;
 	}
 
 	public boolean hasLikedServer(@NotNull Server server) {
-		return server.hasLiked(_uniqueId);
+		return server.hasLiked(this.uniqueId);
 	}
 
 	@Override
@@ -75,11 +75,11 @@ public class Friend {
 			return false;
 		}
 		Friend that = (Friend) object;
-		return Objects.equals(_uniqueId, that._uniqueId) && Objects.equals(_name, that._name);
+		return Objects.equals(this.uniqueId, that.uniqueId) && Objects.equals(this.name, that.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(_uniqueId, _name);
+		return Objects.hash(this.uniqueId, this.name);
 	}
 }

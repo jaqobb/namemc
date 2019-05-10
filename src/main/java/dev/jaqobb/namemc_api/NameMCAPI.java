@@ -31,26 +31,26 @@ import org.jetbrains.annotations.NotNull;
 public class NameMCAPI {
 
 	@NotNull
-	private final ProfileRepository _profileRepository;
+	private final ProfileRepository profileRepository;
 	@NotNull
-	private final ServerRepository _serverRepository;
+	private final ServerRepository serverRepository;
 
 	public NameMCAPI() {
 		this(new ProfileRepository(), new ServerRepository());
 	}
 
 	public NameMCAPI(@NotNull ProfileRepository profileRepository, @NotNull ServerRepository serverRepository) {
-		_profileRepository = profileRepository;
-		_serverRepository = serverRepository;
+		this.profileRepository = profileRepository;
+		this.serverRepository = serverRepository;
 	}
 
 	@NotNull
 	public ProfileRepository getProfileRepository() {
-		return _profileRepository;
+		return this.profileRepository;
 	}
 
 	@NotNull
 	public ServerRepository getServerRepository() {
-		return _serverRepository;
+		return this.serverRepository;
 	}
 }

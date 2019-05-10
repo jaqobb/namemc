@@ -35,35 +35,35 @@ import org.jetbrains.annotations.Nullable;
 public class Server {
 
 	@NotNull
-	private String _address;
+	private String address;
 	@NotNull
-	private Collection<UUID> _likes;
+	private Collection<UUID> likes;
 	@NotNull
-	private Instant _cacheTime;
+	private Instant cacheTime;
 
 	public Server(@NotNull String address, @NotNull Collection<UUID> likes) {
-		_address = address.toLowerCase();
-		_likes = likes;
-		_cacheTime = Instant.now();
+		this.address = address.toLowerCase();
+		this.likes = likes;
+		this.cacheTime = Instant.now();
 	}
 
 	@NotNull
 	public String getAddress() {
-		return _address;
+		return this.address;
 	}
 
 	@NotNull
 	public Collection<UUID> getLikes() {
-		return Collections.unmodifiableCollection(_likes);
+		return Collections.unmodifiableCollection(this.likes);
 	}
 
 	public boolean hasLiked(@NotNull UUID uniqueId) {
-		return _likes.contains(uniqueId);
+		return this.likes.contains(uniqueId);
 	}
 
 	@NotNull
 	public Instant getCacheTime() {
-		return _cacheTime;
+		return this.cacheTime;
 	}
 
 	@Override
@@ -75,13 +75,13 @@ public class Server {
 			return false;
 		}
 		Server that = (Server) object;
-		return Objects.equals(_address, that._address) &&
-			Objects.equals(_likes, that._likes) &&
-			Objects.equals(_cacheTime, that._cacheTime);
+		return Objects.equals(this.address, that.address) &&
+			Objects.equals(this.likes, that.likes) &&
+			Objects.equals(this.cacheTime, that.cacheTime);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(_address, _likes, _cacheTime);
+		return Objects.hash(this.address, this.likes, this.cacheTime);
 	}
 }

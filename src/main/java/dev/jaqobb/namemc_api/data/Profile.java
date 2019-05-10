@@ -35,31 +35,31 @@ import org.jetbrains.annotations.Nullable;
 public class Profile {
 
 	@NotNull
-	private UUID _uniqueId;
+	private UUID uniqueId;
 	@NotNull
-	private Collection<Friend> _friends;
+	private Collection<Friend> friends;
 	@NotNull
-	private Instant _cacheTime;
+	private Instant cacheTime;
 
 	public Profile(@NotNull UUID uniqueId, @NotNull Collection<Friend> friends) {
-		_uniqueId = uniqueId;
-		_friends = friends;
-		_cacheTime = Instant.now();
+		this.uniqueId = uniqueId;
+		this.friends = friends;
+		this.cacheTime = Instant.now();
 	}
 
 	@NotNull
 	public UUID getUniqueId() {
-		return _uniqueId;
+		return this.uniqueId;
 	}
 
 	@NotNull
 	public Collection<Friend> getFriends() {
-		return Collections.unmodifiableCollection(_friends);
+		return Collections.unmodifiableCollection(this.friends);
 	}
 
 	@Nullable
 	public Friend getFriend(@NotNull UUID uniqueId) {
-		return _friends.stream()
+		return this.friends.stream()
 			.filter(friend -> friend.getUniqueId().equals(uniqueId))
 			.findFirst()
 			.orElse(null);
@@ -72,7 +72,7 @@ public class Profile {
 
 	@Nullable
 	public Friend getFriend(@NotNull String name, boolean caseSensitive) {
-		return _friends.stream()
+		return this.friends.stream()
 			.filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name))
 			.findFirst()
 			.orElse(null);
@@ -80,11 +80,11 @@ public class Profile {
 
 	@NotNull
 	public Instant getCacheTime() {
-		return _cacheTime;
+		return this.cacheTime;
 	}
 
 	public boolean hasLikedServer(@NotNull Server server) {
-		return server.hasLiked(_uniqueId);
+		return server.hasLiked(this.uniqueId);
 	}
 
 	@Override
@@ -96,13 +96,13 @@ public class Profile {
 			return false;
 		}
 		Profile that = (Profile) object;
-		return Objects.equals(_uniqueId, that._uniqueId) &&
-			Objects.equals(_friends, that._friends) &&
-			Objects.equals(_cacheTime, that._cacheTime);
+		return Objects.equals(this.uniqueId, that.uniqueId) &&
+			Objects.equals(this.friends, that.friends) &&
+			Objects.equals(this.cacheTime, that.cacheTime);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(_uniqueId, _friends, _cacheTime);
+		return Objects.hash(this.uniqueId, this.friends, this.cacheTime);
 	}
 }
