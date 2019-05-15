@@ -1,4 +1,4 @@
-## NameMC API
+## NameMC Api
 NameMC Api is a NameMC (https://namemc.com) Java wrapper.
 
 ### Add to project
@@ -44,7 +44,7 @@ ServerRepository serverRepository = new ServerRepository();
 ```
 or:
 ```java
-ServerRepository profileRepository = new ServerRepository(duration, unit);
+ServerRepository serverRepository = new ServerRepository(duration, unit);
 ```
 
 By calling default `ServerRepository` constructor cached servers will be valid for 10 minutes.
