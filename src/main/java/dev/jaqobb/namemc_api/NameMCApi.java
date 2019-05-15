@@ -28,18 +28,18 @@ import dev.jaqobb.namemc_api.repository.ProfileRepository;
 import dev.jaqobb.namemc_api.repository.ServerRepository;
 import org.jetbrains.annotations.NotNull;
 
-public class NameMCAPI {
+public class NameMCApi {
 
 	@NotNull
 	private final ProfileRepository profileRepository;
 	@NotNull
 	private final ServerRepository serverRepository;
 
-	public NameMCAPI() {
+	public NameMCApi() {
 		this(new ProfileRepository(), new ServerRepository());
 	}
 
-	public NameMCAPI(@NotNull ProfileRepository profileRepository, @NotNull ServerRepository serverRepository) {
+	public NameMCApi(@NotNull ProfileRepository profileRepository, @NotNull ServerRepository serverRepository) {
 		this.profileRepository = profileRepository;
 		this.serverRepository = serverRepository;
 	}
