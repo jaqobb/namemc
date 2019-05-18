@@ -1,5 +1,5 @@
-## NameMC Api
-NameMC Api is a NameMC (https://namemc.com) Java wrapper.
+## NameMC API
+NameMC API is a NameMC (https://namemc.com) Java wrapper.
 
 ### Add to project
 Gradle
@@ -67,17 +67,17 @@ ServerRepository serverRepository = new ServerRepository(duration, unit);
 
 By calling default `ServerRepository` constructor cached servers will be valid for 10 minutes.
 
-Create new `NameMCApi` object by using:
+Create new `NameMCAPI` object by using:
 ```java
-NameMCApi api = new NameMCApi();
+NameMCAPI api = new NameMCAPI();
 ```
 or:
 ```java
-NameMCApi api = new NameMCApi(profileRepository, serverRepository);
+NameMCAPI api = new NameMCAPI(profileRepository, serverRepository);
 ```
 
-By calling default `NameMCApi` constructor default constructors of `ProfileRepository` and `ServerRepository` will be used.
+By calling default `NameMCAPI` constructor default constructors of `ProfileRepository` and `ServerRepository` will be used.
 
 The only method I think you should care about in both repositories is `cache`. This method allows you to cache profile or server (depends on the repository) or if the profile or server is already cached, is valid, and re-cache is not forced, get the requested profile or server. In case if any error occurs, `callback` allows you to get this error.
 
-I fell like all public methods in `Friend`, `Profile`, and `Server` classes are self explanatory (due to their names) and it is not needed to explain them.
+I fell like all public methods in `Friend`, `Profile` and `Server` classes are self explanatory (due to their names) and it is not needed to explain them.
