@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public final class IOHelper {
 
 	private IOHelper() {
-		throw new UnsupportedOperationException("Cannot create instance of utility class");
+		throw new UnsupportedOperationException("Cannot create instance of this class");
 	}
 
 	public static String getReaderContent(@NotNull BufferedReader reader) throws IOException {
