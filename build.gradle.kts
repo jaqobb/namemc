@@ -42,7 +42,7 @@ publishing {
 	publications {
 		create<MavenPublication>("maven") {
 			groupId = project.group as String
-			artifactId = project.name
+			artifactId = project.name.toLowerCase()
 			version = project.version as String
 			from(components["java"])
 			artifact(tasks["sourcesJar"])
