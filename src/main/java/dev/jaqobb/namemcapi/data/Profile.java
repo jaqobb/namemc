@@ -22,23 +22,29 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemc_api.data;
+package dev.jaqobb.namemcapi.data;
 
+import java.time.Instant;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Friend {
+public class Profile {
 
 	@NotNull
 	private UUID uniqueId;
 	@NotNull
-	private String name;
+	private Collection<Friend> friends;
+	@NotNull
+	private Instant cacheTime;
 
-	public Friend(@NotNull UUID uniqueId, @NotNull String name) {
+	public Profile(@NotNull UUID uniqueId, @NotNull Collection<Friend> friends) {
 		this.uniqueId = uniqueId;
-		this.name = name;
+		this.friends = friends;
+		this.cacheTime = Instant.now();
 	}
 
 	@NotNull
@@ -47,19 +53,34 @@ public class Friend {
 	}
 
 	@NotNull
-	public String getName() {
-		return this.name;
+	public Collection<Friend> getFriends() {
+		return Collections.unmodifiableCollection(this.friends);
 	}
 
-	public boolean isFriendOf(@NotNull Profile profile) {
-		return isFriendOf(profile, true);
+	@Nullable
+	public Friend getFriend(@NotNull UUID uniqueId) {
+		return this.friends.stream()
+			.filter(friend -> friend.getUniqueId().equals(uniqueId))
+			.findFirst()
+			.orElse(null);
 	}
 
-	public boolean isFriendOf(@NotNull Profile profile, boolean caseSensitive) {
-		if (profile.getFriend(this.uniqueId) != null) {
-			return true;
-		}
-		return profile.getFriend(this.name, caseSensitive) != null;
+	@Nullable
+	public Friend getFriend(@NotNull String name) {
+		return getFriend(name, true);
+	}
+
+	@Nullable
+	public Friend getFriend(@NotNull String name, boolean caseSensitive) {
+		return this.friends.stream()
+			.filter(friend -> caseSensitive ? friend.getName().equals(name) : friend.getName().equalsIgnoreCase(name))
+			.findFirst()
+			.orElse(null);
+	}
+
+	@NotNull
+	public Instant getCacheTime() {
+		return this.cacheTime;
 	}
 
 	public boolean hasLikedServer(@NotNull Server server) {
@@ -74,12 +95,14 @@ public class Friend {
 		if (object == null || getClass() != object.getClass()) {
 			return false;
 		}
-		Friend that = (Friend) object;
-		return Objects.equals(this.uniqueId, that.uniqueId) && Objects.equals(this.name, that.name);
+		Profile that = (Profile) object;
+		return Objects.equals(this.uniqueId, that.uniqueId) &&
+			Objects.equals(this.friends, that.friends) &&
+			Objects.equals(this.cacheTime, that.cacheTime);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.uniqueId, this.name);
+		return Objects.hash(this.uniqueId, this.friends, this.cacheTime);
 	}
 }

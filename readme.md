@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-	implementation "dev.jaqobb:namemc-api:{current version}"
+	implementation "dev.jaqobb:namemcapi:{current version}"
 }
 ```
 
@@ -22,7 +22,7 @@ repository {
 }
 
 dependencies {
-	implementation("dev.jaqobb:namemc-api:{current version}")
+	implementation("dev.jaqobb:namemcapi:{current version}")
 }
 ```
 
@@ -37,7 +37,7 @@ Maven
 <dependencies>
 	<dependency>
 		<groupId>dev.jaqobb</groupId>
-		<artifactId>namemc-api</artifactId>
+		<artifactId>namemcapi</artifactId>
 		<version>{current version}</version>
 		<scope>compile</scope>
 	</dependency>

@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemc_api.repository;
+package dev.jaqobb.namemcapi.repository;
 
-import dev.jaqobb.namemc_api.data.Server;
-import dev.jaqobb.namemc_api.util.IOHelper;
+import dev.jaqobb.namemcapi.data.Server;
+import dev.jaqobb.namemcapi.util.IOHelper;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

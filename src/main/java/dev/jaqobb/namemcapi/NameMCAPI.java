@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemc_api;
+package dev.jaqobb.namemcapi;
 
-import dev.jaqobb.namemc_api.repository.ProfileRepository;
-import dev.jaqobb.namemc_api.repository.ServerRepository;
+import dev.jaqobb.namemcapi.repository.ProfileRepository;
+import dev.jaqobb.namemcapi.repository.ServerRepository;
 import org.jetbrains.annotations.NotNull;
 
 public class NameMCAPI {

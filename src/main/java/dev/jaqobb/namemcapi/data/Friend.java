@@ -22,48 +22,48 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemc_api.data;
+package dev.jaqobb.namemcapi.data;
 
-import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class Server {
+public class Friend {
 
 	@NotNull
-	private String address;
+	private UUID uniqueId;
 	@NotNull
-	private Collection<UUID> likes;
-	@NotNull
-	private Instant cacheTime;
+	private String name;
 
-	public Server(@NotNull String address, @NotNull Collection<UUID> likes) {
-		this.address = address.toLowerCase();
-		this.likes = likes;
-		this.cacheTime = Instant.now();
+	public Friend(@NotNull UUID uniqueId, @NotNull String name) {
+		this.uniqueId = uniqueId;
+		this.name = name;
 	}
 
 	@NotNull
-	public String getAddress() {
-		return this.address;
+	public UUID getUniqueId() {
+		return this.uniqueId;
 	}
 
 	@NotNull
-	public Collection<UUID> getLikes() {
-		return Collections.unmodifiableCollection(this.likes);
+	public String getName() {
+		return this.name;
 	}
 
-	public boolean hasLiked(@NotNull UUID uniqueId) {
-		return this.likes.contains(uniqueId);
+	public boolean isFriendOf(@NotNull Profile profile) {
+		return isFriendOf(profile, true);
 	}
 
-	@NotNull
-	public Instant getCacheTime() {
-		return this.cacheTime;
+	public boolean isFriendOf(@NotNull Profile profile, boolean caseSensitive) {
+		if (profile.getFriend(this.uniqueId) != null) {
+			return true;
+		}
+		return profile.getFriend(this.name, caseSensitive) != null;
+	}
+
+	public boolean hasLikedServer(@NotNull Server server) {
+		return server.hasLiked(this.uniqueId);
 	}
 
 	@Override
@@ -74,14 +74,12 @@ public class Server {
 		if (object == null || getClass() != object.getClass()) {
 			return false;
 		}
-		Server that = (Server) object;
-		return Objects.equals(this.address, that.address) &&
-			Objects.equals(this.likes, that.likes) &&
-			Objects.equals(this.cacheTime, that.cacheTime);
+		Friend that = (Friend) object;
+		return Objects.equals(this.uniqueId, that.uniqueId) && Objects.equals(this.name, that.name);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(this.address, this.likes, this.cacheTime);
+		return Objects.hash(this.uniqueId, this.name);
 	}
 }

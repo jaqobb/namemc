@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemc_api.util;
+package dev.jaqobb.namemcapi.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
