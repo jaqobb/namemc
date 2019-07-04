@@ -22,8 +22,10 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemcapi.data;
+package dev.jaqobb.namemcapi.profile.friend;
 
+import dev.jaqobb.namemcapi.server.Server;
+import dev.jaqobb.namemcapi.profile.Profile;
 import java.util.Objects;
 import java.util.UUID;
 import org.jetbrains.annotations.NotNull;

@@ -22,10 +22,8 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemcapi.repository;
+package dev.jaqobb.namemcapi.server;
 
-import dev.jaqobb.namemcapi.data.Friend;
-import dev.jaqobb.namemcapi.data.Profile;
 import dev.jaqobb.namemcapi.util.IOHelper;
 import java.time.Duration;
 import java.time.Instant;
@@ -44,25 +42,24 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
-public class ProfileRepository {
+public class ServerRepository {
 
-	private static final String PROFILE_FRIENDS_URL = "https://api.namemc.com/profile/%s/friends";
+	private static final String SERVER_LIKES_URL = "https://api.namemc.com/server/%s/likes";
 
 	private static final AtomicInteger EXECUTOR_THREAD_COUNTER = new AtomicInteger();
-	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Profile Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
+	private static final Executor EXECUTOR = Executors.newCachedThreadPool(runnable -> new Thread(runnable, "NameMCAPI Server Query #" + EXECUTOR_THREAD_COUNTER.getAndIncrement()));
 
 	@NotNull
 	private Duration cacheDuration;
 	@NotNull
-	private Map<UUID, Profile> profiles = Collections.synchronizedMap(new HashMap<>(100, 0.85F));
+	private Map<String, Server> servers = Collections.synchronizedMap(new HashMap<>(1, 1.0F));
 
-	public ProfileRepository() {
-		this(5, ChronoUnit.MINUTES);
+	public ServerRepository() {
+		this(10, ChronoUnit.MINUTES);
 	}
 
-	public ProfileRepository(long duration, @NotNull TemporalUnit unit) {
+	public ServerRepository(long duration, @NotNull TemporalUnit unit) {
 		if (duration < 1) {
 			throw new IllegalArgumentException("duration cannot be smaller than 1");
 		}
@@ -75,65 +72,62 @@ public class ProfileRepository {
 	}
 
 	@NotNull
-	public Collection<Profile> getProfiles() {
-		return Collections.unmodifiableCollection(this.profiles.values());
+	public Collection<Server> getServers() {
+		return Collections.unmodifiableCollection(this.servers.values());
 	}
 
 	@NotNull
-	public Collection<Profile> getValidProfiles() {
-		return this.profiles.values().stream()
-			.filter(this::isProfileValid)
+	public Collection<Server> getValidServers() {
+		return this.servers.values().stream()
+			.filter(this::isServerValid)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
 	@NotNull
-	public Collection<Profile> getInvalidProfiles() {
-		return this.profiles.values().stream()
-			.filter(profile -> !isProfileValid(profile))
+	public Collection<Server> getInvalidServers() {
+		return this.servers.values().stream()
+			.filter(server -> !isServerValid(server))
 			.collect(Collectors.toUnmodifiableList());
 	}
 
-	public void addProfile(@NotNull Profile profile) {
-		this.profiles.putIfAbsent(profile.getUniqueId(), profile);
+	public void addServer(@NotNull Server server) {
+		this.servers.putIfAbsent(server.getAddress().toLowerCase(), server);
 	}
 
-	public void removeProfile(@NotNull Profile profile) {
-		this.profiles.remove(profile.getUniqueId());
+	public void removeServer(@NotNull Server server) {
+		this.servers.remove(server.getAddress().toLowerCase());
 	}
 
-	public void cacheProfile(@NotNull UUID uniqueId, boolean recache, @NotNull BiConsumer<Profile, Throwable> callback) {
-		if (this.profiles.containsKey(uniqueId)) {
-			Profile profile = this.profiles.get(uniqueId);
-			if (isProfileValid(profile) && !recache) {
-				callback.accept(profile, null);
+	public void cacheServer(@NotNull String address, boolean recache, @NotNull BiConsumer<Server, Throwable> callback) {
+		if (this.servers.containsKey(address.toLowerCase())) {
+			Server server = this.servers.get(address.toLowerCase());
+			if (isServerValid(server) && !recache) {
+				callback.accept(server, null);
 				return;
 			}
 		}
 		EXECUTOR.execute(() -> {
-			String url = String.format(PROFILE_FRIENDS_URL, uniqueId.toString());
+			String url = String.format(SERVER_LIKES_URL, address.toLowerCase());
 			try {
 				JSONArray array = new JSONArray(IOHelper.getWebsiteContent(url));
-				Collection<Friend> friends = IntStream.range(0, array.length())
+				Collection<UUID> likes = IntStream.range(0, array.length())
 					.boxed()
-					.map(index -> {
-						JSONObject object = array.getJSONObject(index);
-						return new Friend(UUID.fromString(object.getString("uniqueId")), object.getString("name"));
-					})
+					.map(index -> UUID.fromString(array.getString(index)))
 					.collect(Collectors.toUnmodifiableList());
-				Profile profile = new Profile(uniqueId, friends);
-				this.profiles.put(uniqueId, profile);
-				callback.accept(profile, null);
+				Server server = new Server(address.toLowerCase(), likes);
+				this.servers.put(address.toLowerCase(), server);
+				callback.accept(server, null);
 			} catch (Exception exception) {
 				callback.accept(null, exception);
 			}
 		});
 	}
 
-	public boolean isProfileValid(@NotNull Profile profile) {
-		return Duration.between(profile.getCacheTime(), Instant.now()).compareTo(this.cacheDuration) < 0;
+	public boolean isServerValid(@NotNull Server server) {
+		return Duration.between(server.getCacheTime(), Instant.now()).compareTo(this.cacheDuration) < 0;
 	}
 
-	public void clearProfiles() {
-		this.profiles.clear();
+	public void clearServers() {
+		this.servers.clear();
 	}
 }

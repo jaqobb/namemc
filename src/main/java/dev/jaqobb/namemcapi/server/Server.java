@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemcapi.data;
+package dev.jaqobb.namemcapi.server;
 
 import java.time.Instant;
 import java.util.Collection;

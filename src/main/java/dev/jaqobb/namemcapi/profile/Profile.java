@@ -22,8 +22,10 @@
  * SOFTWARE.
  */
 
-package dev.jaqobb.namemcapi.data;
+package dev.jaqobb.namemcapi.profile;
 
+import dev.jaqobb.namemcapi.profile.friend.Friend;
+import dev.jaqobb.namemcapi.server.Server;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;

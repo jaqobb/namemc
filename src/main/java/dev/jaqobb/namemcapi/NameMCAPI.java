@@ -24,8 +24,8 @@
 
 package dev.jaqobb.namemcapi;
 
-import dev.jaqobb.namemcapi.repository.ProfileRepository;
-import dev.jaqobb.namemcapi.repository.ServerRepository;
+import dev.jaqobb.namemcapi.profile.ProfileRepository;
+import dev.jaqobb.namemcapi.server.ServerRepository;
 import org.jetbrains.annotations.NotNull;
 
 public class NameMCAPI {
