@@ -1,18 +1,22 @@
+import com.jfrog.bintray.gradle.BintrayExtension
+
 plugins {
 	`java-library`
 	`maven-publish`
 	id("com.github.johnrengelman.shadow") version "5.1.0"
+	id("com.jfrog.bintray") version "1.8.4"
 }
 
 group = "dev.jaqobb"
-version = "2.0.6"
+version = "2.0.7"
+description = "NameMC (https://namemc.com) Java wrapper"
 
 java {
 	sourceCompatibility = JavaVersion.VERSION_11
 	targetCompatibility = JavaVersion.VERSION_11
 }
 
-defaultTasks("clean", "build", "sourcesJar", "shadowJar", "publishMavenPublicationToMavenRepository")
+defaultTasks("clean", "build", "sourcesJar", "shadowJar", "bintrayUpload")
 
 tasks {
 	test {
@@ -28,7 +32,7 @@ task<Jar>("sourcesJar") {
 }
 
 repositories {
-	mavenCentral()
+	jcenter()
 }
 
 dependencies {
@@ -46,14 +50,24 @@ publishing {
 			version = project.version as String
 			from(components["java"])
 			artifact(tasks["sourcesJar"])
+			artifact(tasks["shadowJar"])
 		}
 	}
-	repositories {
-		maven(properties["jaqobb-public-repository-url"] as String) {
-			credentials {
-				username = properties["jaqobb-repository-user"] as String
-				password = properties["jaqobb-repository-password"] as String
-			}
-		}
-	}
+}
+
+configure<BintrayExtension> {
+	user = properties["bintray-user"] as String?
+	key = properties["bintray-api-key"] as String?
+	publish = true
+	setPublications("maven")
+	pkg(closureOf<BintrayExtension.PackageConfig> {
+		repo = properties["bintray-repository"] as String?
+		name = project.name
+		desc = project.description
+		websiteUrl = "https://github.com/jaqobb/NameMCAPI"
+		issueTrackerUrl = "$websiteUrl/issues"
+		vcsUrl = "$websiteUrl.git"
+		setLicenses("MIT")
+		setLabels("java", "wrapper", "namemc", "minecraft")
+	})
 }

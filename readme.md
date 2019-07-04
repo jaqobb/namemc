@@ -5,43 +5,23 @@ NameMC API is a NameMC (https://namemc.com) Java wrapper.
 Gradle
 ```groovy
 repositories {
-	maven {
-		url "https://repository.jaqobb.dev/maven-public/"
-	}
+	jcenter()
 }
 
 dependencies {
-	implementation "dev.jaqobb:namemcapi:{current version}"
+	implementation "dev.jaqobb:namemcapi:2.0.7"
 }
 ```
 
 Gradle Kotlin DSL
 ```kotlin
 repository {
-	maven("https://repository.jaqobb.dev/maven-public/")
+	jcenter()
 }
 
 dependencies {
-	implementation("dev.jaqobb:namemcapi:{current version}")
+	implementation("dev.jaqobb:namemcapi:2.0.7")
 }
-```
-
-Maven
-```xml
-<repositories>
-	<repository>
-		<url>https://repository.jaqobb.dev/maven-public/</url>
-	</repository>
-</repositories>
-
-<dependencies>
-	<dependency>
-		<groupId>dev.jaqobb</groupId>
-		<artifactId>namemcapi</artifactId>
-		<version>{current version}</version>
-		<scope>compile</scope>
-	</dependency>
-</dependencies>
 ```
 
 ### Usage example
