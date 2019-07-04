@@ -68,6 +68,6 @@ configure<BintrayExtension> {
 		issueTrackerUrl = "$websiteUrl/issues"
 		vcsUrl = "$websiteUrl.git"
 		setLicenses("MIT")
-		setLabels("java", "wrapper", "namemc", "minecraft")
+		setLabels("java", "wrapper", "namemc", "minecraft", "api")
 	})
 }
