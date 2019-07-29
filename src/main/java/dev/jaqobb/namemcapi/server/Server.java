@@ -71,7 +71,7 @@ public class Server {
 		if (this == object) {
 			return true;
 		}
-		if (object == null || getClass() != object.getClass()) {
+		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
 		Server that = (Server) object;

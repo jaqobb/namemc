@@ -69,7 +69,7 @@ public class Profile {
 
 	@Nullable
 	public Friend getFriend(@NotNull String name) {
-		return getFriend(name, true);
+		return this.getFriend(name, true);
 	}
 
 	@Nullable
@@ -94,7 +94,7 @@ public class Profile {
 		if (this == object) {
 			return true;
 		}
-		if (object == null || getClass() != object.getClass()) {
+		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
 		Profile that = (Profile) object;

@@ -54,7 +54,7 @@ public class Friend {
 	}
 
 	public boolean isFriendOf(@NotNull Profile profile) {
-		return isFriendOf(profile, true);
+		return this.isFriendOf(profile, true);
 	}
 
 	public boolean isFriendOf(@NotNull Profile profile, boolean caseSensitive) {
@@ -73,7 +73,7 @@ public class Friend {
 		if (this == object) {
 			return true;
 		}
-		if (object == null || getClass() != object.getClass()) {
+		if (object == null || this.getClass() != object.getClass()) {
 			return false;
 		}
 		Friend that = (Friend) object;

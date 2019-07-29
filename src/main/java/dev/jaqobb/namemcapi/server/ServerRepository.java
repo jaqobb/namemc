@@ -86,7 +86,7 @@ public class ServerRepository {
 	@NotNull
 	public Collection<Server> getInvalidServers() {
 		return this.servers.values().stream()
-			.filter(server -> !isServerValid(server))
+			.filter(server -> !this.isServerValid(server))
 			.collect(Collectors.toUnmodifiableList());
 	}
 
@@ -101,7 +101,7 @@ public class ServerRepository {
 	public void cacheServer(@NotNull String address, boolean recache, @NotNull BiConsumer<Server, Throwable> callback) {
 		if (this.servers.containsKey(address.toLowerCase())) {
 			Server server = this.servers.get(address.toLowerCase());
-			if (isServerValid(server) && !recache) {
+			if (this.isServerValid(server) && !recache) {
 				callback.accept(server, null);
 				return;
 			}
