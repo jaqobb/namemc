@@ -58,6 +58,6 @@ NameMCAPI api = new NameMCAPI(profileRepository, serverRepository);
 
 By calling default `NameMCAPI` constructor default constructors of `ProfileRepository` and `ServerRepository` will be used.
 
-The only method I think you should care about in both repositories is `cache`. This method allows you to cache profile or server (depends on the repository) or if the profile or server is already cached, is valid, and re-cache is not forced, get the requested profile or server. In case if any error occurs, `callback` allows you to get this error.
+The only method I think you should care about in both repositories is `cache`. This method allows you to cache profile or server (depends on the repository) or if the profile or server is already cached, is valid, and re-cache is not forced, get the requested profile or server. In case if any error occurs, `callback` allows you to get that error.
 
 I fell like all public methods in `Friend`, `Profile` and `Server` classes are self-explanatory (due to their names), and it is not needed to explain them.
