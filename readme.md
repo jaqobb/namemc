@@ -1,5 +1,5 @@
-## NameMC API
-NameMC API is a NameMC (https://namemc.com) Java wrapper.
+## NameMCAPI
+NameMCAPI is a NameMC (https://namemc.com) Java wrapper.
 
 ### Add to project
 Gradle
