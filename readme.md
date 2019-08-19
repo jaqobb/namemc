@@ -1,5 +1,5 @@
 ## NameMCAPI
-A NameMC (https://namemc.com) Java wrapper.
+NameMC (https://namemc.com) Java wrapper.
 
 ### Add to project
 Gradle
