@@ -88,7 +88,7 @@ public class ProfileRepository {
 	@NotNull
 	public Collection<Profile> getInvalidProfiles() {
 		return this.profiles.values().stream()
-			.filter(profile -> !isProfileValid(profile))
+			.filter(profile -> !this.isProfileValid(profile))
 			.collect(Collectors.toUnmodifiableList());
 	}
 
@@ -103,7 +103,7 @@ public class ProfileRepository {
 	public void cacheProfile(@NotNull UUID uniqueId, boolean recache, @NotNull BiConsumer<Profile, Throwable> callback) {
 		if (this.profiles.containsKey(uniqueId)) {
 			Profile profile = this.profiles.get(uniqueId);
-			if (isProfileValid(profile) && !recache) {
+			if (this.isProfileValid(profile) && !recache) {
 				callback.accept(profile, null);
 				return;
 			}
