@@ -7,7 +7,8 @@ A NameMC (https://namemc.com) Java wrapper.
 
 ### Add to project
 
-Gradle
+Gradle:
+
 ```groovy
 repositories {
 	jcenter()
@@ -18,7 +19,8 @@ dependencies {
 }
 ```
 
-Gradle Kotlin DSL
+Gradle Kotlin DSL:
+
 ```kotlin
 repository {
 	jcenter()
@@ -32,10 +34,13 @@ dependencies {
 ### Usage example
 
 Create new `ProfileRepository` object by using:
+
 ```java
 ProfileRepository profileRepository = new ProfileRepository();
 ```
+
 or:
+
 ```java
 ProfileRepository profileRepository = new ProfileRepository(duration, unit);
 ```
@@ -43,10 +48,13 @@ ProfileRepository profileRepository = new ProfileRepository(duration, unit);
 By calling default `ProfileRepository` constructor cached profiles will be valid for 5 minutes.
 
 Create new `ServerRepository` object by using:
+
 ```java
 ServerRepository serverRepository = new ServerRepository();
 ```
+
 or:
+
 ```java
 ServerRepository serverRepository = new ServerRepository(duration, unit);
 ```
@@ -54,10 +62,13 @@ ServerRepository serverRepository = new ServerRepository(duration, unit);
 By calling default `ServerRepository` constructor cached servers will be valid for 10 minutes.
 
 Create new `NameMCAPI` object by using:
+
 ```java
 NameMCAPI api = new NameMCAPI();
 ```
+
 or:
+
 ```java
 NameMCAPI api = new NameMCAPI(profileRepository, serverRepository);
 ```
