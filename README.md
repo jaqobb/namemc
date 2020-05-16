@@ -3,8 +3,6 @@ NameMCAPI
 
 A NameMC (https://namemc.com) Java wrapper.
 
-##### This project will no longer receive any updates as of 9/5/2019 due to the fact that NameMC does not really care about developers and are ignoring any questions about providing or adding API. Moreover, the whole API I could find is already added.
-
 ### Add to project
 
 Gradle:
