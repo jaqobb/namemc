@@ -1,7 +1,9 @@
-NameMCAPI
+NameMC API
 =========
 
-A NameMC (https://namemc.com) Java wrapper.
+NameMC (https://namemc.com) Java wrapper
+
+Project is not likely to receive any more changes.
 
 ### Add to project
 
