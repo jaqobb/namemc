@@ -1,5 +1,4 @@
-NameMC API
-=========
+# NameMC API
 
 NameMC (https://namemc.com) Java wrapper
 
