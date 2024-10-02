@@ -1,7 +1,6 @@
 package dev.jaqobb.namemc.server;
 
 import dev.jaqobb.namemc.cache.CacheSettings;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
@@ -17,22 +16,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ServerRepositoryTest {
     
-    private ServerRepository serverRepository;
-    
-    @BeforeEach
-    void setup() {
-        this.serverRepository = new ServerRepository(new CacheSettings(Duration.of(2L, ChronoUnit.SECONDS)));
-    }
-    
     @Test
-    void testSuccessfulFetch() {
-        Server hypixelServer = this.serverRepository.fetch("mc.hypixel.net");
-        assertNotNull(hypixelServer);
+    void testFetch() {
+        ServerRepository serverRepository = new ServerRepository(new CacheSettings(Duration.of(2L, ChronoUnit.SECONDS)));
+        Server hypixelServer = serverRepository.fetch("mc.hypixel.net");
         assertEquals("mc.hypixel.net", hypixelServer.getAddress());
         assertNotEquals(0, hypixelServer.getLikes().size());
         assertTrue(hypixelServer.isLikedBy(UUID.fromString("2e4a7c28-b4d4-46f9-af89-0e0fd6e1e8e6")));
-        Server invalidServer = this.serverRepository.fetch("invalid");
-        assertNotNull(invalidServer);
+        Server invalidServer = serverRepository.fetch("invalid");
         assertEquals("invalid", invalidServer.getAddress());
         assertEquals(0, invalidServer.getLikes().size());
         assertFalse(invalidServer.isLikedBy(UUID.fromString("2e4a7c28-b4d4-46f9-af89-0e0fd6e1e8e6")));
@@ -40,21 +31,36 @@ class ServerRepositoryTest {
     
     @Test
     void testCache() {
-        Server hypixelServer = this.serverRepository.fetch("mc.hypixel.net");
-        assertEquals(hypixelServer, this.serverRepository.getCacheManager().get("mc.hypixel.net"));
-        await().atMost(3L, TimeUnit.SECONDS).until(() -> this.serverRepository.getCacheManager().get("mc.hypixel.net") == null);
-        assertNull(this.serverRepository.getCacheManager().get("mc.hypixel.net"));
+        ServerRepository serverRepository = new ServerRepository(new CacheSettings(Duration.of(2L, ChronoUnit.SECONDS)));
+        Server hypixelServer = serverRepository.fetch("mc.hypixel.net");
+        assertEquals(hypixelServer, serverRepository.get("mc.hypixel.net"));
+        assertEquals(hypixelServer, serverRepository.get("MC.HYPIXEL.NET"));
+        await().atMost(3L, TimeUnit.SECONDS).until(() -> serverRepository.get("mc.hypixel.net") == null && serverRepository.get("MC.HYPIXEL.NET") == null);
+        assertNull(serverRepository.get("mc.hypixel.net"));
+        assertNull(serverRepository.get("MC.HYPIXEL.NET"));
     }
     
     @Test
     void testCacheCleanup() {
-        this.serverRepository.fetch("mc.hypixel.net");
-        this.serverRepository.fetch("invalid");
-        assertEquals(2, this.serverRepository.getCacheManager().getCache().size());
+        ServerRepository serverRepository = new ServerRepository(new CacheSettings(Duration.of(2L, ChronoUnit.SECONDS)));
+        serverRepository.fetch("mc.hypixel.net");
+        serverRepository.fetch("invalid");
+        assertEquals(2, serverRepository.getCacheManager().getCache().size());
         await().atMost(3L, TimeUnit.SECONDS).until(() -> {
-            this.serverRepository.getCacheManager().cleanup();
-            return this.serverRepository.getCacheManager().getCache().isEmpty();
+            serverRepository.getCacheManager().cleanup();
+            return serverRepository.getCacheManager().getCache().isEmpty();
         });
-        assertEquals(0, this.serverRepository.getCacheManager().getCache().size());
+        assertEquals(0, serverRepository.getCacheManager().getCache().size());
+    }
+    
+    @Test
+    void testCacheMaxSize() {
+        ServerRepository serverRepository = new ServerRepository(new CacheSettings(Duration.of(10L, ChronoUnit.MINUTES), 1));
+        serverRepository.fetch("mc.hypixel.net");
+        assertEquals(1, serverRepository.getCacheManager().getCache().size());
+        serverRepository.fetch("invalid");
+        assertEquals(1, serverRepository.getCacheManager().getCache().size());
+        assertNull(serverRepository.get("mc.hypixel.net"));
+        assertNotNull(serverRepository.get("invalid"));
     }
 }

@@ -29,10 +29,16 @@ public class ProfileRepository extends BaseRepository<Profile, UUID> {
     }
     
     @Override
+    public UUID normalizeKey(UUID key) {
+        return key;
+    }
+    
+    @Override
     public Profile retrieve(UUID key) throws Exception {
         if (key == null) {
             throw new NullPointerException("key");
         }
+        key = this.normalizeKey(key);
         JSONArray friendsJSONArray = HTTPUtils.getJSONArray(String.format(FRIENDS_URL, key));
         Collection<Friend> friends = new ArrayList<>();
         for (Object friendObject : friendsJSONArray) {

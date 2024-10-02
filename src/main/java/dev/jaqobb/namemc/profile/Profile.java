@@ -1,8 +1,8 @@
 package dev.jaqobb.namemc.profile;
 
 import dev.jaqobb.namemc.server.Server;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -22,8 +22,8 @@ public class Profile {
             throw new NullPointerException("friends");
         }
         this.uuid = uuid;
-        this.friendsByUUID = new HashMap<>();
-        this.friendsByName = new HashMap<>();
+        this.friendsByUUID = new HashMap<>(friends.size(), 1.0F);
+        this.friendsByName = new HashMap<>(friends.size(), 1.0F);
         for (Friend friend : friends) {
             this.friendsByUUID.put(friend.getUUID(), friend);
             this.friendsByName.put(friend.getName().toLowerCase(), friend);
@@ -35,7 +35,7 @@ public class Profile {
     }
     
     public Collection<Friend> getFriends() {
-        return new ArrayList<>(this.friendsByUUID.values());
+        return Collections.unmodifiableCollection(this.friendsByUUID.values());
     }
     
     public Friend getFriend(UUID uuid) {

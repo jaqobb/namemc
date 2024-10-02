@@ -25,10 +25,45 @@ public abstract class BaseRepository<T, K> {
         return this.cacheManager;
     }
     
+    public abstract K normalizeKey(K key);
+    
+    public T get(K key) {
+        if (key == null) {
+            throw new NullPointerException("key");
+        }
+        return this.cacheManager.get(this.normalizeKey(key));
+    }
+    
+    public void put(K key, T value) {
+        if (key == null) {
+            throw new NullPointerException("key");
+        }
+        if (value == null) {
+            throw new NullPointerException("value");
+        }
+        this.cacheManager.put(this.normalizeKey(key), value);
+    }
+    
+    public void remove(K key) {
+        if (key == null) {
+            throw new NullPointerException("key");
+        }
+        this.cacheManager.getCache().remove(this.normalizeKey(key));
+    }
+    
+    public void clear() {
+        this.cacheManager.getCache().clear();
+    }
+    
+    public void cleanup() {
+        this.cacheManager.getCache().entrySet().removeIf(entry -> entry.getValue().isExpired());
+    }
+    
     public T fetch(K key) {
         if (key == null) {
             throw new NullPointerException("key");
         }
+        key = this.normalizeKey(key);
         T cachedValue = this.cacheManager.get(key);
         if (cachedValue != null) {
             return cachedValue;

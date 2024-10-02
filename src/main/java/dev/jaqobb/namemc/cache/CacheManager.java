@@ -1,26 +1,36 @@
 package dev.jaqobb.namemc.cache;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class CacheManager<K, V> {
     
     private final CacheSettings cacheSettings;
-    private final ConcurrentHashMap<K, CacheEntry<V>> cache;
+    private final Map<K, CacheEntry<V>> cache;
     
     public CacheManager(CacheSettings cacheSettings) {
         if (cacheSettings == null) {
             throw new NullPointerException("cacheSettings");
         }
         this.cacheSettings = cacheSettings;
-        this.cache = new ConcurrentHashMap<>();
+        int initialCapacity = this.cacheSettings.getMaxSize() > 0 ? this.cacheSettings.getMaxSize() : 16;
+        float loadFactor = this.cacheSettings.getMaxSize() > 0 ? 1.0F : 0.75F;
+        this.cache = Collections.synchronizedMap(new LinkedHashMap<K, CacheEntry<V>>(initialCapacity, loadFactor, true) {
+            
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<K, CacheEntry<V>> eldest) {
+                return CacheManager.this.cacheSettings.getMaxSize() > 0 && this.size() > CacheManager.this.cacheSettings.getMaxSize();
+            }
+        });
     }
     
     public CacheSettings getCacheSettings() {
         return this.cacheSettings;
     }
     
-    public ConcurrentHashMap<K, CacheEntry<V>> getCache() {
-        return new ConcurrentHashMap<>(this.cache);
+    public Map<K, CacheEntry<V>> getCache() {
+        return Collections.unmodifiableMap(this.cache);
     }
     
     public V get(K key) {

@@ -1,7 +1,7 @@
 package dev.jaqobb.namemc.server;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -26,7 +26,7 @@ public class Server {
     }
     
     public Collection<UUID> getLikes() {
-        return new ArrayList<>(this.likes);
+        return Collections.unmodifiableCollection(this.likes);
     }
     
     public boolean isLikedBy(UUID uuid) {

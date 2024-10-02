@@ -20,7 +20,7 @@ Lightweight, straightforward, easy-to-use and fast NameMC Java wrapper. This Jav
     <dependency>
         <groupId>dev.jaqobb</groupId>
         <artifactId>namemc</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
     </dependency>
 </dependencies>
 ```
@@ -35,7 +35,7 @@ repositories {
 }
 
 dependencies {
-    implementation("dev.jaqobb:namemc:3.0.0")   
+    implementation("dev.jaqobb:namemc:3.0.1")   
 }
 ```
 
@@ -49,7 +49,7 @@ repositories {
 }
 
 dependencies {
-    implementation "dev.jaqobb:namemc:3.0.0"
+    implementation "dev.jaqobb:namemc:3.0.1"
 }
 ```
 
@@ -68,21 +68,26 @@ ProfileRepository profileRepository = new ProfileRepository();
 ServerRepository serverRepository = new ServerRepository();
 ```
 
-You can use different available constructors to create instances of the repositories with modified cache settings. By default, the repositories use a cache with a time-to-live of 30 minutes. You can change these settings by providing a custom `CacheSettings` or `CacheManager` instance.
+You can also use other available constructors to create instances of the repositories with modified cache settings. By default, the repositories use a cache with a time-to-live of 30 minutes and infinite maximum cache size (to mimic versions prior to the update introducing modifying maximum cache size). You can change these settings by providing a custom `CacheSettings` or `CacheManager` instance.
 
 ```java
 NameMC nameMC = new NameMC(
-    new ProfileRepository(new CacheSettings(10L, TimeUnit.MINUTES)),
-    new ServerRepository(new CacheSettings(1L, TimeUnit.HOURS))
+    new ProfileRepository(new CacheSettings(Duration.of(10L, TimeUnit.MINUTES))), // Cache with time-to-live of 10 minutes and infinite maximum size.
+    new ServerRepository(new CacheSettings(Duration.of(1L, TimeUnit.HOURS))) // Cache with time-to-live of 1 minute and infinite maximum size.
 );
 ```
 
 ```java
-ProfileRepository profileRepository = new ProfileRepository(new CacheSettings(10L, TimeUnit.MINUTES));
-ServerRepository serverRepository = new ServerRepository(new CacheSettings(1L, TimeUnit.HOURS));
+ProfileRepository profileRepository = new ProfileRepository(new CacheSettings(Duration.of(10L, TimeUnit.MINUTES))); // Cache with time-to-live of 10 minutes and infinite maximum size.
+ServerRepository serverRepository = new ServerRepository(new CacheSettings(Duration.of(1L, TimeUnit.HOURS))); // Cache with time-to-live of 1 minute and infinite maximum size.
 ```
 
-Now that you have access to the repositories, you can use them to get information about profiles and servers. To do that, you call the `fetch` method on the repository instance and provide a key that identifies the profile or server you want to get information about. The key is a UUID for profiles or a String representing an IP address for servers. It is advised to provide a normalized key (i.e. IP address lowercased) to avoid any issues with caching.
+```java
+ProfileRepository profileRepository = new ProfileRepository(new CacheSettings(Duration.of(20L, TimeUnit.MINUTES), 200)); // Cache with time-to-live of 20 minutes and 200 maximum size.
+ServerRepository serverRepository = new ServerRepository(new CacheSettings(Duration.of(2L, TimeUnit.HOURS), 20)); // Cache with time-to-live of 2 hours and 20 maximum size.
+```
+
+Now that you have access to the repositories, you can use them to get information about profiles and servers. To do that, you call the `fetch` method on the repository instance and provide a key that identifies the profile or server you want to get information about. The key is a UUID for profiles or a String representing an address for servers. In the default implementation, both profile and server repositories automatically normalize the provided key (mainly the server repository as it lowercases the address and trims leading and trailing spaces). As such, one does not need to provide a normalized key manually.
 
 ```java
 Profile hypixelProfile = profileRepository.fetch(UUID.fromString("f7c77d99-9f15-4a66-a87d-c4a51ef30d19"));
@@ -100,7 +105,7 @@ If, for some reason, you wish to bypass the cache and make a request to the Name
 
 Depending on the load, fetching a profile or server may take some time. It is advised to use the `fetch` method in a separate thread or a background task to avoid blocking the main thread.
 
-You can also directly access the current cache of the repository by calling the `getCacheManager` method. The cache is an instance of the `CacheManager` class and contains the cached profiles or servers, allowing you to manually manage the cache if needed or access the cache settings.
+The repositories also provide direct access to the commonly used cache methods, such as `get`, `put`, `remove`, `clear` and `cleanup`, while taking care of key normalization for you. However, if you so desire, you can also directly access the repository's cache manager by calling the `getCacheManager` method. The cache is an instance of the `CacheManager` class and contains the cached profiles or servers, allowing you to manually manage the cache or access the cache settings if needed.
 
 The `Profile` class contains the information about the UUID and friends while the `Server` class contains the information about the IP address and likes. Helper methods exist to provide a way to easily get friend data, check whether a friend is a friend of another profile or whether a server is liked by a UUID.
 

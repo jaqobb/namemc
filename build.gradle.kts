@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.jaqobb"
-version = "3.0.0"
+version = "3.0.1"
 description = "Lightweight, straightforward, easy-to-use and fast NameMC Java wrapper"
 
 java {

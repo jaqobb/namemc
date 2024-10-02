@@ -28,10 +28,16 @@ public class ServerRepository extends BaseRepository<Server, String> {
     }
     
     @Override
+    public String normalizeKey(String key) {
+        return key.toLowerCase().trim();
+    }
+    
+    @Override
     public Server retrieve(String key) throws Exception {
         if (key == null) {
             throw new NullPointerException("key");
         }
+        key = this.normalizeKey(key);
         JSONArray array = HTTPUtils.getJSONArray(String.format(LIKES_URL, key));
         Collection<UUID> likes = new ArrayList<>();
         for (Object likeObject : array) {
