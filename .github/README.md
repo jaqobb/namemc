@@ -2,7 +2,7 @@
 
 Lightweight, straightforward, easy-to-use and fast NameMC Java wrapper. This Java wrapper utilizes endpoints exposed by NameMC to provide you with the ability to get information about profiles and servers. Unfortunately, NameMC, to my knowledge, does not offer a lot of endpoints, so this wrapper is limited in terms of functionality. If you come across an endpoint that is not used by the wrapper, feel free to open an issue or a pull request.
 
-**This wrapper is not affiliated with NameMC.**
+**This wrapper is not affiliated with [namemc.com](https://namemc.com)**
 
 ## Adding to your project
 
